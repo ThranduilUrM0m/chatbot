@@ -439,6 +439,10 @@ form {
                     $r_deg: 0,
                     $s_x: 0,
                     $s_y: 1);
+                @include _transitions($property: '',
+                    $duration: 0.15s,
+                    $timing: ease-in-out,
+                    $delay: 0.45s);
             }
 
             .borderRight {
@@ -452,6 +456,10 @@ form {
                     $r_deg: 0,
                     $s_x: 1,
                     $s_y: 0);
+                @include _transitions($property: '',
+                    $duration: 0.15s,
+                    $timing: ease-in-out,
+                    $delay: 0.3s);
             }
 
             .borderBottom {
@@ -465,6 +473,10 @@ form {
                     $r_deg: 0,
                     $s_x: 0,
                     $s_y: 1);
+                @include _transitions($property: '',
+                    $duration: 0.15s,
+                    $timing: ease-in-out,
+                    $delay: 0.15s);
             }
 
             .borderLeft {
@@ -478,31 +490,6 @@ form {
                     $r_deg: 0,
                     $s_x: 1,
                     $s_y: 0);
-            }
-
-            // when unhover
-            .borderTop {
-                @include _transitions($property: '',
-                    $duration: 0.15s,
-                    $timing: ease-in-out,
-                    $delay: 0.45s);
-            }
-
-            .borderRight {
-                @include _transitions($property: '',
-                    $duration: 0.15s,
-                    $timing: ease-in-out,
-                    $delay: 0.3s);
-            }
-
-            .borderBottom {
-                @include _transitions($property: '',
-                    $duration: 0.15s,
-                    $timing: ease-in-out,
-                    $delay: 0.15s);
-            }
-
-            .borderLeft {
                 @include _transitions($property: '',
                     $duration: 0.15s,
                     $timing: ease-in-out,
@@ -662,6 +649,10 @@ form {
             $r_deg: 0,
             $s_x: 0,
             $s_y: 1);
+        @include _transitions($property: '',
+            $duration: 0.15s,
+            $timing: ease-in-out,
+            $delay: 0.45s);
     }
 
     &>.borderRight {
@@ -675,6 +666,10 @@ form {
             $r_deg: 0,
             $s_x: 1,
             $s_y: 0);
+        @include _transitions($property: '',
+            $duration: 0.15s,
+            $timing: ease-in-out,
+            $delay: 0.3s);
     }
 
     &>.borderBottom {
@@ -688,6 +683,10 @@ form {
             $r_deg: 0,
             $s_x: 0,
             $s_y: 1);
+        @include _transitions($property: '',
+            $duration: 0.15s,
+            $timing: ease-in-out,
+            $delay: 0.15s);
     }
 
     &>.borderLeft {
@@ -701,31 +700,6 @@ form {
             $r_deg: 0,
             $s_x: 1,
             $s_y: 0);
-    }
-
-    // when unhover
-    &>.borderTop {
-        @include _transitions($property: '',
-            $duration: 0.15s,
-            $timing: ease-in-out,
-            $delay: 0.45s);
-    }
-
-    &>.borderRight {
-        @include _transitions($property: '',
-            $duration: 0.15s,
-            $timing: ease-in-out,
-            $delay: 0.3s);
-    }
-
-    &>.borderBottom {
-        @include _transitions($property: '',
-            $duration: 0.15s,
-            $timing: ease-in-out,
-            $delay: 0.15s);
-    }
-
-    &>.borderLeft {
         @include _transitions($property: '',
             $duration: 0.15s,
             $timing: ease-in-out,
