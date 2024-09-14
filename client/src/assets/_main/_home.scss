@@ -4,98 +4,75 @@ section {
     padding: 10vh;
 
     &._s1 {
-        
-    }
-
-    &._s4 {
-        position: relative;
-        grid-template-rows: 45% calc(55% - 1vh);
-        background: radial-gradient(circle at top left, $blue 0, $blue 50%);
-
-        .letter-grid {
-            position: absolute;
-            overflow: hidden;
-            opacity: .4;
-            @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
-            @include _dimensions($width: 100%, $height: 100%);
-
-            span {
-                font-size: 10px;
-                padding: 5px;
-                background: transparent;
-                color: rgba($black, .25);
-                display: table;
-                float: left;
-                opacity: 0;
-                text-transform: uppercase;
-                user-select: none;
-                visibility: hidden;
-                @include _dimensions($width: 30px, $height: 30px);
-
-                &:nth-child(3n+1) {
-                    color: darken($color: $blue, $amount: 20);
-                    font-weight: bold;
-                    @include _transform($top: '', $left: '', $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 45deg, $s_x: 1, $s_y: 1);
-                }
-
-                &:nth-child(6n+1) {
-                    @include _transform($top: '', $left: '', $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: -45deg, $s_x: 1, $s_y: 1);
-                }
-            }
-
-            &.js-show-letters {
-                span {
-                    opacity: 1;
-                    visibility: visible;
-                }
-            }
-        }
-
-        .g-col-12 {
-            .g-col-4,
-            .g-col-8 {
-                position: relative;
-                box-shadow: 0 .35vh 3.25vh rgba($black, .25);
-                padding: 0;
-                margin: 0 2.5vh;
-                background: $white;
-            }
-
-            .g-col-4 {
+        ._lines {
+            &:first-of-type {
                 div {
-                    position: relative;
-                    margin: 0 0 1.5vh 0;
-
-                    &:first-of-type {
-                        font-weight: 600;
-                        margin: 0 0 4vh 0;
+                    img {
+                        margin: 1.25vh 0;
+                        @include _dimensions($width: '', $height: 14vh);
                     }
 
-                    &:not(:first-of-type) {
-                        @include _dimensions($width: 80%, $height: '');
-                    }
-
-                    svg {
-                        margin: 0 2.5vh;
-                        color: $blue;
-                        @include _dimensions($width: 2.5vh, $height: 3vh);
-                    }
-
-                    span {
-                        p {
-                            margin: 0;
-                            font-size: 2.25vh;
-                            line-height: 3vh;
+                    p {
+                        &:last-of-type {
+                            font-size: small;
+                            font-weight: 500;
                         }
                     }
                 }
             }
 
-            .g-col-8 {
+            &:last-of-type {
+                .div {}
+
                 form {
-                    grid-template-rows: auto auto 1fr auto;
-                    margin: 2.5vh;
-                    @include _dimensions($width: calc(100% - 5vh), $height: calc(100% - 5vh));
+                    position: relative;
+
+                    .btn {
+                        position: absolute;
+
+                        &:first-of-type {
+                            @include _dimensions($width: 20vh, $height: 5vh);
+                            @include _transform($top: 50%,
+                                $left: '',
+                                $bottom: '',
+                                $right: 1.25vh,
+                                $t_x: 0,
+                                $t_y: -50%,
+                                $r_deg: 0,
+                                $s_x: 1,
+                                $s_y: 1);
+                        }
+
+                        &:last-of-type {
+                            @include _dimensions($width: 7vh, $height: '');
+                            @include _transform($top: 50%,
+                                $left: '',
+                                $bottom: '',
+                                $right: 0,
+                                $t_x: calc(100% + 1.25vh),
+                                $t_y: -50%,
+                                $r_deg: 0,
+                                $s_x: 1,
+                                $s_y: 1);
+
+                            span {
+                                position: relative;
+                                @include _transform($top: unset,
+                                    $left: unset,
+                                    $bottom: '',
+                                    $right: '',
+                                    $t_x: unset,
+                                    $t_y: unset,
+                                    $r_deg: 0,
+                                    $s_x: 1,
+                                    $s_y: 1);
+
+                                svg {
+                                    @include _dimensions($width: '', $height: 3.25vh);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

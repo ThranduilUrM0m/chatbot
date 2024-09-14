@@ -2,6 +2,7 @@
     Add Models this way :
     import Model from './models/Model.js';
 */
+import Conversation from './models/Conversation.js';
 import Permission from './models/Permission.js';
 import Role from './models/Role.js';
 import Token from './models/Token.js';
@@ -22,8 +23,12 @@ import cluster from 'cluster';
 import dotenv from 'dotenv';
 import router from './routes/index.js';
 import passport from 'passport';
+import OpenAI from 'openai';
 import './config/passport.js';
 
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -159,6 +164,38 @@ const setUpExpress = () => {
                     break;
                 default:
                     return false;
+            }
+        });
+
+        socket.on('_messageSent', (message) => {
+            // Handle message and emit back to clients
+            console.log('Message received:', message);
+        });
+
+        socket.on('_newConversation', async (data) => {
+            console.log('New conversation:', data);
+            const { _conversation_user, chatHistory = [] } = data; // Default to an empty array if chatHistory is not provided
+
+            if (!Array.isArray(chatHistory)) {
+                console.error('Invalid chatHistory format. Expected an array.');
+                socket.emit('error', { message: 'Invalid chatHistory format' });
+                return;
+            }
+
+            try {
+                const response = await openai.chat.completions.create({
+                    model: "gpt-3.5-turbo",
+                    messages: [
+                        { role: "system", content: "You are an assistant." },
+                        ...chatHistory,
+                    ],
+                });
+                const aiMessage = response.choices[0].message.content;
+                const updatedChatHistory = [...chatHistory, { role: 'assistant', content: aiMessage }];
+                io.emit('newConversation', { user: _conversation_user, chatHistory: updatedChatHistory, role: 'assistant', content: aiMessage });
+            } catch (error) {
+                console.error('Error with OpenAI API:', error);
+                socket.emit('error', { message: 'Failed to process conversation' });
             }
         });
 

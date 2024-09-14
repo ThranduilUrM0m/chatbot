@@ -14,7 +14,7 @@ const Header = (props) => {
                         <Nav className='d-flex flex-row justify-content-end'>
                             <Nav.Item className='me-auto'>
                                 <NavLink to='/' className='logo d-flex align-items-center'>
-                                    {/* <img className='img-fluid' src={logo} alt='#' /> */}
+                                    <img className='img-fluid' src='https://cdg.ma/themes/cdg/logo.svg' alt='HelpAI CDG' />
                                 </NavLink>
                             </Nav.Item>
                         </Nav>

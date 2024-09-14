@@ -18,7 +18,8 @@ header {
                             @include _dimensions($width: '', $height: 100%);
 
                             img {
-                                @include _dimensions($width: '', $height: 3vh);
+                                margin: 1.25vh 0;
+                                @include _dimensions($width: '', $height: 10vh);
                             }
                         }
                     }

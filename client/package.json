@@ -45,6 +45,7 @@
         "lodash-es": "*",
         "moment": "*",
         "moment-timezone": "*",
+        "openai": "*",
         "react": "*",
         "react-bootstrap": "*",
         "react-bootstrap-table-next": "*",

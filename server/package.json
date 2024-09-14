@@ -26,6 +26,7 @@
         "mongoose": "*",
         "morgan": "*",
         "multer": "*",
+        "openai": "*",
         "passport": "*",
         "passport-jwt": "*",
         "passport-local": "*",
