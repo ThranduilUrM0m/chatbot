@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--
+            Allows control over where resources are loaded from.
+            Place as early in the <head> as possible, as the tag  
+            only applies to resources that are declared after it.
+        -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="..."> -->
+
+    <!-- Name of web application (only should be used if the website is used as an app) -->
+    <!-- <meta name="application-name" content="..."> -->
+
+    <!-- Theme Color for Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#3dc1d3">
+
+    <!-- Short description of the document (limit to 150 characters) -->
+    <!-- This content *may* be used as a part of search engine results. -->
+    <meta name="description"
+        content="This is Chatbot &amp; I Love to answer all your questions. MO, working with knowledge across industries.">
+
+    <!-- Control the behavior of search engine crawling and indexing -->
+    <meta name="robots" content="index,follow"><!-- All Search Engines -->
+    <meta name="googlebot" content="index,follow"><!-- Google Specific -->
+
+    <!-- Tells Google not to show the sitelinks search box -->
+    <meta name="google" content="nositelinkssearchbox">
+
+    <!-- Tells Google not to provide a translation for this document -->
+    <meta name="google" content="notranslate">
+
+    <!-- Verify website ownership -->
+    <meta name="google-site-verification" content="verification_token"><!-- Google Search Console -->
+    <meta name="yandex-verification" content="verification_token"><!-- Yandex Webmasters -->
+    <meta name="msvalidate.01" content="verification_token"><!-- Bing Webmaster Center -->
+    <meta name="alexaVerifyID" content="verification_token"><!-- Alexa Console -->
+    <meta name="p:domain_verify" content="code_from_pinterest"><!-- Pinterest Console-->
+    <meta name="norton-safeweb-site-verification" content="norton_code"><!-- Norton Safe Web -->
+
+
+    <!-- Short description of your document's subject -->
+    <meta name="subject" content="_subject">
+
+    <!-- Gives a general age rating based on the document's content -->
+    <meta name="rating" content="_rating">
+
+    <!-- Allows control over how referrer information is passed -->
+    <meta name="referrer" content="no-referrer">
+
+    <!-- Disable automatic detection and formatting of possible phone numbers -->
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Completely opt out of DNS prefetching by setting to "off" -->
+    <meta http-equiv="x-dns-prefetch-control" content="off">
+
+    <!-- Specifies the document to appear in a specific frame -->
+    <meta http-equiv="Window-Target" content="_value">
+
+    <!-- Web Monetization https://webmonetization.org/docs/getting-started -->
+    <!-- <meta name="monetization" content="$paymentpointer.example"> -->
+
+    <!-- Set the base URL for all relative URLs within the document -->
+    <!-- <base href="https://..."> -->
+
+    <!-- Helps prevent duplicate content issues -->
+    <!-- <link rel="canonical" href="https://..."> -->
+
+    <!-- Links to a JSON file that specifies "installation" credentials for the web applications -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+
+    <!-- Links to information about the author(s) of the document -->
+    <!-- <link rel="author" href="_author.txt"> -->
+
+    <!-- Refers to a copyright statement that applies to the link's context -->
+    <!-- <link rel="license" href="_copyright.html"> -->
+
+    <!-- Links to a document that describes a collection of records, documents, or other materials of historical interest -->
+    <!-- <link rel="archives" href="https://..."> -->
+
+    <!-- Links to top level resource in an hierarchical structure -->
+    <!-- <link rel="index" href="https://..."> -->
+
+    <!-- Notifies a URL when you link to it on your document -->
+    <!-- <link rel="webmention" href="https://..."> -->
+
+    <!-- Enables posting to your own domain using a Micropub client -->
+    <!-- <link rel="micropub" href="https://..."> -->
+
+    <!-- Open Search -->
+    <!-- <link rel="search" href="/open-search.xml" type="application/opensearchdescription+xml" title="Search Title"> -->
+
+    <!-- Prefetching, preloading, prebrowsing -->
+    <!-- More info: https://css-tricks.com/prefetching-preloading-prebrowsing/ -->
+    <!-- <link rel="dns-prefetch" href="//....com/">
+        <link rel="preconnect" href="https://www.....com/">
+        <link rel="prefetch" href="https://www.....com/">
+        <link rel="prerender" href="https://....com/">
+        <link rel="preload" href="image.png" as="image"> -->
+
+    <!-- For IE 10 and below -->
+    <!-- Place favicon.ico in the root directory - no tag necessary -->
+
+    <!-- Icon in the highest resolution we need it for -->
+    <link rel="icon" sizes="192x192" href="%PUBLIC_URL%/logo192.png">
+
+    <!-- Apple Touch Icon (reuse 192px icon.png) -->
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png">
+
+    <!-- Safari Pinned Tab Icon -->
+    <!-- <link rel="mask-icon" href="/..." color="..."> -->
+
+    <!-- <meta property="fb:app_id" content="...">
+        <meta property="og:url" content="https://...">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="_title">
+        <meta property="og:image" content="https://....jpg">
+        <meta property="og:image:alt" content="_image_description">
+        <meta property="og:description" content="_description">
+        <meta property="og:site_name" content="_name">
+        <meta property="og:locale" content="en_US">
+        <meta property="article:author" content="..."> -->
+
+    <!-- <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@site_account">
+        <meta name="twitter:creator" content="@individual_account">
+        <meta name="twitter:url" content="https://...">
+        <meta name="twitter:title" content="_title">
+        <meta name="twitter:description" content="_description">
+        <meta name="twitter:image" content="https://....jpg">
+        <meta name="twitter:image:alt" content="_image_description"> -->
+
+    <!-- disallow Twitter from using your site's info for personalization purposes -->
+    <meta name="twitter:dnt" content="on">
+
+    <title>Chatbot. | your pocket friend.</title>
+</head>
+
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+            This HTML file is a template.
+            If you open it directly in the browser, you will see an empty page.
+
+            You can add webfonts, meta tags, or analytics to this file.
+            The build step will place the bundled scripts into the <body> tag.
+
+            To begin the development, run `npm start` or `yarn start`.
+            To create a production bundle, use `npm run build` or `yarn build`.
+        -->
+</body>
+
+</html>

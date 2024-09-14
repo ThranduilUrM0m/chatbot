@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Economica&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Antonio&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
+
+@import url('https://fonts.cdnfonts.com/css/fake-plastic');
+@import url('https://fonts.cdnfonts.com/css/fatcow');
+@import url('https://fonts.cdnfonts.com/css/heathergreen');
+@import url('https://fonts.cdnfonts.com/css/dense');
+@import url('https://fonts.cdnfonts.com/css/steelfish-2');
+
+$mainFont: 'Ubuntu',
+'Google Sans',
+Roboto,
+RobotoDraft,
+Helvetica,
+Arial,
+sans-serif;
+
+@supports (font-variation-settings: normal) {
+    html {
+        $mainFont: 'Ubuntu',
+            'Roboto',
+            Helvetica,
+            Arial,
+            sans-serif;
+    }
+}

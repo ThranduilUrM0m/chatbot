@@ -1,0 +1,1112 @@
+section {
+    position: relative;
+    overflow: hidden;
+    padding: 0 0 0 5vh;
+    gap: 0;
+    max-height: 100vh;
+
+    &._s1 {
+        .g-col-2 {
+            position: relative;
+            background: darken($color: $sectionBackground, $amount: 3);
+            z-index: 10;
+            @include _dimensions($width: calc(100% + 5vh), $height: 100vh);
+            @include _transform($top: '', $left: -5vh, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+
+            .nav {
+                padding: 0;
+                @include _dimensions($width: '', $height: 100%);
+
+                &-item {
+                    a {
+                        color: rgba($black, .5);
+                        background-color: unset;
+                        margin: 0 2.5vh 1.5vh 2.5vh;
+                        padding: 1.25vh;
+                        @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+
+                        svg {
+                            fill: rgba($black, .5);
+                            stroke: rgba($black, .5);
+                            color: rgba($black, .5);
+                            margin: 0 4vh;
+                            @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                            @include _dimensions($width: 2.5vh, $height: 3vh);
+                        }
+
+                        p {
+                            margin: 0;
+                            font-size: 2.25vh;
+                            line-height: 3vh;
+                        }
+
+                        &:hover {
+                            color: $black;
+
+                            svg {
+                                fill: $black;
+                                stroke: $black;
+                                color: $black;
+                            }
+                        }
+
+                        &.active {
+                            //The active transitions is fast and shit
+                            position: relative;
+                            color: $black;
+
+                            svg {
+                                fill: rgba($white, .75);
+                                stroke: rgba($white, .75);
+                                color: rgba($white, .75);
+                                z-index: 0;
+                            }
+
+                            &::before {
+                                position: absolute;
+                                content: '';
+                                border-radius: 1vh;
+                                margin: 0;
+                                background-color: rgba($blue, .75);
+                                transform-origin: center;
+                                z-index: 0;
+                                @include _dimensions($width: 6.5vh, $height: 6.5vh);
+                                @include _transform($top: 50%, $left: 6.5vh, $bottom: '', $right: '', $t_x: -50%, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                            }
+
+                            &::after {
+                                position: absolute;
+                                content: '';
+                                background-color: rgba($blue, .5);
+                                @include _transform($top: 0, $left: -2.5vh, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                @include _dimensions($width: .5vh, $height: 100%);
+                                @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                            }
+
+                            &:hover {
+                                &::before {
+                                    background-color: $blue;
+                                    @include _dimensions($width: 7vh, $height: 7vh);
+                                }
+
+                                &::after {
+                                    background-color: $blue;
+                                }
+
+                                svg {
+                                    fill: $white;
+                                    stroke: $white;
+                                    color: $white;
+                                }
+                            }
+                        }
+                    }
+
+                    &:first-of-type {
+                        margin: 1.25vh 0 0 0;
+                        @include _dimensions($width: '', $height: 10vh);
+
+                        a {
+                            @include _dimensions($width: calc(100% - 5vh), $height: 100%);
+
+                            img {
+                                @include _dimensions($width: '', $height: 8vh);
+                            }
+                        }
+                    }
+
+                    &:nth-of-type(2) {
+                        padding: 5vh 0 0 0;
+                    }
+
+                    &:last-of-type {
+                        .dropdown {
+                            &-toggle {
+                                margin: 3vh 0;
+
+                                ._name {
+                                    position: relative;
+                                    margin: 0 auto;
+                                    @include _dimensions($width: calc(100% - 4vh), $height: '');
+
+                                    span {
+                                        &:first-of-type {
+                                            position: relative;
+                                            border: .5vh solid rgba($pink, .5);
+                                            border-radius: 100%;
+                                            overflow: hidden;
+                                            @include _dimensions($width: 6.5vh, $height: 6.5vh);
+
+                                            img {
+                                                position: absolute;
+                                                object-fit: cover;
+                                                @include _dimensions($width: 100%, $height: 100%);
+                                                @include _transform($top: 50%, $left: 50%, $bottom: '', $right: '', $t_x: -50%, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                            }
+                                        }
+
+                                        p {
+                                            margin: 0 0 0 1.25vh;
+
+                                            &:first-of-type {
+                                                color: $black;
+                                                font-size: 2vh;
+                                            }
+
+                                            &:not(:first-of-type) {
+                                                color: rgba($black, .5);
+                                                font-size: 1.75vh;
+                                            }
+                                        }
+
+                                        svg {
+                                            margin: 0 0 0 1vh;
+                                            fill: rgba($black, .75);
+                                            stroke: rgba($black, .75);
+                                            color: rgba($black, .75);
+                                            @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                                        }
+                                    }
+
+                                    &::before {
+                                        position: absolute;
+                                        content: '';
+                                        background: $greenOnline;
+                                        border: .125vh solid $white;
+                                        border-radius: 100%;
+                                        z-index: 1;
+                                        @include _dimensions($width: 1.5vh, $height: 1.5vh);
+                                        @include _transform($top: 6.5vh, $left: 6.5vh, $bottom: '', $right: '', $t_x: -1.75vh, $t_y: -1.75vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                    }
+
+                                    &::after {
+                                        content: '';
+                                        position: absolute;
+                                        border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+                                        border-radius: var(--bs-border-radius-sm);
+                                        background: $white;
+                                        z-index: -1;
+                                        @include _dimensions($width: calc(100% + 2vh), $height: calc(100% + 2vh));
+                                        @include _transform($top: -1vh, $left: -1vh, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                    }
+                                }
+
+                                &::after {
+                                    display: none;
+                                }
+
+                                &:hover {
+                                    ._name {
+                                        span {
+                                            svg {
+                                                fill: $black;
+                                                stroke: $black;
+                                                color: $black;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            &-menu {
+                                @include _dimensions($width: 40vh, $height: '');
+
+                                a {
+                                    margin: 0;
+
+                                    svg {
+                                        margin: 0 4vh 0 0;
+                                    }
+
+                                    &.active {
+                                        &::before {
+                                            @include _transform($top: 50%, $left: 2.5vh, $bottom: '', $right: '', $t_x: -50%, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                        }
+                                    }
+                                }
+
+                                ._name {
+                                    position: relative;
+                                    padding: 0;
+                                    @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+
+                                    span {
+                                        &:first-of-type {
+                                            position: relative;
+                                            border: .5vh solid rgba($pink, .5);
+                                            border-radius: 100%;
+                                            margin: 0 2.5vh 0 0;
+                                            overflow: hidden;
+                                            @include _dimensions($width: 7.5vh, $height: 7.5vh);
+
+                                            img {
+                                                position: absolute;
+                                                object-fit: cover;
+                                                @include _dimensions($width: 100%, $height: 100%);
+                                                @include _transform($top: 50%, $left: 50%, $bottom: '', $right: '', $t_x: -50%, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                            }
+                                        }
+
+                                        p {
+                                            margin: 0;
+                                            font-weight: 600;
+
+                                            &:first-of-type {
+                                                color: $black;
+                                                font-size: 2vh;
+                                            }
+
+                                            &:not(:first-of-type) {
+                                                color: rgba($black, .5);
+                                                font-size: 1.75vh;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &::after {
+                content: '';
+                position: absolute;
+                background-color: $sectionBackground;
+                background-color: linear-gradient(0deg, $sectionBackground 0%, darken($color: $sectionBackground, $amount: 6) 100%);
+                @include _transform($top: 0, $left: '', $bottom: '', $right: 0, $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+                @include _dimensions($width: .25vh, $height: 100%);
+            }
+        }
+
+        .g-col-10 {
+            position: relative;
+            @include _dimensions($width: '', $height: 100vh);
+
+            .nav {
+                padding: 1.25vh 3.75vh 0 3.75vh;
+                margin: 0 1.25vh 0 0;
+                @include _dimensions($width: calc(100% - 1.25vh), $height: 12.5vh);
+
+                .nav-item {
+                    @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+
+                    a {
+                        color: rgba($black, .5);
+                        background-color: unset;
+                        margin: 0;
+                        padding: 0;
+                        @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                        @include _dimensions($width: 10vh, $height: 10vh);
+
+                        svg {
+                            fill: rgba($black, .5);
+                            stroke: rgba($black, .5);
+                            color: rgba($black, .5);
+                            @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                            @include _dimensions($width: 3vh, $height: 3.5vh);
+                        }
+
+                        &:hover {
+                            color: $black;
+
+                            svg {
+                                fill: $black;
+                                stroke: $black;
+                                color: $black;
+                            }
+                        }
+
+                        &.active {
+                            //The active transitions is fast and shit
+                            position: relative;
+
+                            svg {
+                                fill: rgba($white, .75);
+                                stroke: rgba($white, .75);
+                                color: rgba($white, .75);
+                                z-index: 0;
+                            }
+
+                            &::before {
+                                position: absolute;
+                                content: '';
+                                border-radius: 1vh;
+                                margin: 0;
+                                background-color: rgba($blue, .75);
+                                transform-origin: center;
+                                z-index: 0;
+                                @include _dimensions($width: 7.5vh, $height: 7.5vh);
+                                @include _transform($top: 50%, $left: 50%, $bottom: '', $right: '', $t_x: -50%, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                            }
+
+                            &:hover {
+                                &::before {
+                                    background-color: $blue;
+                                    @include _dimensions($width: 8.25vh, $height: 8.25vh);
+                                }
+
+                                svg {
+                                    fill: $white;
+                                    stroke: $white;
+                                    color: $white;
+                                }
+                            }
+                        }
+                    }
+
+                    &._welcome {
+                        position: relative;
+                        padding: 0 1.25vh;
+                        @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+
+                        span {
+                            position: relative;
+
+                            p {
+                                margin: 0;
+
+                                &:first-of-type {
+                                    color: $black;
+                                }
+
+                                &:not(:first-of-type) {
+                                    color: rgba($black, .5);
+                                    font-size: 1.75vh;
+                                }
+                            }
+                        }
+
+                        svg {
+                            fill: rgba($blue, .5);
+                            stroke: rgba($blue, .5);
+                            color: rgba($blue, .5);
+                            margin: auto 2.5vh;
+                            @include _dimensions($width: 4vh, $height: 4vh);
+                        }
+                    }
+
+                    &._search {
+                        form {
+                            position: relative;
+
+                            ._searchGroup {
+                                position: relative;
+                                cursor: pointer;
+                                @include _dimensions($width: 10vh, $height: 10vh);
+                                @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+
+                                ._formLabel {
+                                    @include _transform($top: '', $left: '', $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 0, $s_y: 0);
+                                    color: $black;
+
+                                    ._formControl {
+                                        position: absolute;
+                                        border: .5vh solid $blackFaded;
+                                        color: $black;
+                                        padding: 0 10vh 0 .75rem;
+                                        margin: 0;
+                                        transform-origin: right center;
+                                        @include _transform($top: 50%, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -50%, $r_deg: 0, $s_x: 0, $s_y: 0);
+
+                                        &._typing {
+                                            color: transparent;
+                                        }
+                                    }
+
+                                    ._autocorrect {
+                                        position: absolute;
+                                        padding: 1vh;
+                                        line-height: 1.25;
+                                        font-size: 1rem;
+                                        font-weight: 400;
+                                        @include _dimensions($width: fit-content, $height: 7vh);
+                                        @include _transform($top: 50%, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+
+                                        p {
+                                            margin: 0;
+
+                                            &._searchSuggestion {
+                                                color: rgba($black, .25);
+                                            }
+
+                                            &._typedCharacters {
+                                                color: $black;
+                                            }
+                                        }
+                                    }
+
+                                    label {
+                                        @include _transform($top: 5vh, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                    }
+
+                                    &>._formControl:focus~label,
+                                    &>._formControl:not(:placeholder-shown)~label,
+                                    &>._formControl-plaintext~label,
+                                    &>.form-select~label {
+                                        @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: .85, $s_y: .85);
+                                    }
+                                }
+
+                                ._searchButton {
+                                    position: absolute;
+                                    border-radius: 100%;
+                                    cursor: pointer;
+                                    border: .5vh solid rgba($black, .5);
+                                    @include _dimensions($width: 3.5vh, $height: 3.5vh);
+                                    @include _transform($top: 50%, $left: '', $bottom: '', $right: 5vh, $t_x: 50%, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                    @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+
+                                    &::after {
+                                        content: '';
+                                        box-sizing: border-box;
+                                        position: absolute;
+                                        display: block;
+                                        transform-origin: left;
+                                        background: rgba($black, .5);
+                                        @include _dimensions($width: 35%, $height: .5vh);
+                                        @include _transform($top: 100%, $left: 100%, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 45deg, $s_x: 1, $s_y: 1);
+                                        @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                                    }
+
+                                    &._formClear {
+                                        border: none !important;
+                                        @include _transform($top: 50%, $left: '', $bottom: '', $right: 2.5vh, $t_x: 0, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+
+                                        &::after {
+                                            content: '';
+                                            box-sizing: border-box;
+                                            position: absolute;
+                                            display: block;
+                                            transform-origin: center;
+                                            background: $blackFaded;
+                                            @include _dimensions($width: 100%, $height: .5vh);
+                                            @include _transform($top: 50%, $left: 50%, $bottom: '', $right: '', $t_x: -50%, $t_y: -50%, $r_deg: 45deg, $s_x: 1, $s_y: 1);
+                                            @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                                        }
+
+                                        &::before {
+                                            content: '';
+                                            box-sizing: border-box;
+                                            position: absolute;
+                                            display: block;
+                                            transform-origin: center;
+                                            background: $blackFaded;
+                                            @include _dimensions($width: 100%, $height: .5vh);
+                                            @include _transform($top: 50%, $left: 50%, $bottom: '', $right: '', $t_x: -50%, $t_y: -50%, $r_deg: -45deg, $s_x: 1, $s_y: 1);
+                                            @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                                        }
+                                    }
+                                }
+
+                                ._SimpleBar {
+                                    position: absolute;
+                                    max-height: 40vh;
+                                    z-index: 10;
+                                    @include _dimensions($width: 100%, $height: '');
+
+                                    .list-group {
+                                        max-height: 40vh;
+                                        background: $white;
+                                        margin: 0;
+                                        padding: 0;
+                                        box-shadow: 1.25vh 1.25vh 4.5vh -2.5vh rgba($black, .5);
+                                        @include _dimensions($width: 100%, $height: '');
+
+                                        &-item {
+                                            position: relative;
+                                            margin: 0;
+                                            padding: 1vh 2vh;
+                                            font-size: .9rem;
+                                            font-weight: 400;
+                                            line-height: 1.25;
+                                            cursor: pointer;
+                                            @include _dimensions($width: 100%, $height: 5.75vh);
+
+                                            svg {
+                                                font-size: 2vh;
+                                                color: rgba($black, .25);
+                                            }
+
+                                            &:hover {
+                                                background: $hoverGray;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                &.focused {
+                                    @include _dimensions($width: 50vh, $height: '');
+
+                                    ._formLabel {
+                                        @include _transform($top: '', $left: '', $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+
+                                        ._formControl {
+                                            @include _dimensions($width: 100%, $height: '');
+                                            @include _transform($top: 50%, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                        }
+
+                                        label {
+                                            color: $black;
+                                        }
+                                    }
+
+                                    ._searchButton {
+                                        border: .5vh solid $blackFaded;
+
+                                        &::after {
+                                            background: $blackFaded;
+                                        }
+                                    }
+                                }
+
+                                &:hover {
+                                    ._searchButton {
+                                        border: .5vh solid $black;
+
+                                        &::after {
+                                            background: $black;
+                                        }
+                                    }
+                                }
+
+                                &::before {
+                                    display: none;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .tab-content {
+                padding: 0 3.75vh 0 3.75vh;
+                margin: 0 1.25vh 1.25vh 0;
+                @include _dimensions($width: calc(100% - 1.25vh), $height: calc(100% - 13.75vh));
+
+                .tab-pane {
+                    position: relative;
+                    @include _dimensions($width: 100%, $height: 100%);
+
+                    //look in all components for dimensions that can be a class like h-100
+                    ._pane {
+                        flex: 1;
+                        padding: 0;
+                        margin: 0;
+                        overflow: hidden;
+                        @include _dimensions($width: 100%, $height: 100%);
+
+                        .card {
+                            border: .25vh solid darken($color: $sectionBackground, $amount: 5);
+                            background: $sectionBackground;
+
+                            &-body {
+                                padding: 2.5vh;
+                                margin: 0;
+                                background: inherit;
+                            }
+                        }
+
+                        &._settings {
+                            .card {
+                                &:nth-of-type(1) {
+                                    .card-body {
+                                        form {
+                                            gap: 2.5vh;
+
+                                            .row {
+                                                .col {
+                                                    ._formGroup {
+                                                        &._disabled {
+                                                            &::before {
+                                                                opacity: 0;
+                                                            }
+
+                                                            ._formLabel {
+                                                                input {
+                                                                    background: transparent;
+                                                                    border: 0 !important;
+                                                                }
+
+                                                                label {
+                                                                    @include _transform($top: 3.5vh, $left: calc(-1vh * .15), $bottom: '', $right: '', $t_x: 0, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                                                }
+
+                                                                &>._formControl:focus~label,
+                                                                &>._formControl:not(:placeholder-shown)~label,
+                                                                &>._formControl-plaintext~label,
+                                                                &>.form-select~label {
+                                                                    @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: .85, $s_y: .85);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                p {
+                                                    margin: 0;
+                                                    font-size: 1.75vh;
+                                                    color: rgba($black, .5);
+                                                }
+
+                                                button {
+                                                    @include _dimensions($width: 12.5vh, $height: '');
+
+                                                    span {
+                                                        svg {
+                                                            margin: 0 0 0 1.25vh;
+                                                        }
+                                                    }
+
+                                                    &._edit {
+                                                        @include _dimensions($width: 20.5vh, $height: '');
+                                                    }
+                                                }
+
+                                                &:nth-of-type(1) {
+                                                    position: relative;
+                                                    margin: 1.5vh 0 8vh 0;
+
+                                                    &::after {
+                                                        content: '';
+                                                        position: absolute;
+                                                        background: darken($color: $sectionBackground, $amount: 5);
+                                                        @include _dimensions($width: 100%, $height: .1vh);
+                                                        @include _transform($top: '', $left: 0, $bottom: 0, $right: '', $t_x: 0, $t_y: 4vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                                    }
+                                                }
+
+                                                &:nth-of-type(4) {
+                                                    position: relative;
+                                                    margin: 8vh 0;
+
+                                                    .col {
+                                                        position: relative;
+
+                                                        &:not(:first-of-type) {
+                                                            span {
+                                                                position: relative;
+                                                                border: .5vh solid rgba($pink, .5);
+                                                                border-radius: 100%;
+                                                                margin: 0 2.5vh 0 0;
+                                                                overflow: hidden;
+                                                                @include _dimensions($width: 10vh, $height: 10vh);
+
+                                                                img {
+                                                                    position: absolute;
+                                                                    object-fit: cover;
+                                                                    @include _dimensions($width: 100%, $height: 100%);
+                                                                    @include _transform($top: 50%, $left: 50%, $bottom: '', $right: '', $t_x: -50%, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                                                }
+
+                                                                ._formGroup {
+                                                                    position: absolute;
+                                                                    opacity: 0;
+                                                                    border-radius: 100%;
+                                                                    @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                                                    @include _dimensions($width: 10vh, $height: 10vh);
+                                                                }
+
+                                                                &._editing {
+                                                                    position: absolute;
+                                                                    background: $sectionBackground;
+                                                                    border: .125vh solid $white;
+                                                                    margin: 0;
+                                                                    z-index: 1;
+                                                                    @include _dimensions($width: 2vh, $height: 2vh);
+                                                                    @include _transform($top: '', $left: '', $bottom: -.75vh, $right: calc(100% - 10.75vh), $t_x: calc(50% - 2.5vh), $t_y: calc(50% - 2.5vh), $r_deg: 0, $s_x: 1, $s_y: 1);
+
+                                                                    svg {
+                                                                        @include _dimensions($width: 1.5vh, $height: 1.5vh);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    &::before,
+                                                    &::after {
+                                                        content: '';
+                                                        position: absolute;
+                                                        background: darken($color: $sectionBackground, $amount: 5);
+                                                        @include _dimensions($width: 100%, $height: .1vh);
+                                                    }
+
+                                                    &::before {
+                                                        @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -4vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                                    }
+
+                                                    &::after {
+                                                        @include _transform($top: '', $left: 0, $bottom: 0, $right: '', $t_x: 0, $t_y: 4vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                                    }
+                                                }
+
+                                                &:nth-of-type(5),
+                                                &:nth-of-type(6) {
+                                                    ._formGroup {
+                                                        ._formLabel {
+                                                            ._formControl {
+                                                                &._typing {
+                                                                    color: transparent;
+                                                                }
+                                                            }
+
+                                                            ._autocorrect {
+                                                                position: absolute;
+                                                                padding: 1vh;
+                                                                @include _dimensions($width: fit-content, $height: 7vh);
+                                                                @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+
+                                                                p {
+                                                                    margin: 0;
+                                                                    line-height: 1.25;
+                                                                    font-size: 1rem;
+                                                                    font-weight: 400;
+
+                                                                    &._countrySuggestion,
+                                                                    &._citySuggestion,
+                                                                    &._permissionSuggestion {
+                                                                        color: $liteGray;
+                                                                    }
+
+                                                                    &._typedCharacters {
+                                                                        color: $black;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        ._SimpleBar {
+                                                            position: absolute;
+                                                            max-height: 40vh;
+                                                            z-index: 10;
+                                                            @include _dimensions($width: 100%, $height: '');
+
+                                                            .list-group {
+                                                                max-height: 40vh;
+                                                                background: $white;
+                                                                margin: 0;
+                                                                padding: 0;
+                                                                box-shadow: 1.25vh 1.25vh 4.5vh -2.5vh rgba($black, .5);
+                                                                @include _dimensions($width: 100%, $height: '');
+
+                                                                &-item {
+                                                                    position: relative;
+                                                                    margin: 0;
+                                                                    padding: 1vh 2vh;
+                                                                    font-size: .9rem;
+                                                                    font-weight: 400;
+                                                                    line-height: 1.25;
+                                                                    cursor: pointer;
+                                                                    @include _dimensions($width: 100%, $height: 5.75vh);
+
+                                                                    img {
+                                                                        @include _dimensions($width: 7.5vh, $height: 5vh);
+                                                                        margin: .75vh 2.5vh .75vh 0;
+                                                                    }
+
+                                                                    &:hover {
+                                                                        background: $hoverGray;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                &:nth-of-type(7) {
+                                                    position: relative;
+                                                    margin: 8vh 0 0 0;
+
+                                                    &::before {
+                                                        content: '';
+                                                        position: absolute;
+                                                        background: darken($color: $sectionBackground, $amount: 5);
+                                                        @include _dimensions($width: 100%, $height: .1vh);
+                                                        @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -4vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                                    }
+                                                }
+
+                                                &:nth-of-type(9) {
+                                                    position: relative;
+                                                    margin: 8vh 0 1.5vh 0;
+
+                                                    &::before {
+                                                        content: '';
+                                                        position: absolute;
+                                                        background: darken($color: $sectionBackground, $amount: 5);
+                                                        @include _dimensions($width: 100%, $height: .1vh);
+                                                        @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -4vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                                    }
+                                                }
+
+                                                &:not(:nth-of-type(1), :nth-of-type(9)) {
+                                                    .col {
+                                                        &:first-of-type {
+                                                            padding: 0 0 0 2.5vh;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        &._blog {
+                            .container {
+                                --bs-rows: 2;
+                                padding: 0;
+                                @include _dimensions($width: '', $height: 100%);
+
+                                .row {
+                                    --bs-rows: 1;
+                                    overflow: hidden;
+
+                                    .col {
+                                        overflow: hidden;
+                                        
+                                        .card {
+                                            overflow: hidden;
+                                            border: .25vh solid darken($color: $sectionBackground, $amount: 5);
+                                            background: $white;
+                                            padding: 1.75vh 2vh;
+                                            @include _dimensions($width: '', $height: 100%);
+
+                                            &-header {
+                                                padding: 0 1.25vh;
+                                                background: none;
+                                                border: none;
+
+                                                .row {
+                                                    .col {
+                                                        span {
+                                                            p {
+                                                                margin: 0;
+                                                                font-size: 1.75vh;
+                                                                color: rgba($black, .5);
+                                                            }
+                                                        }
+
+                                                        button {
+                                                            @include _dimensions($width: 12.5vh, $height: '');
+
+                                                            span {
+                                                                svg {
+                                                                    margin: 0 0 0 1.25vh;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            &-body {
+                                                padding: 1.75vh 1.25vh 0 1.25vh;
+                                                overflow: hidden;
+                                                @include _dimensions($width: 100%, $height: 100%);
+
+                                                .react-bootstrap-table {
+                                                    table {
+                                                        thead {
+                                                            border-bottom: .25vh solid darken($color: $sectionBackground, $amount: 5);
+
+                                                            tr {
+                                                                th {
+                                                                    color: rgba($black, .5);
+                                                                    border: none;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        tbody {
+                                                            tr {
+                                                                border: none;
+                                                                
+                                                                td {
+                                                                    overflow: hidden;
+                                                                    text-overflow: ellipsis;
+                                                                    white-space: nowrap;
+                                                                    border: none;
+
+                                                                    .btn {
+                                                                        font-size: inherit;
+                                                                        padding: 0;
+
+                                                                        &-link {
+                                                                            color: $black;
+                                                                            font-weight: 600;
+                                                                            text-decoration: none;
+                                                                            @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+
+                                                                            &:hover {
+                                                                                text-decoration: underline;
+                                                                            }
+                                                                        }
+
+                                                                        &._edit {
+                                                                            background: none;
+                                                                            padding: 0 1.25vh;
+                                                                            @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+
+                                                                            svg {
+                                                                                padding: 0 0 0 .5vh;
+                                                                                margin: 0 0 0 .25vh;
+                                                                                fill: rgba($black, .5);
+                                                                                stroke: rgba($black, .5);
+                                                                                color: rgba($black, .5);
+                                                                                @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                                                                            }
+                                                                        }
+                                                                    }
+
+                                                                    ._name {
+                                                                        position: relative;
+                                                                        @include _dimensions($width: calc(100% - 4vh), $height: '');
+
+                                                                        span {
+                                                                            &:first-of-type {
+                                                                                position: relative;
+                                                                                border: .5vh solid rgba($pink, .5);
+                                                                                border-radius: 100%;
+                                                                                overflow: hidden;
+                                                                                @include _dimensions($width: 6.5vh, $height: 6.5vh);
+
+                                                                                img {
+                                                                                    position: absolute;
+                                                                                    object-fit: cover;
+                                                                                    @include _dimensions($width: 100%, $height: 100%);
+                                                                                    @include _transform($top: 50%, $left: 50%, $bottom: '', $right: '', $t_x: -50%, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                                                                }
+                                                                            }
+
+                                                                            p {
+                                                                                margin: 0 0 0 1.25vh;
+
+                                                                                &:first-of-type {
+                                                                                    color: $black;
+                                                                                    font-size: 2vh;
+                                                                                }
+
+                                                                                &:not(:first-of-type) {
+                                                                                    color: rgba($black, .5);
+                                                                                    font-size: 1.75vh;
+                                                                                }
+                                                                            }
+
+                                                                            svg {
+                                                                                margin: 0 0 0 1vh;
+                                                                                fill: rgba($black, .75);
+                                                                                stroke: rgba($black, .75);
+                                                                                color: rgba($black, .75);
+                                                                                @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                                                                            }
+                                                                        }
+
+                                                                        &::before {
+                                                                            position: absolute;
+                                                                            content: '';
+                                                                            background: $greenOnline;
+                                                                            border: .125vh solid $white;
+                                                                            border-radius: 100%;
+                                                                            z-index: 1;
+                                                                            @include _dimensions($width: 1.5vh, $height: 1.5vh);
+                                                                            @include _transform($top: 6.5vh, $left: 6.5vh, $bottom: '', $right: '', $t_x: -1.75vh, $t_y: -1.75vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                                                        }
+                                                                    }
+
+                                                                    .category {
+                                                                        font-size: 2vh;
+                                                                        color: $black;
+                                                                        border: .15vh solid $black;
+                                                                        padding: .5vh 1.25vh;
+                                                                        margin: 0;
+                                                                        @include _dimensions($width: fit-content, $height: fit-content);
+                                                                    }
+
+                                                                    .badge {
+                                                                        svg {
+                                                                            margin: 0 .75vh 0 0;
+                                                                        }
+                                                                    }
+
+                                                                    .tags {
+                                                                        margin-bottom: 0 !important;
+                                                                        padding-top: .25vh;
+                                                                        overflow-x: hidden;
+
+                                                                        li {
+                                                                            position: relative;
+                                                                            font-size: 1.5vh;
+                                                                            font-weight: 400;
+                                                                            line-height: 1.25;
+                                                                            border: .15vh solid $d;
+                                                                            border-radius: .5vh;
+                                                                            background: $hoverGray;
+                                                                            padding: 0 .5vh 0 3vh;
+                                                                            margin: auto 0 .5vh 1vh;
+                                                                            @include _dimensions($width: fit-content, $height: 3.5vh);
+                            
+                                                                            svg {
+                                                                                position: absolute;
+                                                                                margin: 0 .5vh;
+                                                                                line-height: 1.5;
+                                                                                font-size: 2vh;
+                                                                                color: rgba($black, 0.25);
+                                                                                @include _dimensions($width: 2vh, $height: 2vh);
+                                                                                @include _transform($top: 50%,
+                                                                                    $left: 0,
+                                                                                    $bottom: '',
+                                                                                    $right: '',
+                                                                                    $t_x: 0,
+                                                                                    $t_y: -50%,
+                                                                                    $r_deg: 0,
+                                                                                    $s_x: 1,
+                                                                                    $s_y: 1);
+                                                                            }
+
+                                                                            p {
+                                                                                margin: 0;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        tr {
+                                                            height: 8.5vh;
+
+                                                            th,
+                                                            td {
+                                                                background: none;
+                                                                vertical-align: middle;
+
+                                                                ._checkGroup {
+                                                                    .__checkBox {
+                                                                        ._formCheckbox {
+                                                                            input {
+                                                                                margin: 0;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

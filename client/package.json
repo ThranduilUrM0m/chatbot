@@ -1,0 +1,73 @@
+{
+    "name": "client",
+    "version": "1.0.0",
+    "private": true,
+    "proxy": "http://localhost:5000",
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "dependencies": {
+        "@fingerprintjs/fingerprintjs": "*",
+        "@fortawesome/fontawesome-svg-core": "*",
+        "@fortawesome/free-brands-svg-icons": "*",
+        "@fortawesome/free-regular-svg-icons": "*",
+        "@fortawesome/free-solid-svg-icons": "*",
+        "@fortawesome/react-fontawesome": "*",
+        "@hookform/resolvers": "*",
+        "axios": "*",
+        "bootstrap": "*",
+        "downshift": "*",
+        "http-proxy-middleware": "*",
+        "immer": "*",
+        "jquery": "*",
+        "lodash": "*",
+        "lodash-es": "*",
+        "moment": "*",
+        "moment-timezone": "*",
+        "react": "*",
+        "react-bootstrap": "*",
+        "react-bootstrap-table-next": "*",
+        "react-bootstrap-table2-editor": "*",
+        "react-bootstrap-table2-paginator": "*",
+        "react-dom": "*",
+        "react-hook-form": "*",
+        "react-moment": "*",
+        "react-quill": "*",
+        "react-router": "*",
+        "react-router-dom": "*",
+        "react-scripts": "*",
+        "react-select": "*",
+        "react-slick": "*",
+        "sass": "*",
+        "simplebar-react": "*",
+        "slick-carousel": "*",
+        "socket.io-client": "*",
+        "web-vitals": "*",
+        "yup": "*",
+        "zustand": "*"
+    },
+    "devDependencies": {
+        "@babel/plugin-proposal-private-property-in-object": "*"
+    }
+}

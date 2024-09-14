@@ -1,0 +1,40 @@
+{
+    "name": "Chatbot",
+    "version": "1.0.0",
+    "main": "server.js",
+    "scripts": {
+        "start": "npm install && node server.js",
+        "heroku-postbuild": "cd ../client && npm install && npm run build"
+    },
+    "author": "_chatbotAuthor",
+    "licence": "ISC",
+    "dependencies": {
+        "@google-cloud/storage": "*",
+        "@types/node": "*",
+        "bcrypt": "*",
+        "body-parser": "*",
+        "cluster": "*",
+        "cors": "*",
+        "dotenv": "*",
+        "express": "*",
+        "express-session": "*",
+        "google-auth-library": "*",
+        "http": "*",
+        "https": "*",
+        "jwt-simple": "*",
+        "lodash": "*",
+        "mongoose": "*",
+        "morgan": "*",
+        "multer": "*",
+        "passport": "*",
+        "passport-jwt": "*",
+        "passport-local": "*",
+        "password-hash": "*",
+        "sib-api-v3-sdk": "*",
+        "socket.io": "*"
+    },
+    "engines": {
+        "node": "*"
+    },
+    "type": "module"
+}

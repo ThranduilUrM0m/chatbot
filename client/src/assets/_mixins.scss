@@ -1,0 +1,23 @@
+@mixin _transform($top: '', $left: '', $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1) {
+    top: #{$top} !important;
+    left: #{$left} !important;
+    bottom: #{$bottom} !important;
+    right: #{$right} !important;
+    transform: translate(#{$t_x}, #{$t_y}) rotate(#{$r_deg}) scaleX($s_x) scaleY($s_y) !important;
+}
+
+@mixin _transform3d($t_x: 0, $t_y: 0, $t_z: 0, $rx_deg: 0, $ry_deg: 0, $rz_deg: 0, $s_x: 1, $s_y: 1) {
+    transform: translate3d(#{$t_x}, #{$t_y}, #{$t_z}) rotateX(#{$rx_deg}) rotateY(#{$ry_deg}) rotateZ(#{$rz_deg}) scaleX(#{$s_x}) scaleY(#{$s_y}) !important;
+}
+
+@mixin _dimensions($width: '', $height: '') {
+    width: #{$width};
+    height: #{$height};
+}
+
+@mixin _transitions($property: '', $duration: '', $timing: '', $delay: '') {
+    transition-property: #{$property};
+    transition-duration: #{$duration};
+    transition-timing-function: #{$timing};
+    transition-delay: #{$delay};
+}

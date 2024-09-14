@@ -1,0 +1,50 @@
+/*Look for stuff that can be replaced by a bootstrap class*/
+$enable-grid-classes: false;
+$enable-cssgrid: true;
+
+@use 'sass:math';
+
+@import './assets/placeholders';
+@import './assets/variables';
+@import './assets/colors';
+@import './assets/fonts';
+@import './assets/mixins';
+@import './assets/keyframes';
+
+@import 'slick-carousel/slick/slick.css';
+@import 'slick-carousel/slick/slick-theme.css';
+
+@import '~bootstrap/scss/bootstrap';
+
+body {
+    --scrollbar-width: calc(100vw - 100%);
+
+    margin: 0;
+    font-family: $mainFont;
+    -webkit-font-smoothing: antialiased;
+    font-size: .875rem;
+    font-weight: 600;
+    letter-spacing: normal;
+
+    color: $black;
+    background-color: $white;
+    scroll-behavior: smooth;
+
+    @import './assets/globals';
+    @import './assets/offcanvas';
+
+    .container-fluid {
+        position: relative;
+        flex-wrap: unset;
+
+        @import './assets/header';
+
+        @import './assets/main';
+
+        @import './assets/footer';
+
+        &._app {
+            padding: 0;
+        }
+    }
+}

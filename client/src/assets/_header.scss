@@ -1,0 +1,29 @@
+header {
+    position: fixed;
+    z-index: 1060;
+    @include _dimensions($width: 100%, $height: '');
+    @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+
+    nav {
+        padding: 0;
+
+        .container-fluid {
+            flex-wrap: unset;
+
+            .navbar-collapse {
+                .navbar-nav {
+                    .nav-item {
+                        .logo {
+                            margin: 0 0 0 5vh;
+                            @include _dimensions($width: '', $height: 100%);
+
+                            img {
+                                @include _dimensions($width: '', $height: 3vh);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

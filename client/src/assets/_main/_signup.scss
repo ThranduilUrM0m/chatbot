@@ -1,0 +1,166 @@
+section {
+    .g-col-6 {
+        position: relative;
+        padding: 0 4vh;
+        margin: 0 4vh;
+
+
+        &:first-of-type {
+            .card {
+                position: relative;
+                box-shadow: none;
+                background: none;
+                @include _dimensions($width: 75%, $height: 50vh);
+                @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+
+                &-header,
+                &-body {
+                    @include _dimensions($width: '', $height: 50%);
+                    @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                }
+
+                &-header {
+                    background: $darkGray;
+                    box-shadow: 1.25vh 1.25vh 4.5vh -2.5vh rgba($black, .5);
+                    z-index: 1;
+                    @include _transform($top: '', $left: '', $bottom: '', $right: '', $t_x: 0, $t_y: 50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+
+                    h4 {
+                        position: relative;
+                        color: $white;
+                        @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+
+                        &::before {
+                            content: '';
+                            display: block;
+                            position: absolute;
+                            background: rgba($blue, .5);
+                            @include _transform($top: '', $left: '', $bottom: .5vh, $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+                            @include _dimensions($width: 10vh, $height: 1.5vh);
+                        }
+                    }
+                }
+
+                &-body {
+                    position: relative;
+                    background: $white;
+                    box-shadow: 1.25vh 1.25vh 4.5vh -2.5vh rgba(0, 0, 0, .5);
+                    margin: 0 auto;
+                    @include _dimensions($width: 90%, $height: '');
+                    @include _transform($top: '', $left: '', $bottom: '', $right: '', $t_x: 0, $t_y: -45%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                    z-index: 0;
+
+                    form {
+                        h6 {
+                            margin: 0;
+                        }
+
+                        .btn {
+                            position: relative;
+
+                            .buttonBorders {
+                                border: .1vh solid rgba($color: $black, $alpha: .25);
+                            }
+                        }
+                    }
+                }
+
+                &::before {
+                    position: absolute;
+                    content: '';
+                    background: $white;
+                    box-shadow: 1.25vh 1.25vh 4.5vh -2.5vh rgba(0, 0, 0, .5);
+                    @include _dimensions($width: 80%, $height: 50%);
+                    @include _transform($top: 50%, $left: 50%, $bottom: '', $right: '', $t_x: -50%, $t_y: -40%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                    z-index: -1;
+                }
+
+                &:hover {
+                    box-shadow: 1.25vh 1.25vh 4.5vh -2.5vh rgba(0, 0, 0, .5);
+
+                    .card-header {
+                        background: $blue;
+                        box-shadow: none;
+                        @include _transform($top: '', $left: '', $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+
+                        h4 {
+                            font-size: 8vh;
+
+                            &::before {
+                                background: rgba($darkGray, .5);
+                                @include _dimensions($width: 20vh, $height: 3vh);
+                            }
+                        }
+                    }
+
+                    .card-body {
+                        @include _dimensions($width: 100%, $height: '');
+                        @include _transform($top: '', $left: '', $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+                    }
+                }
+            }
+        }
+
+        &:last-of-type {
+            background: $white;
+            box-shadow: inset 1.25vh 1.25vh 4.5vh -2.5vh rgba(0, 0, 0, .5);
+
+            .card {
+                position: relative;
+                background: $white;
+                z-index: 1;
+                @include _dimensions($width: 75%, $height: '');
+
+                &-header {
+                    h3 {
+                        position: relative;
+                        font-size: 5vh;
+
+                        &::before {
+                            content: '';
+                            display: block;
+                            position: absolute;
+                            background: rgba($blue, .8);
+                            @include _transform($top: '', $left: '', $bottom: .5vh, $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+                            @include _dimensions($width: 10vh, $height: 2vh);
+                            @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                        }
+                    }
+                }
+
+                &-body {
+                    position: relative;
+                    background: $darkGray;
+                    box-shadow: 1.25vh 1.25vh 4.5vh -2.5vh rgba(0, 0, 0, .5);
+
+                    form {
+                        grid-template-rows: auto auto auto auto auto;
+                        gap: 2.5vh;
+                        margin: 2.5vh;
+                        @include _dimensions($width: calc(100% - 5vh), $height: calc(100% - 5vh));
+                    }
+                }
+
+                &::before {
+                    content: '';
+                    position: absolute;
+                    background: $white;
+                    box-shadow: 1.25vh 1.25vh 4.5vh -2.5vh rgba($black, .5);
+                    @include _dimensions($width: 42vw, $height: 72vh);
+                    @include _transform($top: 50%, $left: 50%, $bottom: '', $right: '', $t_x: -50%, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                }
+
+                &:hover {
+                    .card-header {
+                        h3 {
+                            &::before {
+                                background: rgba($blue, .5);
+                                @include _dimensions($width: 15vh, $height: 2vh);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

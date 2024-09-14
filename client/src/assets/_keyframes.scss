@@ -1,0 +1,104 @@
+@keyframes _firstWordAnimation {
+    0% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    20% {
+        opacity: 0;
+    }
+}
+
+@keyframes _secondWordAnimation {
+    20% {
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    40% {
+        opacity: 0;
+    }
+}
+
+@keyframes _thirdWordAnimation {
+    40% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    60% {
+        opacity: 0;
+    }
+}
+
+@keyframes _fourthWordAnimation {
+    60% {
+        opacity: 0;
+    }
+
+    70% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 0;
+    }
+}
+
+@keyframes _fifthWordAnimation {
+    80% {
+        opacity: 0;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes _pulsingDots {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    20%,
+    25% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    33.33%,
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes blink-caret {
+
+    from,
+    to {
+        color: transparent;
+    }
+
+    50% {
+        color: $black;
+    }
+}

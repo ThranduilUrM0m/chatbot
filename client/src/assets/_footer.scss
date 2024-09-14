@@ -1,0 +1,77 @@
+footer {
+    position: absolute;
+    font-size: 2vh;
+    @include _dimensions($width: 100%, $height: '');
+    @include _transform($top: '', $left: '', $bottom: 0, $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+
+    .container-fluid {
+        .row {
+            margin: 0 0 0 12vh;
+
+            .col {
+                position: relative;
+
+                ul {
+                    display: table;
+                    margin: 0;
+
+                    li {
+                        display: table-cell;
+                        vertical-align: middle;
+                        padding: 0 2vh 0 0;
+                        color: $black;
+                        @include _dimensions($width: '', $height: 10vh);
+
+                        span {
+                            padding: 0 .5vh 0 .5vh;
+
+                            &.name {
+                                font-weight: bold;
+                                margin: 0 0 0 6.5vh;
+                            }
+                        }
+
+                        * {
+                            color: $black;
+                        }
+                    }
+                }
+
+                &:first-of-type {
+                    &::before {
+                        position: absolute;
+                        display: inline-block;
+                        content: "";
+                        background: $black;
+                        @include _dimensions($width: 10vh, $height: .25vh);
+                        @include _transform($top: 50%, $left: 0, $bottom: '', $right: '', $t_x: calc(-100% - 2vh), $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                    }
+                }
+            }
+        }
+    }
+
+    &._dashboard {
+        .container-fluid {
+            .row {
+                .col {
+                    ul {
+                        li {
+                            color: $white;
+
+                            * {
+                                color: $white;
+                            }
+                        }
+                    }
+
+                    &:first-of-type {
+                        &::before {
+                            background: $white;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
