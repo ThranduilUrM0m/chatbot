@@ -93,7 +93,7 @@ const setUpExpress = () => {
     //Connexion à la base de donnée
     mongoose.Promise = global.Promise;
     mongoose
-        .connect(process.env.MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true })
+        .connect(process.env.MONGODB_URI, {})
         .then(() => {
             console.log('Connected to mongoDB');
         })

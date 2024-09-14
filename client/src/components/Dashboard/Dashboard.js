@@ -22,7 +22,7 @@ import Button from 'react-bootstrap/Button';
 import { useCombobox } from 'downshift';
 import SimpleBar from 'simplebar-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGear, faRightFromBracket, faCube, faUserGroup, faMagnifyingGlass, faHandsClapping, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { faGear, faRightFromBracket, faCube, faUserGroup, faMagnifyingGlass, faHandsClapping, faCaretRight, faClockRotateLeft, faBraille, faChartSimple } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 
 import 'simplebar-react/dist/simplebar.min.css';
@@ -215,7 +215,7 @@ const Dashboard = (props) => {
                         <Nav variant='pills' className='flex-column'>
                             <Nav.Item>
                                 <NavLink to='/' className='logo d-flex align-items-center justify-content-center'>
-                                    {/* <img className='img-fluid' src={logo} alt='#' /> */}
+                                    <img className='img-fluid' src='https://cdg.ma/themes/cdg/logo.svg' alt='HelpAI CDG' />
                                 </NavLink>
                             </Nav.Item>
                             <Nav.Item>
@@ -224,73 +224,64 @@ const Dashboard = (props) => {
                                     <p>Dashboard<b className='pink_dot'>.</b></p>
                                 </Nav.Link>
                             </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link className='d-flex align-items-start' eventKey='_users'>
+                                    <FontAwesomeIcon icon={faUserGroup} />
+                                    <p>Utilisateurs<b className='pink_dot'>.</b></p>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link className='d-flex align-items-start' eventKey='_conversations'>
+                                    <FontAwesomeIcon icon={faClockRotateLeft} />
+                                    <p>Conversations<b className='pink_dot'>.</b></p>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link className='d-flex align-items-start' eventKey='_tracabilite'>
+                                    <FontAwesomeIcon icon={faBraille} />
+                                    <p>Traçabilité<b className='pink_dot'>.</b></p>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link className='d-flex align-items-start' eventKey='_audit'>
+                                    <FontAwesomeIcon icon={faChartSimple} />
+                                    <p>Audit<b className='pink_dot'>.</b></p>
+                                </Nav.Link>
+                            </Nav.Item>
 
-                            <Nav.Item className='mt-auto'>
-                                <Dropdown
-                                    show={_showDropdown}
-                                    drop={'end'}
-                                    onMouseEnter={handleMouseEnter}
-                                    onMouseLeave={handleMouseLeave}
-                                >
-                                    <Dropdown.Toggle className='d-flex justify-content-center' as='span'>
-                                        <div className='d-flex _name'>
-                                            <span className='d-flex align-items-center justify-content-center'><img src={_.isEmpty(_user._user_picture) ? 'logo' : _user._user_picture} alt='' /></span>
-                                            <span className='d-flex flex-column justify-content-center me-auto'>
-                                                <p>{_.capitalize(_user._user_email)}</p>
-                                                <p>{'boutaleb.dev/' + _user._user_username}</p>
-                                            </span>
-                                            <span className='align-self-center'>
-                                                <FontAwesomeIcon icon={faCaretRight} />
-                                            </span>
-                                        </div>
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu className='border rounded-0'>
-                                        <Dropdown.Item as='span'>
-                                            <Nav.Link className='_name d-flex' as='span'>
-                                                <span className='d-flex align-items-center justify-content-center'><img src={_.isEmpty(_user._user_picture) ? 'logo' : _user._user_picture} alt='' /></span>
-                                                <span className='d-flex flex-column justify-content-center'>
-                                                    <p>{_.isEmpty(_user._user_lastname) && _.isEmpty(_user._user_firstname) ? 'John Doe' : (!_.isEmpty(_user._user_lastname) ? _user._user_lastname + ' ' + _user._user_firstname : _user._user_firstname)}</p>
-                                                    <p>{_.join(_.map(_user.Permission, __p => _.capitalize(__p._permission_titre)), ', ')}</p>
-                                                    <p>{(!_.isEmpty(_user._user_city) ? _user._user_city + ', ' + _user._user_country._country : _user._user_country._country)}</p>
-                                                </span>
-                                            </Nav.Link>
-                                        </Dropdown.Item>
-                                        <Dropdown.Divider />
-                                        <Dropdown.Item as='span'>
-                                            <Nav.Link className='d-flex align-items-start' eventKey='_users'>
-                                                <FontAwesomeIcon icon={faUserGroup} />
-                                                <p>Users<b className='pink_dot'>.</b></p>
-                                            </Nav.Link>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item as='span'>
-                                            <Nav.Link className='d-flex align-items-start' eventKey='_settings'>
-                                                <FontAwesomeIcon icon={faGear} />
-                                                <p>Settings<b className='pink_dot'>.</b></p>
-                                            </Nav.Link>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item
-                                            as='span'
-                                            onClick={() => _handleLogout()}
-                                        >
-                                            <Nav.Link className='d-flex align-items-start'>
-                                                <FontAwesomeIcon icon={faRightFromBracket} />
-                                                <p>Logout<b className='pink_dot'>.</b></p>
-                                            </Nav.Link>
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
+                            <Nav.Item
+                                className='mt-auto'
+                                onClick={() => _handleLogout()}
+                            >
+                                <Nav.Link className='d-flex align-items-start'>
+                                    <FontAwesomeIcon icon={faRightFromBracket} />
+                                    <p>Se déconnecter<b className='pink_dot'>.</b></p>
+                                </Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </div>
                     <div className='g-col-10 d-flex flex-column'>
                         <Nav className='align-items-center'>
                             <Nav.Item className='_welcome d-flex'>
-                                <span className='d-flex flex-column align-items-start justify-content-center'>
-                                    <p>Hello, {_.isEmpty(_user._user_lastname) && _.isEmpty(_user._user_firstname) ? _.capitalize(_user._user_username) : (!_.isEmpty(_user._user_lastname) ? _user._user_lastname + ' ' + _user._user_firstname : _user._user_firstname)}</p>
-                                    <p>Let's check your story today.</p>
-                                </span>
-                                <FontAwesomeIcon icon={faHandsClapping} />
+                                <div className='d-flex flex-column align-items-start justify-content-center'>
+                                    <span className='d-flex'>
+                                        <p className='m-0 text-muted'>Hello, {_.isEmpty(_user._user_lastname) && _.isEmpty(_user._user_firstname) ? _.capitalize(_user._user_username) : (!_.isEmpty(_user._user_lastname) ? _user._user_lastname + ' ' + _user._user_firstname : _user._user_firstname)}</p>
+                                        <FontAwesomeIcon icon={faHandsClapping} />
+                                    </span>
+                                    <span className='d-flex flex-column'>
+                                        <p className='m-0'>{_.capitalize(_user._user_email)}</p>
+                                        <p className='m-0'>{_.join(_.map(_user.Permission, __p => _.capitalize(__p._permission_titre)), ', ')}</p>
+                                    </span>
+                                </div>
                             </Nav.Item>
+                            <Nav.Item className='_settings ms-auto'>
+                                <Nav.Link className='d-flex align-items-start' eventKey='_settings'>
+                                    <FontAwesomeIcon className='m-auto' icon={faGear} />
+                                </Nav.Link>
+                            </Nav.Item>
+                        </Nav>
+                        <Tab.Content>
+                            {/*
                             <Nav.Item className='_search ms-auto'>
                                 <Form onClick={() => setFocusSearch('_searchInput')}>
                                     <Controller
@@ -352,7 +343,7 @@ const Dashboard = (props) => {
                                                         ?
                                                         <div className='_searchButton __close'
                                                             onClick={() => {
-                                                                /* calling setValueSettings from react-hook-form only updates the value of the specified field, it does not trigger any event handlers associated with that field in useCombobox */
+                                                                / * calling setValueSettings from react-hook-form only updates the value of the specified field, it does not trigger any event handlers associated with that field in useCombobox * /
                                                                 setValueSearch('_searchInput', '');
                                                                 _handleChangeSearch('');
                                                             }}
@@ -391,12 +382,11 @@ const Dashboard = (props) => {
                                     />
                                 </Form>
                             </Nav.Item>
-                        </Nav>
-                        <Tab.Content>
+                            */}
                             <Tab.Pane eventKey='_dashboard'>
                                 <PDashboard />
                             </Tab.Pane>
-                            
+
                             <Tab.Pane eventKey='_users'>
                                 <PUsers />
                             </Tab.Pane>

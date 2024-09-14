@@ -101,7 +101,7 @@ router.post('/', async (req, res, next) => {
         finalUser.save();
 
         // Create a verification token for this user
-        const finalToken = new Token({ _userId: finalUser._id, _userIsVerified: false, _token_body: crypto.randomBytes(16).toString('hex') });
+        const finalToken = new Token({ User: finalUser, _userIsVerified: false, _token_body: crypto.randomBytes(16).toString('hex') });
         await finalToken.save();
 
         // What to do after sending the Email
@@ -130,7 +130,6 @@ router.post('/', async (req, res, next) => {
 router.get('/', (req, res, next) => {
     return User.find()
         .populate('Role')
-        .populate('Mentor')
         .sort({ createdAt: 'descending' })
         .then((_users) => res.json({ _users: _users.map(_user => _user.toJSON()) }))
         .catch(next);
@@ -142,7 +141,7 @@ router.post('/_confirm', async (req, res, next) => {
     const _t = await Token.findOne({ _token_body: body._tokenID });
     if (!_t) return res.status(400).json({ text: 'We were unable to find a valid token. Your token may have expired. Or your account is already activated.\nPlease contact us if you\'re experiencing any difficulties, we are happy to be of any help.' });
 
-    const _u = await User.findOne({ _id: _t._userId });
+    const _u = await User.findOne({ _id: _t.User._id });
     if (!_u) return res.status(400).json({ text: 'We were unable to find a user for this token.\nPlease contact us if you\'re experiencing any difficulties, we are happy to be of any help.' });
     if (_u._user_isVerified) return res.status(400).json({ text: 'This user has already been verified.\nPlease contact us if you\'re experiencing any difficulties, we are happy to be of any help.' });
     _u._user_isVerified = true;
@@ -173,8 +172,7 @@ router.get('/_checkToken', async (req, res) => {
 
         // Find the user using the __id (or any other identifier, depending on your database schema)
         const __user = await User.findById(__id)
-            .populate('Role')
-            .populate('Mentor');
+            .populate('Role');
         return __user ? res.status(200).json({ _user: __user }) : res.sendStatus(401);
     } catch (error) {
         // If the token is invalid or has expired, send a 401 response
@@ -225,8 +223,7 @@ router.post('/_login', async (req, res, next) => {
                 { _user_username: body._user_identification }
             ]
         })
-            .populate('Role')
-            .populate('Mentor');
+            .populate('Role');
 
         if (!findUser)
             return res.status(401).json({
@@ -259,11 +256,16 @@ router.post('/_login', async (req, res, next) => {
             },
             { upsert: true }
         )
-            .populate('Role')
-            .populate('Mentor');
+            .populate('Role');
 
         // Once the user is created or updated, generate a JWT token
         const token = findUserUpdated.getToken();
+
+        console.log(
+            '_user:', findUserUpdated,
+            'token:', token,
+            'text:', 'Authentication successful.',
+        )
 
         return res.status(200).json({
             _user: findUserUpdated,
@@ -296,7 +298,6 @@ router.post('/_logout/:id', async (req, res, next) => {
 router.param('id', (req, res, next, id) => {
     return User.findById(id)
         .populate('Role')
-        .populate('Mentor')
         .then(_user => {
             if (!_user) {
                 return res.sendStatus(404);
@@ -415,12 +416,6 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
         if (!_.isEmpty(body.Role) && !_.isUndefined(body.Role)) {
             if (typeof body.Role !== 'undefined') {
                 req._user.Role = body.Role;
-            }
-        }
-
-        if (!_.isEmpty(body.Mentor) && !_.isUndefined(body.Mentor)) {
-            if (typeof body.Mentor !== 'undefined') {
-                req._user.Mentor = body.Mentor;
             }
         }
 

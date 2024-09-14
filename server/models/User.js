@@ -68,12 +68,7 @@ const User = new Schema({
         type: Schema.Types.ObjectId,
         required: false,
         ref: 'Role'
-    }],
-    Mentor: {
-        type: Schema.Types.ObjectId,
-        required: false,
-        ref: 'User'
-    }
+    }]
 }, {
     timestamps: true,
     toJSON: { virtuals: true }
