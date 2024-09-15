@@ -61,6 +61,7 @@ const usePersistentFingerprint = () => {
 };
 
 const PUsers = (props) => {
+    /* JOY : DELETING AN ACCOUNT */
     const _users = _useStore.useUserStore((state) => state._users);
     const setUsers = _useStore.useUserStore(state => state['_users_SET_STATE']);
     const updateUsers = _useStore.useUserStore(
@@ -70,9 +71,6 @@ const PUsers = (props) => {
     const _user = _useStore.useUserStore(state => state._user);
     const addUser = _useStore.useUserStore(
         (state) => state['_user_ADD_STATE']
-    );
-    const deleteUser = _useStore.useUserStore(
-        (state) => state['_user_DELETE_STATE']
     );
 
     const _userToEdit = _useStore.useUserStore(
@@ -374,29 +372,27 @@ const PUsers = (props) => {
                 width: '15vh',
             },
             formatter: (cell, row) => {
-                return (
-                    _.some(_user.Role, { 'role-title': 'Founder' }) || _.isEqual(_user._user_email, row._user_email) && (
-                        <Form>
-                            <Button
-                                type='button'
-                                className='border border-0 rounded-0 inverse'
-                                variant='outline-light'
-                                onClick={() => {
-                                    _handleEdit(row);
-                                    setShowModal(true);
-                                }}
-                            >
-                                <div className='buttonBorders'>
-                                    <div className='borderTop'></div>
-                                    <div className='borderRight'></div>
-                                    <div className='borderBottom'></div>
-                                    <div className='borderLeft'></div>
-                                </div>
-                                <span>Modifier.</span>
-                            </Button>
-                        </Form>
-                    )
-                );
+                return (_.some(_user.Role, { '_role_title': 'Founder' }) || _.isEqual(_user._user_email, row._user_email)) ? (
+                    <Form>
+                        <Button
+                            type='button'
+                            className='border border-0 rounded-0 inverse'
+                            variant='outline-light'
+                            onClick={() => {
+                                _handleEdit(row);
+                                setShowModal(true);
+                            }}
+                        >
+                            <div className='buttonBorders'>
+                                <div className='borderTop'></div>
+                                <div className='borderRight'></div>
+                                <div className='borderBottom'></div>
+                                <div className='borderLeft'></div>
+                            </div>
+                            <span>Modifier.</span>
+                        </Button>
+                    </Form>
+                ) : null;
             },
         },
         {
@@ -407,32 +403,30 @@ const PUsers = (props) => {
                 width: '15vh',
             },
             formatter: (cell, row) => {
-                return (
-                    (_.some(_user.Role, { 'role-title': 'Founder' }) && !_.isEqual(_user._user_email, row._user_email)) && (
-                        <Form>
-                            <Button
-                                type='button'
-                                className='border border-0 rounded-0 _danger'
-                                variant='outline-light'
-                                onClick={() => {
-                                    setUserToEdit(row);
-                                    setModalFormHeader('Confirmer la suppression');
-                                    setModalFormBody(`Êtes-vous sûr de vouloir supprimer ${row._user_username} ?`);
-                                    setModalFormIcon(<FontAwesomeIcon icon={faRectangleXmark} />);
-                                    setShowModalForm(true);
-                                }}
-                            >
-                                <div className='buttonBorders'>
-                                    <div className='borderTop'></div>
-                                    <div className='borderRight'></div>
-                                    <div className='borderBottom'></div>
-                                    <div className='borderLeft'></div>
-                                </div>
-                                <span>Supprimer.</span>
-                            </Button>
-                        </Form>
-                    )
-                );
+                return (!_.some(_user.Role, { '_role_title': 'Founder' }) && _.isEqual(_user._user_email, row._user_email)) ? (
+                    <Form>
+                        <Button
+                            type='button'
+                            className='border border-0 rounded-0 _danger'
+                            variant='outline-light'
+                            onClick={() => {
+                                setUserToEdit(row);
+                                setModalFormHeader('Confirmer la suppression');
+                                setModalFormBody(`Êtes-vous sûr de vouloir supprimer ${row._user_username} ?\nVotre compte sera bien signalé pour être supprimer et un email sera envoyé à votre adresse email pour vous notifier de ce fait.`);
+                                setModalFormIcon(<FontAwesomeIcon icon={faRectangleXmark} />);
+                                setShowModalForm(true);
+                            }}
+                        >
+                            <div className='buttonBorders'>
+                                <div className='borderTop'></div>
+                                <div className='borderRight'></div>
+                                <div className='borderBottom'></div>
+                                <div className='borderLeft'></div>
+                            </div>
+                            <span>Supprimer.</span>
+                        </Button>
+                    </Form>
+                ) : null;
             },
         },
     ];

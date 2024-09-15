@@ -457,7 +457,23 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
     }
 });
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
+    const { body } = req;
+
+    try {
+        if (!_.isEmpty(body._user_toDelete) && !_.isUndefined(body._user_toDelete)) {
+            if (typeof body._user_toDelete !== 'undefined') {
+                req._user._user_toDelete = true;
+            }
+        }
+
+        return await req._user.save()
+            .then(() => res.json({ _user: req._user.toJSON() }))
+            .catch(next);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error });
+    }
     return User.findByIdAndDelete(req._user._id)
         .then(() => res.json({ _user: req._user.toJSON() }))
         .catch(next);

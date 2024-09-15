@@ -58,6 +58,7 @@ const usePersistentFingerprint = () => {
 const PSettings = (props) => {
     const _user = _useStore.useUserStore(state => state._user);
     const setUser = _useStore.useUserStore(state => state['_user_SET_STATE']);
+
     const _userToEdit = _useStore.useUserStore(state => state._userToEdit);
     const setUserToEdit = _useStore.useUserStore(state => state['_userToEdit_SET_STATE']);
     const clearUserToEdit = _useStore.useUserStore(state => state['_userToEdit_CLEAR_STATE']);
@@ -1305,6 +1306,9 @@ const PSettings = (props) => {
                                     </Form.Group>
                                 </Col>
                             </Row>
+
+                            {/* Supprimer Compte */}
+                            {/* JOY : Deleting the Account and then loging out, one issue is what if i'm the only Founder that i have access to a whole lot of stuff */}
 
                             {/* Footer */}
                             <Row className='g-col-12 grid'>
