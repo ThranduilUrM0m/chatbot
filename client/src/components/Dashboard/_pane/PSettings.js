@@ -61,6 +61,7 @@ const PSettings = (props) => {
     const _userToEdit = _useStore.useUserStore(state => state._userToEdit);
     const setUserToEdit = _useStore.useUserStore(state => state['_userToEdit_SET_STATE']);
     const clearUserToEdit = _useStore.useUserStore(state => state['_userToEdit_CLEAR_STATE']);
+    
     const _fingerprint = usePersistentFingerprint();
     
     const _validationSchemaSettings = Yup

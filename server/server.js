@@ -167,13 +167,7 @@ const setUpExpress = () => {
             }
         });
 
-        socket.on('_messageSent', (message) => {
-            // Handle message and emit back to clients
-            console.log('Message received:', message);
-        });
-
-        socket.on('_newConversation', async (data) => {
-            console.log('New conversation:', data);
+        socket.on('_newConversation', async (data, callback) => {
             const { _conversation_user, chatHistory = [] } = data; // Default to an empty array if chatHistory is not provided
 
             if (!Array.isArray(chatHistory)) {
@@ -183,19 +177,100 @@ const setUpExpress = () => {
             }
 
             try {
-                const response = await openai.chat.completions.create({
-                    model: "gpt-3.5-turbo",
-                    messages: [
-                        { role: "system", content: "You are an assistant." },
-                        ...chatHistory,
-                    ],
+                // Find the conversation by ID
+                const conversation = await Conversation.findOne(_conversation_user);
+
+                if (!conversation) {
+                    const response = await openai.chat.completions.create({
+                        model: "gpt-3.5-turbo",
+                        messages: [
+                            { role: "system", content: "You are an assistant." },
+                            ...chatHistory,
+                        ],
+                    });
+                    const aiMessage = response.choices[0].message.content;
+                    const updatedChatHistory = [...chatHistory, { role: 'assistant', content: aiMessage }];
+    
+                    // Save the conversation to the database
+                    const newConversation = new Conversation({
+                        _conversation_user,
+                        chatHistory: updatedChatHistory,
+                        totalMessages: updatedChatHistory.length,
+                        totalAssistantMessages: updatedChatHistory.filter(msg => msg.role === 'assistant').length,
+                    });
+    
+                    await newConversation.save();
+                }
+
+                // Acknowledge back to the client with the conversation ID and chat history
+                callback({ conversationId: newConversation._id, chatHistory: updatedChatHistory });
+
+                // Optionally emit the conversation to the client
+                socket.emit('newConversation', {
+                    user: _conversation_user,
+                    chatHistory: conversation.chatHistory,
+                    conversationId: conversation._id,
                 });
-                const aiMessage = response.choices[0].message.content;
-                const updatedChatHistory = [...chatHistory, { role: 'assistant', content: aiMessage }];
-                io.emit('newConversation', { user: _conversation_user, chatHistory: updatedChatHistory, role: 'assistant', content: aiMessage });
             } catch (error) {
                 console.error('Error with OpenAI API:', error);
                 socket.emit('error', { message: 'Failed to process conversation' });
+            }
+        });
+
+        socket.on('_sendMessage', async (data) => {
+            const { user, conversationId, chatHistory, role, content } = data;
+
+            if (!user || !conversationId || !role || !content) {
+                socket.emit('error', { message: 'Invalid message data' });
+                return;
+            }
+
+            try {
+                // Find the conversation by ID
+                const conversation = await Conversation.findById(conversationId);
+
+                if (conversation) {
+                    // Add the new message to the chat history
+                    const updatedChatHistory = [...conversation.chatHistory, { role, content }];
+                    conversation.chatHistory = updatedChatHistory;
+                    conversation.totalMessages = updatedChatHistory.length;
+                    conversation.totalAssistantMessages = updatedChatHistory.filter(msg => msg.role === 'assistant').length;
+                    // Calculate other metrics if necessary
+
+                    await conversation.save();
+
+                    // Emit the updated conversation to all clients
+                    socket.emit('messageSent', { user, chatHistory: updatedChatHistory, role, content });
+
+                    // Generate AI's response using OpenAI API
+                    const response = await openai.chat.completions.create({
+                        model: "gpt-3.5-turbo",
+                        messages: [
+                            { role: "system", content: "You are an assistant." }, // System prompt
+                            ...updatedChatHistory, // Send the entire conversation so far, including user's message
+                        ],
+                    });
+
+                    const aiMessage = response.choices[0].message.content;
+
+                    // Add AI's response to the chat history
+                    const finalChatHistory = [...updatedChatHistory, { role: 'assistant', content: aiMessage }];
+                    conversation.chatHistory = finalChatHistory;
+                    conversation.totalMessages = finalChatHistory.length;
+                    conversation.totalAssistantMessages = finalChatHistory.filter(msg => msg.role === 'assistant').length;
+
+                    // Save the updated conversation with AI's response
+                    await conversation.save();
+
+                    // Emit AI's response to all clients
+                    socket.emit('messageSent', { user: 'assistant', chatHistory: finalChatHistory, role: 'assistant', content: aiMessage });
+                } else {
+                    console.error('Conversation not found:', conversationId);
+                    socket.emit('error', { message: 'Conversation not found' });
+                }
+            } catch (error) {
+                console.error('Error handling message:', error);
+                socket.emit('error', { message: 'Failed to process message' });
             }
         });
 

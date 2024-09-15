@@ -9,11 +9,44 @@ import _ from 'lodash';
 import { io } from 'socket.io-client';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 const _socketURL = _.isEqual(process.env.NODE_ENV, 'production') ? window.location.hostname : 'localhost:5000';
 const _socket = io(_socketURL, { 'transports': ['websocket', 'polling'] });
 
+const usePersistentFingerprint = (setIsFingerprintLoaded) => {
+    const [_fingerprint, setFingerprint] = useState('');
+
+    useEffect(() => {
+        const generateFingerprint = async () => {
+            // Check if the persistent identifier exists in storage (e.g., cookie or local storage)
+            const persistentIdentifier = localStorage.getItem('persistentIdentifier');
+
+            if (persistentIdentifier) {
+                // Use the persistent identifier if available
+                setFingerprint(persistentIdentifier);
+                setIsFingerprintLoaded(true); // Notify that fingerprint is loaded
+            } else {
+                // Fallback to generating a new fingerprint using FingerprintJS
+                const fp = await FingerprintJS.load();
+                const { visitorId } = await fp.get();
+                setFingerprint(visitorId);
+
+                // Store the persistent identifier for future visits
+                localStorage.setItem('persistentIdentifier', visitorId);
+                setIsFingerprintLoaded(true); // Notify that fingerprint is loaded
+            }
+        };
+
+        generateFingerprint();
+    }, [setIsFingerprintLoaded]);
+
+    return _fingerprint;
+};
+
 const Home = (props) => {
+    /* JOY : Show the history of conversations and be able to delete */
+    /* JOY : localStorage should always check with the database, cause sometimes it has what was deleted from the database manually */
     const _validationSchema = Yup
         .object()
         .shape({
@@ -44,30 +77,49 @@ const Home = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [_idConversation, setIdConversation] = useState(null);
 
+    const [isFingerprintLoaded, setIsFingerprintLoaded] = useState(false);
+    const _fingerprint = usePersistentFingerprint(setIsFingerprintLoaded);
+
     const _startNewConversation = () => {
-        setIsLoading(true);
-        // Emit event to server to start a new conversation
-        _socket.emit('_newConversation', { _conversation_user: 'Anonymous User' }, (newConversationId) => {
-            // Save the new conversation ID and initialize state
-            setIdConversation(newConversationId);
-            localStorage.setItem('_idConversation', newConversationId);
-            localStorage.setItem('chatHistory', JSON.stringify([])); // Initialize with an empty history
-            setChatHistory([]);
-        });
+        if (isFingerprintLoaded) {
+            setIsLoading(true);
+            _socket.emit('_newConversation', { _conversation_user: _fingerprint }, (response) => {
+                if (response.error) {
+                    console.error('Error:', response.error);
+                    return;
+                }
+                const { conversationId, chatHistory } = response; // Now receive the conversation ID and chat history from the backend
+
+                if (conversationId) {
+                    setIdConversation(conversationId);
+                    localStorage.setItem('_idConversation', conversationId);
+                    localStorage.setItem('chatHistory', JSON.stringify(chatHistory)); // Save the chat history in local storage
+                    setChatHistory(chatHistory); // Update local chat history
+                } else {
+                    console.error('Conversation ID is null or undefined');
+                }
+            });
+        } else {
+            console.log('Fingerprint not loaded yet. Please wait.');
+        }
     };
 
     /* Handle Form Submission */
     const _handleSendMessage = () => {
-        console.log('Message:', watch('_message'));
-        if (_.trim(watch('_message'))) {
-            console.log('Reached Here:', watch('_message'));
+        const messageContent = watch('_message');
+
+        if (_.trim(messageContent)) {
             setIsLoading(true);
-            _socket.emit('_messageSent', {
-                user: 'Anonymous User', // Replace with actual user info if needed
+            const conversationId = localStorage.getItem('_idConversation'); // Retrieve conversation ID
+            _socket.emit('_sendMessage', {
+                user: _fingerprint, // Use fingerprint here
+                conversationId, // Pass conversation ID
                 chatHistory: chatHistory,
                 role: 'user',
-                content: watch('_message'),
+                content: messageContent,
             });
+
+            // Clear input
             reset();
         }
     };
@@ -76,34 +128,42 @@ const Home = (props) => {
         const savedChatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
         const savedConversationId = localStorage.getItem('_idConversation');
 
-        if (savedChatHistory.length > 0 && savedConversationId) {
+        if (savedConversationId) {
             // Use the existing conversation from localStorage
             setChatHistory(savedChatHistory);
             setIdConversation(savedConversationId);
         } else {
-            // Start a new conversation
-            _startNewConversation();
+            // Start a new conversation only if fingerprint is loaded
+            if (isFingerprintLoaded) {
+                _startNewConversation();
+            }
         }
 
-        _socket.on('_newConversation', (message) => {
+        _socket.on('newConversation', (message) => {
             setChatHistory((prevChatHistory) => {
-                const updatedChatHistory = [...prevChatHistory, message];
+                const updatedChatHistory = [...prevChatHistory, ...message.chatHistory]; // Spread existing history
                 localStorage.setItem('chatHistory', JSON.stringify(updatedChatHistory)); // Save updated history
                 return updatedChatHistory;
             });
+            setIdConversation(message.conversationId); // Save the conversation ID
+            localStorage.setItem('_idConversation', message.conversationId); // Update in localStorage
             setIsLoading(false);
         });
 
         // Listen for messages from the server
-        _socket.on('_messageSent', (message) => {
-            setChatHistory((prevChatHistory) => [...prevChatHistory, message]);
+        _socket.on('messageSent', (message) => {
+            setChatHistory((prevChatHistory) => {
+                const updatedChatHistory = [...prevChatHistory, message];
+                localStorage.setItem('chatHistory', JSON.stringify(updatedChatHistory)); // Update localStorage
+                return updatedChatHistory;
+            });
         });
 
         return () => {
-            _socket.off('_newConversation');
-            _socket.off('_messageSent');
+            _socket.off('newConversation');
+            _socket.off('messageSent');
         };
-    }, []);
+    }, [isFingerprintLoaded]);
 
     return (
         <main className='_home'>
@@ -120,7 +180,7 @@ const Home = (props) => {
                 </div>
                 <div className='_lines w-50 h-100 mx-auto flex-grow-1 d-flex flex-column justify-content-end'>
                     <div className='_discussion'>
-                        {chatHistory.map((message, index) => (
+                        {_.map(chatHistory, (message, index) => (
                             <p key={index} className={message.role === 'user' ? 'user-message' : 'ai-message'}>
                                 <strong>{message.role === 'user' ? 'You:' : 'HelpAI:'}</strong> {message.content}
                             </p>
@@ -161,7 +221,7 @@ const Home = (props) => {
                             className='border border-0 rounded-0 inverse'
                             variant='outline-light'
                             onClick={() => _handleSendMessage()}
-                            disabled={isLoading}
+                            disabled={_.trim(watch('_message')) === '' || isLoading}
                         >
                             <div className='buttonBorders'>
                                 <div className='borderTop'></div>
@@ -178,7 +238,6 @@ const Home = (props) => {
                             className='border border-0 rounded-0 inverse'
                             variant='outline-light'
                             onClick={() => _startNewConversation()}
-                            disabled={isLoading}
                         >
                             <div className='buttonBorders'>
                                 <div className='borderTop'></div>

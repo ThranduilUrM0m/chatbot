@@ -59,6 +59,8 @@ router.patch('/:id', (req, res, next) => {
 
     if (typeof body.chatHistory !== 'undefined') {
         req._conversation.chatHistory = body.chatHistory;
+        req._conversation.totalMessages = body.chatHistory.length;
+        req._conversation.totalAssistantMessages = body.chatHistory.filter(msg => msg.role === 'assistant').length;
     }
 
     if (typeof body.totalInactivityTime !== 'undefined') {
