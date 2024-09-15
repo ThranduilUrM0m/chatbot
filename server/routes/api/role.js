@@ -71,7 +71,7 @@ router.patch('/:id', (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-    return Role.findByIdAndRemove(req._role._id)
+    return Role.findByIdAndDelete(req._role._id)
         .then(() => res.sendStatus(200))
         .catch(next);
 });

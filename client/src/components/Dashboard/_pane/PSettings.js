@@ -851,8 +851,8 @@ const PSettings = (props) => {
                                             {
                                                 (!_.isEmpty(watchSettings('_user_username')) && !_.isEmpty(_userToEdit)) && (
                                                     <div
-                                                    l    className='__close'
-                                                        onCick={() => { resetFieldSettings('_user_username') }}
+                                                        className='__close'
+                                                        onClick={() => { resetFieldSettings('_user_username') }}
                                                     >
                                                     </div>
                                                 )

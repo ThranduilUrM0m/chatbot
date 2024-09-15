@@ -87,7 +87,7 @@ router.patch('/:id', (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-    return Token.findByIdAndRemove(req._token._id)
+    return Token.findByIdAndDelete(req._token._id)
         .then(() => res.sendStatus(200))
         .catch(next);
 });

@@ -65,7 +65,7 @@ router.patch('/:id', (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-    return Permission.findByIdAndRemove(req._permission._id)
+    return Permission.findByIdAndDelete(req._permission._id)
         .then(() => res.sendStatus(200))
         .catch(next);
 });

@@ -41,10 +41,12 @@ const _sendMessage = async (_emailSender, _name, _phone, _newsletter, _subject, 
     });
 }
 
-router.post('/', async (req, res, next) => {
+router.post('/', uploadMiddleware, async (req, res, next) => {
     const { body } = req;
 
     try {
+        console.log('Creating', body);
+
         if (!body._user_email) {
             return res.status(422).json({
                 errors: {
@@ -62,11 +64,28 @@ router.post('/', async (req, res, next) => {
         }
 
         if (!body._user_password) {
-            return res.status(422).json({
-                errors: {
-                    _user_password: 'is required',
-                },
-            });
+            if (!body._user_passwordNew && !body._user_passwordNewConfirm) {
+                return res.status(422).json({
+                    errors: {
+                        _user_password: 'is required',
+                    },
+                });
+            } else if (body._user_passwordNew || body._user_passwordNewConfirm) {
+                if (!body._user_passwordNew) {
+                    return res.status(422).json({
+                        errors: {
+                            _user_passwordNew: 'is required',
+                        },
+                    });
+                }
+                if (!body._user_passwordNewConfirm) {
+                    return res.status(422).json({
+                        errors: {
+                            _user_passwordNewConfirm: 'is required',
+                        },
+                    });
+                }
+            }
         }
 
         if (!body._user_fingerprint) {
@@ -95,10 +114,12 @@ router.post('/', async (req, res, next) => {
         const finalUser = new User({
             _user_email: body._user_email,
             _user_username: body._user_username,
-            _user_password: passwordHash.generate(body._user_password),
+            _user_password: body._user_password
+                ? passwordHash.generate(body._user_password)
+                : passwordHash.generate(body._user_passwordNew),
             _user_fingerprint: body._user_fingerprint,
         });
-        finalUser.save();
+        await finalUser.save();
 
         // Create a verification token for this user
         const finalToken = new Token({ User: finalUser, _userIsVerified: false, _token_body: crypto.randomBytes(16).toString('hex') });
@@ -119,8 +140,16 @@ router.post('/', async (req, res, next) => {
             }
         };
 
-        //send a verification mail to the user's email
-        _sendMessage(process.env.EMAIL, 'Chatbot.', null, null, 'Hello ✔ and Welcome', '<h1>We are happy to be working with you ' + body._user_username + '</h1><br/><p style="margin: 0;">Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + finalToken._token_body + '.\n' + '</p><br/><p style="margin: 0;">We Thank you for your faith in us.</p>', finalUser._user_email, _sendMessageCallback);
+        if (!body._user_password) {
+            if (!body._user_passwordNew && !body._user_passwordNewConfirm) {
+                //send a verification mail to the user's email
+                _sendMessage(process.env.EMAIL, 'Chatbot.', null, null, 'Hello ✔ and Welcome', '<h1>We are happy to be working with you ' + body._user_username + '</h1><br/><p style="margin: 0;">Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + finalToken._token_body + '.\n' + '</p><br/><p style="margin: 0;">We Thank you for your faith in us.</p>', finalUser._user_email, _sendMessageCallback);
+            } else if (body._user_passwordNew || body._user_passwordNewConfirm) {
+                return res.json({
+                    _user: finalUser.toJSON()
+                });
+            }
+        }
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error });
@@ -429,8 +458,8 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-    return User.findByIdAndRemove(req._user._id)
-        .then(() => res.sendStatus(200))
+    return User.findByIdAndDelete(req._user._id)
+        .then(() => res.json({ _user: req._user.toJSON() }))
         .catch(next);
 });
 

@@ -551,6 +551,14 @@ form {
             color: rgba($color: $red, $alpha: 0.5);
             padding: 0;
         }
+
+        &._danger {
+            color: rgba($color: $red, $alpha: 0.5);
+
+            .buttonBorders {
+                border: 0.1vh solid rgba($color: $red, $alpha: 0.5);
+            }
+        }
     }
 
     &:hover {
@@ -850,6 +858,260 @@ form {
                     $r_deg: 0,
                     $s_x: 1,
                     $s_y: 1);
+            }
+        }
+    }
+
+    &._feedbackModal {
+        z-index: 1062;
+    }
+
+    &._userModal {
+        z-index: 1061;
+
+        .modal-dialog {
+            @include _dimensions($width: 85%, $height: 85%);
+            max-width: none;
+
+            .modal-content {
+                background: $sectionBackground;
+                @include _dimensions($width: '', $height: 100%);
+
+                form {
+                    gap: 2.5vh;
+
+                    .modal-header {
+                        padding: 2vh 4vh 0 4vh;
+                    }
+
+                    .modal-body {
+                        padding: 0 4vh;
+
+                        .row {
+                            .col {
+                                ._formGroup {
+                                    &._disabled {
+                                        &::before {
+                                            opacity: 0;
+                                        }
+
+                                        ._formLabel {
+                                            input {
+                                                background: transparent;
+                                                border: 0 !important;
+                                            }
+
+                                            label {
+                                                @include _transform($top: 3.5vh, $left: calc(-1vh * .15), $bottom: '', $right: '', $t_x: 0, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                            }
+
+                                            &>._formControl:focus~label,
+                                            &>._formControl:not(:placeholder-shown)~label,
+                                            &>._formControl-plaintext~label,
+                                            &>.form-select~label {
+                                                @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: .85, $s_y: .85);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            p {
+                                margin: 0;
+                                font-size: 1.75vh;
+                                color: rgba($black, .5);
+                            }
+
+                            button {
+                                @include _dimensions($width: 12.5vh, $height: '');
+
+                                span {
+                                    svg {
+                                        margin: 0 0 0 1.25vh;
+                                    }
+                                }
+
+                                &._edit {
+                                    @include _dimensions($width: 20.5vh, $height: '');
+                                }
+                            }
+
+                            &:nth-of-type(1) {
+                                position: relative;
+                                margin: 0 0 8vh 0;
+
+                                &::after {
+                                    content: '';
+                                    position: absolute;
+                                    background: darken($color: $sectionBackground, $amount: 5);
+                                    @include _dimensions($width: 100%, $height: .1vh);
+                                    @include _transform($top: '', $left: 0, $bottom: 0, $right: '', $t_x: 0, $t_y: 4vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                }
+                            }
+
+                            &:nth-of-type(4),
+                            &:nth-of-type(5) {
+                                ._formGroup {
+                                    ._formLabel {
+                                        ._formControl {
+                                            &._typing {
+                                                color: transparent;
+                                            }
+                                        }
+
+                                        ._autocorrect {
+                                            position: absolute;
+                                            padding: 1vh;
+                                            @include _dimensions($width: fit-content, $height: 7vh);
+                                            @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+
+                                            p {
+                                                margin: 0;
+                                                line-height: 1.25;
+                                                font-size: 1rem;
+                                                font-weight: 400;
+
+                                                &._countrySuggestion,
+                                                &._citySuggestion,
+                                                &._permissionSuggestion {
+                                                    color: $liteGray;
+                                                }
+
+                                                &._typedCharacters {
+                                                    color: $black;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    ._SimpleBar {
+                                        position: absolute;
+                                        max-height: 40vh;
+                                        z-index: 10;
+                                        @include _dimensions($width: 100%, $height: '');
+
+                                        .list-group {
+                                            max-height: 40vh;
+                                            background: $white;
+                                            margin: 0;
+                                            padding: 0;
+                                            box-shadow: 1.25vh 1.25vh 4.5vh -2.5vh rgba($black, .5);
+                                            @include _dimensions($width: 100%, $height: '');
+
+                                            &-item {
+                                                position: relative;
+                                                margin: 0;
+                                                padding: 1vh 2vh;
+                                                font-size: .9rem;
+                                                font-weight: 400;
+                                                line-height: 1.25;
+                                                cursor: pointer;
+                                                @include _dimensions($width: 100%, $height: 5.75vh);
+
+                                                img {
+                                                    @include _dimensions($width: 7.5vh, $height: 5vh);
+                                                    margin: .75vh 2.5vh .75vh 0;
+                                                }
+
+                                                &:hover {
+                                                    background: $hoverGray;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            &:nth-of-type(6) {
+                                position: relative;
+                                margin: 8vh 0 0 0;
+
+                                &::before {
+                                    content: '';
+                                    position: absolute;
+                                    background: darken($color: $sectionBackground, $amount: 5);
+                                    @include _dimensions($width: 100%, $height: .1vh);
+                                    @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -4vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                }
+                            }
+
+                            &:nth-of-type(8) {
+                                position: relative;
+                                margin: 8vh 0 1.5vh 0;
+
+                                &::before {
+                                    content: '';
+                                    position: absolute;
+                                    background: darken($color: $sectionBackground, $amount: 5);
+                                    @include _dimensions($width: 100%, $height: .1vh);
+                                    @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -4vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                }
+                            }
+
+                            &:not(:nth-of-type(1), :nth-of-type(8)) {
+                                .col {
+                                    &:first-of-type {
+                                        padding: 0 0 0 2.5vh;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    .modal-footer {
+                        padding: 0 4vh;
+
+                        .row {
+                            .col {
+                                ._formGroup {
+                                    &._disabled {
+                                        &::before {
+                                            opacity: 0;
+                                        }
+
+                                        ._formLabel {
+                                            input {
+                                                background: transparent;
+                                                border: 0 !important;
+                                            }
+
+                                            label {
+                                                @include _transform($top: 3.5vh, $left: calc(-1vh * .15), $bottom: '', $right: '', $t_x: 0, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                            }
+
+                                            &>._formControl:focus~label,
+                                            &>._formControl:not(:placeholder-shown)~label,
+                                            &>._formControl-plaintext~label,
+                                            &>.form-select~label {
+                                                @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: .85, $s_y: .85);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            p {
+                                margin: 0;
+                                font-size: 1.75vh;
+                                color: rgba($black, .5);
+                            }
+
+                            button {
+                                @include _dimensions($width: 12.5vh, $height: '');
+
+                                span {
+                                    svg {
+                                        margin: 0 0 0 1.25vh;
+                                    }
+                                }
+
+                                &._edit {
+                                    @include _dimensions($width: 20.5vh, $height: '');
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

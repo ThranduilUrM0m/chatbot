@@ -71,7 +71,7 @@ router.patch('/:id', (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-    return Conversation.findByIdAndRemove(req._conversation._id)
+    return Conversation.findByIdAndDelete(req._conversation._id)
         .then(() => res.sendStatus(200))
         .catch(next);
 });

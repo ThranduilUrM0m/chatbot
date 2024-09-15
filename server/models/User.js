@@ -64,6 +64,9 @@ const User = new Schema({
         type: Boolean,
         default: false
     },
+    _user_logindate: [{
+        type: Date
+    }],
     Role: [{
         type: Schema.Types.ObjectId,
         required: false,
