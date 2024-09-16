@@ -3,7 +3,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const Permission = mongoose.model('Permission');
+const Conversation = mongoose.model('Conversation');
 const router = express.Router();
 
 router.post('/', (req, res, next) => {
@@ -17,10 +17,10 @@ router.post('/', (req, res, next) => {
         });
     }
 
-    const finalPermission = new Permission(body);
-    return finalPermission.save()
+    const finalConversation = new Conversation(body);
+    return finalConversation.save()
         .then(() => {
-            res.json({ _permission: finalPermission.toJSON() });
+            res.json({ _Conversation: finalConversation.toJSON() });
         })
         .catch(next);
 });
@@ -50,6 +50,7 @@ router.get('/:id', (req, res, next) => {
     })
 });
 
+/* ALl Fields */
 router.patch('/:id', (req, res, next) => {
     const { body } = req;
 

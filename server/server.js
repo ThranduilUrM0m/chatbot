@@ -21,6 +21,7 @@ import { Server } from 'socket.io';
 import os from 'os';
 import cluster from 'cluster';
 import dotenv from 'dotenv';
+/* Routes */
 import router from './routes/index.js';
 import passport from 'passport';
 import OpenAI from 'openai';
@@ -36,6 +37,7 @@ dotenv.config();
 
 let workers = [];
 
+/* Multithread */
 const setupWorkerProcesses = () => {
     // to read number of cores on system
     let numCores = os.cpus().length;
@@ -107,9 +109,12 @@ const setUpExpress = () => {
     db.on('error', () => { console.log('---FAILED to connect to mongoose') });
     db.once('open', () => { console.log('+++Connected to mongoose') });
 
+
     app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
     app.use(bodyParser.json({ limit: '50mb' }));
     app.use(morgan('dev'));
+
+    /* Cookie lifetime */
     app.use(session({ secret: '_secret', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }));
 
     //Définition du routeur
@@ -178,7 +183,7 @@ const setUpExpress = () => {
 
             try {
                 // Find the conversation by ID
-                const conversation = await Conversation.findOne(_conversation_user);
+                const conversation = await Conversation.findOne({ _conversation_user });
 
                 if (!conversation) {
                     const response = await openai.chat.completions.create({
@@ -190,7 +195,7 @@ const setUpExpress = () => {
                     });
                     const aiMessage = response.choices[0].message.content;
                     const updatedChatHistory = [...chatHistory, { role: 'assistant', content: aiMessage }];
-    
+
                     // Save the conversation to the database
                     const newConversation = new Conversation({
                         _conversation_user,
@@ -198,19 +203,19 @@ const setUpExpress = () => {
                         totalMessages: updatedChatHistory.length,
                         totalAssistantMessages: updatedChatHistory.filter(msg => msg.role === 'assistant').length,
                     });
-    
+
                     await newConversation.save();
+
+                    // Acknowledge back to the client with the conversation ID and chat history
+                    callback({ conversationId: newConversation._id, chatHistory: updatedChatHistory });
+
+                    // Optionally emit the conversation to all clients
+                    socket.emit('newConversation', {
+                        user: _conversation_user,
+                        chatHistory: conversation.chatHistory,
+                        conversationId: conversation._id,
+                    });
                 }
-
-                // Acknowledge back to the client with the conversation ID and chat history
-                callback({ conversationId: newConversation._id, chatHistory: updatedChatHistory });
-
-                // Optionally emit the conversation to the client
-                socket.emit('newConversation', {
-                    user: _conversation_user,
-                    chatHistory: conversation.chatHistory,
-                    conversationId: conversation._id,
-                });
             } catch (error) {
                 console.error('Error with OpenAI API:', error);
                 socket.emit('error', { message: 'Failed to process conversation' });

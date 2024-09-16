@@ -56,10 +56,6 @@ const User = new Schema({
         type: Boolean,
         default: false
     },
-    _user_toDelete: {
-        type: Boolean,
-        default: false
-    },
     _user_isActive: {
         type: Boolean,
         default: false
@@ -77,15 +73,31 @@ const User = new Schema({
     toJSON: { virtuals: true }
 });
 
+// Pre-save hook to set the default Role to "User"
+User.pre('save', async function (next) {
+    // Only set the default role if none has been assigned
+    if (!this.Role || this.Role.length === 0) {
+        const RoleModel = mongoose.model('Role');
+        
+        // Find the role with _role_title equal to 'User'
+        const defaultRole = await RoleModel.findOne({ _role_title: 'User' });
+        
+        if (defaultRole) {
+            this.Role = [defaultRole._id];  // Set the default role as "User"
+        }
+    }
+    next();
+});
+
 User.methods = {
     authenticate: async (_userPasswordValue, findUser) => {
         return await passwordHash.verify(_userPasswordValue, findUser._user_password);
     },
+    
     /* In JavaScript, arrow functions do not have their own this context, and they inherit the this context from the surrounding code. In this case, when using an arrow function for getToken, the this inside the function does not refer to the User model, but rather to the global context */
     getToken: function () {
         return jwt.sign({ sub: this._id }, '_chatbot'); // Replace with your actual secret key
     },
 }
 
-User.index({ updatedAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 7, partialFilterExpression: { _user_toDelete: { $eq: true } } })
 export default mongoose.models.User || mongoose.model('User', User);

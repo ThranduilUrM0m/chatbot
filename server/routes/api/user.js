@@ -45,8 +45,6 @@ router.post('/', uploadMiddleware, async (req, res, next) => {
     const { body } = req;
 
     try {
-        console.log('Creating', body);
-
         if (!body._user_email) {
             return res.status(422).json({
                 errors: {
@@ -129,27 +127,19 @@ router.post('/', uploadMiddleware, async (req, res, next) => {
         const _sendMessageCallback = (error, data) => {
             if (error) {
                 return res.status(200).json({
-                    _message: error
+                    _messageText: error
                 });
             } else {
                 return res.status(200).json({
                     _user: finalUser,
-                    text: 'And that\'s it, only thing left is verify your email. \nWe have sent you an email verification.',
+                    _messageText: 'And that\'s it, only thing left is verify your email.\nWe have sent you an email verification.',
                     _message: data
                 });
             }
         };
 
-        if (!body._user_password) {
-            if (!body._user_passwordNew && !body._user_passwordNewConfirm) {
-                //send a verification mail to the user's email
-                _sendMessage(process.env.EMAIL, 'Chatbot.', null, null, 'Hello ✔ and Welcome', '<h1>We are happy to be working with you ' + body._user_username + '</h1><br/><p style="margin: 0;">Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + finalToken._token_body + '.\n' + '</p><br/><p style="margin: 0;">We Thank you for your faith in us.</p>', finalUser._user_email, _sendMessageCallback);
-            } else if (body._user_passwordNew || body._user_passwordNewConfirm) {
-                return res.json({
-                    _user: finalUser.toJSON()
-                });
-            }
-        }
+        // send a verification mail to the user's email
+        _sendMessage(process.env.EMAIL, 'Chatbot.', null, null, 'Hello ✔ and Welcome', '<h1>We are happy to be working with you ' + body._user_username + '</h1><br/><p style="margin: 0;">Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + finalToken._token_body + '.\n' + '</p><br/><p style="margin: 0;">We Thank you for your faith in us.</p>', finalUser._user_email, _sendMessageCallback);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error });
@@ -182,7 +172,7 @@ router.post('/_confirm', async (req, res, next) => {
         return res.status(200).json({
             _user: _u,
             _token: _t,
-            text: 'And that\'s it, your account has been verified. You are now part of us. You will be redirected to the login page upon closing this message.'
+            text: 'And that\'s it, your account has been verified.\nYou are now part of us.\nYou will be redirected to the login page upon closing this message.'
         });
     } catch (error) {
         console.log(error);
@@ -276,7 +266,6 @@ router.post('/_login', async (req, res, next) => {
             },
             {
                 $set: {
-                    _user_toDelete: false,
                     _user_isActive: true,
                 },
                 $push: {
@@ -424,12 +413,6 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
             }
         }
 
-        if (!_.isEmpty(body._user_toDelete) && !_.isUndefined(body._user_toDelete)) {
-            if (typeof body._user_toDelete !== 'undefined') {
-                req._user._user_toDelete = body._user_toDelete;
-            }
-        }
-
         if (!_.isEmpty(body._user_isActive) && !_.isUndefined(body._user_isActive)) {
             if (typeof body._user_isActive !== 'undefined') {
                 req._user._user_isActive = body._user_isActive;
@@ -457,23 +440,7 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
-    const { body } = req;
-
-    try {
-        if (!_.isEmpty(body._user_toDelete) && !_.isUndefined(body._user_toDelete)) {
-            if (typeof body._user_toDelete !== 'undefined') {
-                req._user._user_toDelete = true;
-            }
-        }
-
-        return await req._user.save()
-            .then(() => res.json({ _user: req._user.toJSON() }))
-            .catch(next);
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error });
-    }
+router.delete('/:id', (req, res, next) => {
     return User.findByIdAndDelete(req._user._id)
         .then(() => res.json({ _user: req._user.toJSON() }))
         .catch(next);

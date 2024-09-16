@@ -4,7 +4,6 @@ import {
 	useNavigate,
 	useLocation
 } from 'react-router-dom';
-import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -16,6 +15,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleXmark } from '@fortawesome/free-regular-svg-icons';
+import axios from 'axios';
 import _ from 'lodash';
 import { io } from 'socket.io-client';
 
@@ -136,11 +136,6 @@ const Login = (props) => {
 		setShowModal(true);
 	};
 
-	const _toSignup = async (event) => {
-		event.preventDefault();
-		navigate('/signup', { replace: true, state: { from: location } });
-	}
-
 	return (
 		<main className='_login'>
 			<section className='grid'>
@@ -245,27 +240,12 @@ const Login = (props) => {
 				<div className='g-col-6 d-flex justify-content-center align-items-center'>
 					<Card className='border border-0 rounded-0'>
 						<Card.Header className='rounded-0 d-flex justify-content-start align-items-end'>
-							<h4>Signup<b className='pink_dot'>.</b></h4>
+							<h4>Dev<b className='pink_dot'>.</b></h4>
 						</Card.Header>
 						<Card.Body className='rounded-0'>
-							<Form className='d-flex flex-column justify-content-center align-items-start' onSubmit={(event) => _toSignup(event)}>
+							<Form className='d-flex flex-column justify-content-center align-items-start'>
 								<h6>Welcome to boutaleb.</h6>
 								<p>To speak louder.</p>
-								<Button
-									type='submit'
-									className='border border-0 rounded-0 w-100'
-									variant='outline-light'
-								>
-									<div className='buttonBorders'>
-										<div className='borderTop'></div>
-										<div className='borderRight'></div>
-										<div className='borderBottom'></div>
-										<div className='borderLeft'></div>
-									</div>
-									<span>
-										Signup<b className='pink_dot'>.</b>
-									</span>
-								</Button>
 							</Form>
 						</Card.Body>
 					</Card>

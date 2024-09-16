@@ -6,18 +6,18 @@ import axios from 'axios';
 
 import PDashboard from './_pane/PDashboard';
 import PUsers from './_pane/PUsers';
+import PConversations from './_pane/PConversations';
+import PAudit from './_pane/PAudit';
 import PSettings from './_pane/PSettings';
 
 import Nav from 'react-bootstrap/Nav';
 import Tab from 'react-bootstrap/Tab';
-import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGear, faRightFromBracket, faCube, faUserGroup, faHandsClapping, faClockRotateLeft, faBraille, faChartSimple } from '@fortawesome/free-solid-svg-icons';
+import { faGear, faRightFromBracket, faCube, faUserGroup, faHandsClapping, faClockRotateLeft, faChartSimple } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 
 import 'simplebar-react/dist/simplebar.min.css';
+import { faBell } from '@fortawesome/free-regular-svg-icons';
 
 const _socketURL = _.isEqual(process.env.NODE_ENV, 'production')
     ? window.location.hostname
@@ -32,14 +32,8 @@ const Dashboard = (props) => {
     let location = useLocation();
     let navigate = useNavigate();
 
-    /* Dropdown State Variables */
+    /* Notification Dropdown State Variables */
     const [_showDropdown, setShowDropdown] = useState(false);
-
-    /* Modal State Variables */
-    const [_showModal, setShowModal] = useState(false);
-    const [_modalHeader, setModalHeader] = useState('');
-    const [_modalBody, setModalBody] = useState('');
-    const [_modalIcon, setModalIcon] = useState('');
 
 
     const _handleLogout = async () => {
@@ -56,17 +50,6 @@ const Dashboard = (props) => {
                 console.log(error);
             });
     }
-
-    const [timeoutId, setTimeoutId] = useState(null);
-    const handleMouseEnter = () => {
-        clearTimeout(timeoutId);
-        setShowDropdown(true);
-    };
-
-    const handleMouseLeave = () => {
-        const id = setTimeout(() => setShowDropdown(false), 500); // 500ms delay
-        setTimeoutId(id);
-    };
 
     const checkAuthentication = useCallback(async () => {
         try {
@@ -132,12 +115,6 @@ const Dashboard = (props) => {
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link className='d-flex align-items-start' eventKey='_tracabilite'>
-                                    <FontAwesomeIcon icon={faBraille} />
-                                    <p>Traçabilité<b className='pink_dot'>.</b></p>
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
                                 <Nav.Link className='d-flex align-items-start' eventKey='_audit'>
                                     <FontAwesomeIcon icon={faChartSimple} />
                                     <p>Audit<b className='pink_dot'>.</b></p>
@@ -174,14 +151,25 @@ const Dashboard = (props) => {
                                     <FontAwesomeIcon className='m-auto' icon={faGear} />
                                 </Nav.Link>
                             </Nav.Item>
+                            {/* JOY : Show Notifications of User Interaction With Chatbot per a limited period */}
+                            <Nav.Item className='_motifications'>
+                                <Nav.Link className='d-flex align-items-start'>
+                                    <FontAwesomeIcon className='m-auto' icon={faBell} />
+                                </Nav.Link>
+                            </Nav.Item>
                         </Nav>
                         <Tab.Content>
                             <Tab.Pane eventKey='_dashboard'>
                                 <PDashboard />
                             </Tab.Pane>
-
                             <Tab.Pane eventKey='_users'>
                                 <PUsers />
+                            </Tab.Pane>
+                            <Tab.Pane eventKey='_conversations'>
+                                <PConversations />
+                            </Tab.Pane>
+                            <Tab.Pane eventKey='_audit'>
+                                <PAudit />
                             </Tab.Pane>
                             <Tab.Pane eventKey='_settings'>
                                 <PSettings />
@@ -190,34 +178,6 @@ const Dashboard = (props) => {
                     </div>
                 </Tab.Container>
             </section>
-
-            <Modal show={_showModal} onHide={() => setShowModal(false)} centered>
-                <Form>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{_modalHeader}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body className='text-muted'><pre>{_modalBody}</pre></Modal.Body>
-                    <Modal.Footer>
-                        {_modalIcon}
-                        <Button
-                            type='button'
-                            className='border border-0 rounded-0 inverse w-50'
-                            variant='outline-light'
-                            onClick={() => setShowModal(false)}
-                        >
-                            <div className='buttonBorders'>
-                                <div className='borderTop'></div>
-                                <div className='borderRight'></div>
-                                <div className='borderBottom'></div>
-                                <div className='borderLeft'></div>
-                            </div>
-                            <span>
-                                Close<b className='pink_dot'>.</b>
-                            </span>
-                        </Button>
-                    </Modal.Footer>
-                </Form>
-            </Modal>
         </main>
     );
 }

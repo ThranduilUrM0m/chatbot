@@ -936,16 +936,15 @@ form {
                                 }
                             }
 
-                            &:nth-of-type(1) {
+                            &:nth-of-type(2) {
                                 position: relative;
-                                margin: 0 0 8vh 0;
 
                                 &::after {
                                     content: '';
                                     position: absolute;
                                     background: darken($color: $sectionBackground, $amount: 5);
                                     @include _dimensions($width: 100%, $height: .1vh);
-                                    @include _transform($top: '', $left: 0, $bottom: 0, $right: '', $t_x: 0, $t_y: 4vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                    @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -4vh, $r_deg: 0, $s_x: 1, $s_y: 1);
                                 }
                             }
 
@@ -1024,7 +1023,7 @@ form {
 
                             &:nth-of-type(6) {
                                 position: relative;
-                                margin: 8vh 0 0 0;
+                                margin: 7vh 0 0 0;
 
                                 &::before {
                                     content: '';
@@ -1035,20 +1034,176 @@ form {
                                 }
                             }
 
-                            &:nth-of-type(8) {
-                                position: relative;
-                                margin: 8vh 0 1.5vh 0;
+                            &._roles {
+                                .col {
+                                    ._formGroup {
+                                        &._roleGroup {
+                                            @include _dimensions($width: '', $height: 7vh);
 
-                                &::before {
-                                    content: '';
-                                    position: absolute;
-                                    background: darken($color: $sectionBackground, $amount: 5);
-                                    @include _dimensions($width: 100%, $height: .1vh);
-                                    @include _transform($top: 0, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -4vh, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                            ._formLabel {¡
+                                                ._formControl {
+                                                    @include _transitions($property: 'all',
+                                                        $duration: 0.25s,
+                                                        $timing: 'ease',
+                                                        $delay: ''
+                                                    );
+    
+                                                    &._typing {
+                                                        color: transparent;
+                                                        @include _transitions($property: 'all',
+                                                            $duration: 0.25s,
+                                                            $timing: 'ease',
+                                                            $delay: ''
+                                                        );
+                                                    }
+                                                }
+    
+                                                ._autocorrect {
+                                                    position: absolute;
+                                                    padding: 0 1vh;
+                                                    @include _dimensions($width: fit-content, $height: 7vh);
+                                                    @include _transform($top: 0,
+                                                        $left: 0,
+                                                        $bottom: '',
+                                                        $right: '',
+                                                        $t_x: 0,
+                                                        $t_y: 0,
+                                                        $r_deg: 0,
+                                                        $s_x: 1,
+                                                        $s_y: 1);
+    
+                                                    p {
+                                                        margin: 0;
+    
+                                                        &._roleSuggestion {
+                                                            color: $liteGray;
+                                                        }
+    
+                                                        &._typedCharacters {
+                                                            color: $black;
+                                                        }
+                                                    }
+                                                }
+    
+                                                .__selectedRoles {
+                                                    position: absolute;
+                                                    @include _dimensions($width: 100%, $height: 7vh);
+                                                    @include _transform($top: 0,
+                                                        $left: 100%,
+                                                        $bottom: '',
+                                                        $right: '',
+                                                        $t_x: 1vh,
+                                                        $t_y: 0,
+                                                        $r_deg: 0,
+                                                        $s_x: 1,
+                                                        $s_y: 1);
+    
+                                                    ul {
+                                                        @include _dimensions($width: '', $height: 7vh);
+    
+                                                        li {
+                                                            position: relative;
+                                                            font-size: 2vh;
+                                                            font-weight: 400;
+                                                            line-height: 1.25;
+                                                            border-radius: .75vh;
+                                                            padding: 0 3.5vh 0 1.15vh;
+                                                            margin: auto 1vh auto 0;
+                                                            box-shadow: 1vh 0 1vh -1vh rgba($black, 0.5);
+                                                            background: $hoverGray;
+                                                            @include _dimensions($width: fit-content, $height: 4.65vh);
+    
+                                                            p {
+                                                                margin: 0;
+                                                            }
+    
+                                                            .__close {
+                                                                @include _transform($top: 50%,
+                                                                    $left: '',
+                                                                    $bottom: '',
+                                                                    $right: .75vh,
+                                                                    $t_x: 0,
+                                                                    $t_y: -50%,
+                                                                    $r_deg: 0,
+                                                                    $s_x: 1,
+                                                                    $s_y: 1);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+    
+                                            .list-group {
+                                                max-height: 14vh;
+                                                background: $white;
+                                                margin: 0;
+                                                padding: 0;
+                                                box-shadow: 1.25vh 1.25vh 4.5vh -2.5vh rgba($black, 0.5);
+                                                @include _dimensions($width: 100%, $height: '');
+    
+                                                &:not(.hidden) {
+                                                    min-height: 7vh;
+                                                }
+    
+                                                &-item {
+                                                    position: relative;
+                                                    cursor: pointer;
+                                                    font-size: 2vh;
+                                                    font-weight: 400;
+                                                    line-height: 1.25;
+                                                    border: .15vh solid $d;
+                                                    border-radius: .75vh;
+                                                    background: $hoverGray;
+                                                    padding: 0 .75vh;
+                                                    margin: auto 0 auto 1vh;
+                                                    @include _dimensions($width: fit-content, $height: 4.65vh);
+    
+                                                    p {
+                                                        margin: 0;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        ._formLabel {
+                                            ._formControl {
+                                                &._typing {
+                                                    color: transparent;
+                                                }
+                                            }
+    
+                                            ._autocorrect {
+                                                position: absolute;
+                                                padding: 1vh;
+                                                @include _dimensions($width: fit-content, $height: 7vh);
+                                                @include _transform($top: 0,
+                                                    $left: 0,
+                                                    $bottom: '',
+                                                    $right: '',
+                                                    $t_x: 0,
+                                                    $t_y: 0,
+                                                    $r_deg: 0,
+                                                    $s_x: 1,
+                                                    $s_y: 1);
+    
+                                                p {
+                                                    margin: 0;
+    
+                                                    &._roleSuggestion {
+                                                        color: $liteGray;
+                                                    }
+    
+                                                    &._typedCharacters {
+                                                        color: $black;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
 
-                            &:not(:nth-of-type(1), :nth-of-type(8)) {
+                            &:not(:nth-of-type(1)) {
                                 .col {
                                     &:first-of-type {
                                         padding: 0 0 0 2.5vh;
@@ -1059,7 +1214,7 @@ form {
                     }
 
                     .modal-footer {
-                        padding: 0 4vh;
+                        padding: 0 4vh 1.25vh 4vh;
 
                         .row {
                             .col {

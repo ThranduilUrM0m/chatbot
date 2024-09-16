@@ -8,7 +8,6 @@ import Container from 'react-bootstrap/Container';
 import Layout from './components/Layout/Layout';
 import Home from './components/Home/Home';
 import Login from './components/Login/Login.js';
-import Signup from './components/Signup/Signup.js';
 import Confirmation from './components/Confirmation/Confirmation';
 import Dashboard from './components/Dashboard/Dashboard';
 import NotFound from './components/NotFound/NotFound';
@@ -52,7 +51,6 @@ const App = (props) => {
 				<Route path='/' element={<Layout />}>
 					<Route index element={<Home />} />
 					<Route path='/login' element={<Login />} />
-					<Route path='/signup' element={<Signup />} />
 					<Route path={`/confirmation/:_tokenID`} element={<Confirmation />} />
 					<Route
 						path='/dashboard'

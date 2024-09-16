@@ -10,6 +10,7 @@ const Message = new Schema({
         type: String,
         required: true
     },
+    /* timestamp true */
     timestamp: {
         type: Date,
         default: Date.now
@@ -20,12 +21,14 @@ const Message = new Schema({
     }
 });
 
+/* Fréquence d'utilisation */
 const Conversation = new Schema({
     _conversation_user: {
         type: String,
         required: true
     },
     chatHistory: [Message],
+    /* Secondary Graph add timestamp */
     totalMessages: {
         type: Number,
         default: 0

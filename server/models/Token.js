@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+/* Upon Creating */
 const { Schema } = mongoose;
 const Token = new Schema({
     User: {

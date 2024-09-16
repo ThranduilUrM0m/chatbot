@@ -81,6 +81,7 @@ const Home = (props) => {
     const _fingerprint = usePersistentFingerprint(setIsFingerprintLoaded);
 
     const _startNewConversation = () => {
+        /* Illelagl to retrieve IP Adresse */
         if (isFingerprintLoaded) {
             setIsLoading(true);
             _socket.emit('_newConversation', { _conversation_user: _fingerprint }, (response) => {
