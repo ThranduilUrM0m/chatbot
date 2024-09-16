@@ -342,12 +342,12 @@ const PUsers = (props) => {
                 return cell ? (
                     <Badge bg="success">
                         <FontAwesomeIcon icon={faCircleCheck} />
-                        Online.
+                        En ligne.
                     </Badge>
                 ) : (
                     <Badge bg="danger">
                         <FontAwesomeIcon icon={faCircleXmark} />
-                        Offline.
+                        Hors ligne.
                     </Badge>
                 );
             },
@@ -365,12 +365,12 @@ const PUsers = (props) => {
                 return cell ? (
                     <Badge bg="success">
                         <FontAwesomeIcon icon={faCircleCheck} />
-                        Verified.
+                        Vérifié.
                     </Badge>
                 ) : (
                     <Badge bg="danger">
                         <FontAwesomeIcon icon={faCircleXmark} />
-                        Not Verified.
+                        Non Vérifié.
                     </Badge>
                 );
             },
@@ -1377,8 +1377,6 @@ const PUsers = (props) => {
         _getUsers();
         _getRoles();
         _getCountries();
-
-        console.log(_userItems);
 
         _socket.on('_userConfirmedLoad', (message) => {
             _getUsers();

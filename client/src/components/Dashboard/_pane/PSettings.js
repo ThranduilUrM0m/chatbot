@@ -638,8 +638,10 @@ const PSettings = (props) => {
                             <Row className='g-col-12 grid'>
                                 <Col className='g-col-3'>
                                     <span>
-                                        Account Settings.
-                                        <p className='text-muted'>Update your Profile photo and details Here.</p>
+                                        Paramètres.
+                                        <p className="text-muted">
+                                            Mettez à jour vos informations ici.
+                                        </p>
                                     </span>
                                 </Col>
                                 <Col className='g-col-3'></Col>
@@ -691,7 +693,7 @@ const PSettings = (props) => {
                                         <p className='text-muted'>This will be displayed on your profile.</p>
                                     </span>
                                 </Col>
-                                <Col className='g-col-3'>
+                                <Col className='g-col-4'>
                                     <Form.Group
                                         controlId='_user_lastname'
                                         className={`_formGroup ${_userLastnameFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
@@ -733,7 +735,7 @@ const PSettings = (props) => {
                                         </FloatingLabel>
                                     </Form.Group>
                                 </Col>
-                                <Col className='g-col-3'>
+                                <Col className='g-col-4'>
                                     <Form.Group
                                         controlId='_user_firstname'
                                         className={`_formGroup ${_userFirstnameFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
@@ -778,7 +780,7 @@ const PSettings = (props) => {
                             </Row>
                             <Row className='g-col-12 grid'>
                                 <Col className='g-col-3'></Col>
-                                <Col className='g-col-3'>
+                                <Col className='g-col-4'>
                                     <Form.Group
                                         controlId='_user_email'
                                         className={`_formGroup ${_userEmailFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
@@ -820,7 +822,7 @@ const PSettings = (props) => {
                                         </FloatingLabel>
                                     </Form.Group>
                                 </Col>
-                                <Col className='g-col-3'>
+                                <Col className='g-col-4'>
                                     <Form.Group
                                         controlId='_user_username'
                                         className={`_formGroup ${_userUsernameFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
@@ -866,15 +868,14 @@ const PSettings = (props) => {
 
                             {/* Profile photo */}
                             {/* Preview the image upon selecting it */}
-                            <Row className='g-col-12 grid'>
+                            {/* <Row className='g-col-12 grid'>
                                 <Col className='g-col-3'>
                                     <span>
                                         Profile photo.
                                         <p className='text-muted'>Update your profile photo.</p>
                                     </span>
                                 </Col>
-                                <Col className='g-col-3'>
-                                    {/* Replace all one option terniary conditions with the && */}
+                                <Col className='g-col-4'>
                                     <span className={`d-flex align-items-center justify-content-center ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}>
                                         <img src={_.isEmpty(_user._user_picture) ? 'logo' : _user._user_picture} alt='' />
                                         <Form.Group
@@ -896,7 +897,7 @@ const PSettings = (props) => {
                                     </span>
                                     {!_.isEmpty(_userToEdit) && (<span className='_editing d-flex justify-content-center align-items-center'><FontAwesomeIcon icon={faCamera} /></span>)}
                                 </Col>
-                            </Row>
+                            </Row> */}
 
                             {/* Contact information */}
                             <Row className='g-col-12 grid'>
@@ -906,7 +907,7 @@ const PSettings = (props) => {
                                         <p className='text-muted'>Update your profile photo.</p>
                                     </span>
                                 </Col>
-                                <Col className='g-col-3'>
+                                <Col className='g-col-4'>
                                     <Controller
                                         name='_user_country._country'
                                         control={controlSettings}
@@ -1015,7 +1016,7 @@ const PSettings = (props) => {
                                         )}
                                     />
                                 </Col>
-                                <Col className='g-col-3'>
+                                <Col className='g-col-4'>
                                     <Controller
                                         name='_user_city'
                                         control={controlSettings}
@@ -1123,7 +1124,7 @@ const PSettings = (props) => {
                             </Row>
                             <Row className='g-col-12 grid'>
                                 <Col className='g-col-3'></Col>
-                                <Col className='g-col-3'>
+                                <Col className='g-col-4'>
                                     <Form.Group
                                         controlId='_user_phone'
                                         className={`_formGroup ${_userPhoneFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
@@ -1176,7 +1177,7 @@ const PSettings = (props) => {
                                         <p className='text-muted'>Update your password.</p>
                                     </span>
                                 </Col>
-                                <Col className='g-col-3'>
+                                <Col className='g-col-4'>
                                     <Form.Group
                                         controlId='_user_password'
                                         className={`_formGroup ${_userPasswordFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
@@ -1221,7 +1222,7 @@ const PSettings = (props) => {
                             </Row>
                             <Row className='g-col-12 grid'>
                                 <Col className='g-col-3'></Col>
-                                <Col className='g-col-3'>
+                                <Col className='g-col-4'>
                                     <Form.Group
                                         controlId='_user_passwordNew'
                                         className={`_formGroup ${_userPasswordNewFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
@@ -1263,7 +1264,7 @@ const PSettings = (props) => {
                                         </FloatingLabel>
                                     </Form.Group>
                                 </Col>
-                                <Col className='g-col-3'>
+                                <Col className='g-col-4'>
                                     <Form.Group
                                         controlId='_user_passwordNewConfirm'
                                         className={`_formGroup ${_userPasswordNewConfirmFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
@@ -1306,9 +1307,6 @@ const PSettings = (props) => {
                                     </Form.Group>
                                 </Col>
                             </Row>
-
-                            {/* Supprimer Compte */}
-                            {/* JOY : Deleting the Account and then loging out, one issue is what if i'm the only Founder that i have access to a whole lot of stuff */}
 
                             {/* Footer */}
                             <Row className='g-col-12 grid'>

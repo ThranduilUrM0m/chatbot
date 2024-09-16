@@ -3,24 +3,21 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 const Message = new Schema({
     role: {
-        type: String, // '_conversation_user' or 'assistant'
+        /* '_conversation_user' or 'assistant' */
+        type: String,
         required: true
     },
     content: {
         type: String,
         required: true
     },
-    /* timestamp true */
-    timestamp: {
-        type: Date,
-        default: Date.now
-    },
     responseTime: {
-        type: Number, // Time in milliseconds for assistant's response (only applies to assistant messages)
+        type: Number,
         default: null
-    }
-});
+    },
+}, { timestamps: true });
 
+/* Secondary Graph add timestamp */
 /* Fréquence d'utilisation */
 const Conversation = new Schema({
     _conversation_user: {
@@ -28,7 +25,6 @@ const Conversation = new Schema({
         required: true
     },
     chatHistory: [Message],
-    /* Secondary Graph add timestamp */
     totalMessages: {
         type: Number,
         default: 0
@@ -48,7 +44,8 @@ const Conversation = new Schema({
     totalInactivityTime: {
         type: Number,
         default: 0
-    }
+    },
+    lastMessageTimestamp: { type: Date, default: Date.now }
 }, { timestamps: true });
 
 export default mongoose.models.Conversation || mongoose.model('Conversation', Conversation);

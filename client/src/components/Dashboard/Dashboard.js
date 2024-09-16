@@ -17,7 +17,7 @@ import { faGear, faRightFromBracket, faCube, faUserGroup, faHandsClapping, faClo
 import _ from 'lodash';
 
 import 'simplebar-react/dist/simplebar.min.css';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
+import { faBell, faMessage } from '@fortawesome/free-regular-svg-icons';
 
 const _socketURL = _.isEqual(process.env.NODE_ENV, 'production')
     ? window.location.hostname
@@ -110,7 +110,7 @@ const Dashboard = (props) => {
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link className='d-flex align-items-start' eventKey='_conversations'>
-                                    <FontAwesomeIcon icon={faClockRotateLeft} />
+                                    <FontAwesomeIcon icon={faMessage} />
                                     <p>Conversations<b className='pink_dot'>.</b></p>
                                 </Nav.Link>
                             </Nav.Item>

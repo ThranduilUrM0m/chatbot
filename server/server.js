@@ -183,7 +183,7 @@ const setUpExpress = () => {
 
             try {
                 // Find the conversation by ID
-                const conversation = await Conversation.findOne({ _conversation_user });
+                let conversation = await Conversation.findOne({ _conversation_user });
 
                 if (!conversation) {
                     const response = await openai.chat.completions.create({
@@ -196,23 +196,33 @@ const setUpExpress = () => {
                     const aiMessage = response.choices[0].message.content;
                     const updatedChatHistory = [...chatHistory, { role: 'assistant', content: aiMessage }];
 
-                    // Save the conversation to the database
-                    const newConversation = new Conversation({
+                    // Save the new conversation to the database
+                    conversation = new Conversation({
                         _conversation_user,
                         chatHistory: updatedChatHistory,
                         totalMessages: updatedChatHistory.length,
                         totalAssistantMessages: updatedChatHistory.filter(msg => msg.role === 'assistant').length,
                     });
 
-                    await newConversation.save();
+                    await conversation.save();
 
                     // Acknowledge back to the client with the conversation ID and chat history
-                    callback({ conversationId: newConversation._id, chatHistory: updatedChatHistory });
+                    callback({ conversationId: conversation._id, chatHistory: updatedChatHistory });
 
-                    // Optionally emit the conversation to all clients
+                    // Emit the new conversation details to all clients
+                    /* socket.emit('newConversation', {
+                        user: _conversation_user,
+                        chatHistory: updatedChatHistory, // Use updatedChatHistory for new conversations
+                        conversationId: conversation._id,
+                    }); */
+                } else {
+                    // Existing conversation found, send the existing chat history
+                    callback({ conversationId: conversation._id, chatHistory: conversation.chatHistory });
+        
+                    // Emit the existing conversation details to all clients
                     socket.emit('newConversation', {
                         user: _conversation_user,
-                        chatHistory: conversation.chatHistory,
+                        chatHistory: conversation.chatHistory, // Use existing chatHistory
                         conversationId: conversation._id,
                     });
                 }
@@ -223,7 +233,7 @@ const setUpExpress = () => {
         });
 
         socket.on('_sendMessage', async (data) => {
-            const { user, conversationId, chatHistory, role, content } = data;
+            const { user, conversationId, role, content } = data;
 
             if (!user || !conversationId || !role || !content) {
                 socket.emit('error', { message: 'Invalid message data' });
@@ -235,12 +245,21 @@ const setUpExpress = () => {
                 const conversation = await Conversation.findById(conversationId);
 
                 if (conversation) {
+                    const now = new Date();
+
                     // Add the new message to the chat history
-                    const updatedChatHistory = [...conversation.chatHistory, { role, content }];
+                    const updatedChatHistory = [...conversation.chatHistory, { role, content, timestamp: now }];
                     conversation.chatHistory = updatedChatHistory;
                     conversation.totalMessages = updatedChatHistory.length;
                     conversation.totalAssistantMessages = updatedChatHistory.filter(msg => msg.role === 'assistant').length;
-                    // Calculate other metrics if necessary
+
+                    // Calculate inactivity time
+                    const lastMessageTimestamp = conversation.lastMessageTimestamp;
+                    const inactivityTime = now - new Date(lastMessageTimestamp);
+                    const totalInactivityTime = conversation.totalInactivityTime + inactivityTime;
+
+                    conversation.totalInactivityTime = totalInactivityTime;
+                    conversation.lastMessageTimestamp = now;
 
                     await conversation.save();
 
@@ -257,12 +276,22 @@ const setUpExpress = () => {
                     });
 
                     const aiMessage = response.choices[0].message.content;
+                    const assistantTimestamp = new Date();
 
                     // Add AI's response to the chat history
-                    const finalChatHistory = [...updatedChatHistory, { role: 'assistant', content: aiMessage }];
+                    const finalChatHistory = [...updatedChatHistory, { role: 'assistant', content: aiMessage, timestamp: assistantTimestamp }];
+
+                    // Calculate response time
+                    const lastUserMessage = updatedChatHistory.filter(msg => msg.role === 'user').slice(-1)[0];
+                    const responseTime = assistantTimestamp - new Date(lastUserMessage.timestamp);
+                    const totalResponseTime = conversation.totalResponseTime + responseTime;
+                    const avgResponseTime = totalResponseTime / (conversation.totalAssistantMessages + 1);
+
                     conversation.chatHistory = finalChatHistory;
                     conversation.totalMessages = finalChatHistory.length;
                     conversation.totalAssistantMessages = finalChatHistory.filter(msg => msg.role === 'assistant').length;
+                    conversation.totalResponseTime = totalResponseTime;
+                    conversation.avgResponseTime = avgResponseTime;
 
                     // Save the updated conversation with AI's response
                     await conversation.save();
