@@ -203,109 +203,103 @@ const PAudit = (props) => {
                         </Breadcrumb>
                     </div>
                     <div className='_body flex-grow-1'>
-                        <SimpleBar
-                            style={{ maxHeight: '100%' }}
-                            forceVisible='y'
-                            autoHide={false}
-                        >
-                            <Container className='grid'>
-                                <Card className='g-col-6'>
-                                    <Card.Body className='border border-0 no-shadow'>
-                                        {/* Average Response Time Chart */}
-                                        <h3>Average Response Time</h3>
-                                        <Dropdown>
-                                            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                                Select Time Range
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item onClick={() => setTimeRangeResponseTime('hour')}>Last Hour</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeResponseTime('day')}>Last Day</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeResponseTime('week')}>Last Week</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeResponseTime('month')}>Last Month</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeResponseTime('year')}>Last Year</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                        <Line data={responseTimeData} />
-                                    </Card.Body>
-                                </Card>
-                                <Card className='g-col-6'>
-                                    <Card.Body className='border border-0 no-shadow'>
-                                        {/* Total Messages Chart */}
-                                        <h3>Total Messages</h3>
-                                        <Dropdown>
-                                            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                                Select Time Range
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item onClick={() => setTimeRangeTotalMessages('hour')}>Last Hour</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeTotalMessages('day')}>Last Day</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeTotalMessages('week')}>Last Week</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeTotalMessages('month')}>Last Month</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeTotalMessages('year')}>Last Year</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                        <Bar data={totalMessagesData} />
-                                    </Card.Body>
-                                </Card>
-                                <Card className='g-col-6'>
-                                    <Card.Body className='border border-0 no-shadow'>
-                                        {/* Total Inactivity Time Chart */}
-                                        <h3>Total Inactivity Time</h3>
-                                        <Dropdown>
-                                            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                                Select Time Range
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item onClick={() => setTimeRangeInactivityTime('hour')}>Last Hour</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeInactivityTime('day')}>Last Day</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeInactivityTime('week')}>Last Week</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeInactivityTime('month')}>Last Month</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeInactivityTime('year')}>Last Year</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                        <Bar data={totalInactivityTimeData} />
-                                    </Card.Body>
-                                </Card>
-                                <Card className='g-col-6'>
-                                    <Card.Body className='border border-0 no-shadow'>
-                                        {/* Usage Frequency Chart */}
-                                        <h3>Usage Frequency</h3>
-                                        <Dropdown>
-                                            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                                Select Time Range
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item onClick={() => setTimeRangeUsageFrequency('hour')}>Last Hour</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeUsageFrequency('day')}>Last Day</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeUsageFrequency('week')}>Last Week</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeUsageFrequency('month')}>Last Month</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeUsageFrequency('year')}>Last Year</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                        <Bar data={usageFrequencyData} />
-                                    </Card.Body>
-                                </Card>
-                                <Card className='g-col-6'>
-                                    <Card.Body className='border border-0 no-shadow'>
-                                        {/* Total Transactions Chart */}
-                                        <h3>Total Transactions</h3>
-                                        <Dropdown>
-                                            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                                Select Time Range
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item onClick={() => setTimeRangeTotalTransactions('hour')}>Last Hour</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeTotalTransactions('day')}>Last Day</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeTotalTransactions('week')}>Last Week</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeTotalTransactions('month')}>Last Month</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => setTimeRangeTotalTransactions('year')}>Last Year</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                        <Bar data={totalTransactionsData} />
-                                    </Card.Body>
-                                </Card>
-                            </Container>
-                        </SimpleBar>
+                        <Container className='grid'>
+                            <Card className='g-col-6'>
+                                <Card.Body className='border border-0 no-shadow'>
+                                    {/* Average Response Time Chart */}
+                                    <h3>Average Response Time</h3>
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                            Select Time Range
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={() => setTimeRangeResponseTime('hour')}>Last Hour</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeResponseTime('day')}>Last Day</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeResponseTime('week')}>Last Week</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeResponseTime('month')}>Last Month</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeResponseTime('year')}>Last Year</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                    <Line data={responseTimeData} />
+                                </Card.Body>
+                            </Card>
+                            <Card className='g-col-6'>
+                                <Card.Body className='border border-0 no-shadow'>
+                                    {/* Total Messages Chart */}
+                                    <h3>Total Messages</h3>
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                            Select Time Range
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={() => setTimeRangeTotalMessages('hour')}>Last Hour</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeTotalMessages('day')}>Last Day</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeTotalMessages('week')}>Last Week</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeTotalMessages('month')}>Last Month</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeTotalMessages('year')}>Last Year</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                    <Bar data={totalMessagesData} />
+                                </Card.Body>
+                            </Card>
+                            <Card className='g-col-6'>
+                                <Card.Body className='border border-0 no-shadow'>
+                                    {/* Total Inactivity Time Chart */}
+                                    <h3>Total Inactivity Time</h3>
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                            Select Time Range
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={() => setTimeRangeInactivityTime('hour')}>Last Hour</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeInactivityTime('day')}>Last Day</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeInactivityTime('week')}>Last Week</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeInactivityTime('month')}>Last Month</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeInactivityTime('year')}>Last Year</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                    <Bar data={totalInactivityTimeData} />
+                                </Card.Body>
+                            </Card>
+                            <Card className='g-col-6'>
+                                <Card.Body className='border border-0 no-shadow'>
+                                    {/* Usage Frequency Chart */}
+                                    <h3>Usage Frequency</h3>
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                            Select Time Range
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={() => setTimeRangeUsageFrequency('hour')}>Last Hour</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeUsageFrequency('day')}>Last Day</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeUsageFrequency('week')}>Last Week</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeUsageFrequency('month')}>Last Month</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeUsageFrequency('year')}>Last Year</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                    <Bar data={usageFrequencyData} />
+                                </Card.Body>
+                            </Card>
+                            <Card className='g-col-6'>
+                                <Card.Body className='border border-0 no-shadow'>
+                                    {/* Total Transactions Chart */}
+                                    <h3>Total Transactions</h3>
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                            Select Time Range
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={() => setTimeRangeTotalTransactions('hour')}>Last Hour</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeTotalTransactions('day')}>Last Day</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeTotalTransactions('week')}>Last Week</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeTotalTransactions('month')}>Last Month</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => setTimeRangeTotalTransactions('year')}>Last Year</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                    <Bar data={totalTransactionsData} />
+                                </Card.Body>
+                            </Card>
+                        </Container>
                     </div>
                 </Card.Body>
             </Card>
