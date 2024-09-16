@@ -167,7 +167,16 @@ router.post('/_confirm', async (req, res, next) => {
     _t._userIsVerified = true;
 
     try {
-        await _u.save();
+        await _u.save()
+        .then(async () => {
+            /* Notification */
+            let notification = new Notification({
+                _notification_title: `L'utilisateur ${req._user._user_username} vient de confirmer son email .`,
+                _notification_user: req._user.toJSON()
+            });
+
+            await notification.save();
+        });
         await _t.save();
         return res.status(200).json({
             _user: _u,
@@ -274,16 +283,19 @@ router.post('/_login', async (req, res, next) => {
             },
             { upsert: true }
         )
-            .populate('Role');
+            .populate('Role')
+            .then(async () => {
+                /* Notification */
+                let notification = new Notification({
+                    _notification_title: `L'utilisateur ${req._user._user_username} vient de se connecter .`,
+                    _notification_user: req._user.toJSON()
+                });
+
+                await notification.save();
+            });
 
         // Once the user is created or updated, generate a JWT token
         const token = findUserUpdated.getToken();
-
-        console.log(
-            '_user:', findUserUpdated,
-            'token:', token,
-            'text:', 'Authentication successful.',
-        )
 
         return res.status(200).json({
             _user: findUserUpdated,
@@ -306,7 +318,16 @@ router.post('/_logout/:id', async (req, res, next) => {
         }
 
         return await req._user.save()
-            .then(() => res.json({ _user: req._user.toJSON() }))
+            .then(async () => {
+                /* Notification */
+                let notification = new Notification({
+                    _notification_title: `L'utilisateur ${req._user._user_username} vient de se déconnecter .`,
+                    _notification_user: req._user.toJSON()
+                });
+
+                await notification.save();
+                res.json({ _user: req._user.toJSON() })
+            })
             .catch(next);
     } catch (error) {
         return res.status(500).json({ error });
@@ -343,14 +364,18 @@ router.get('/:id', (req, res, next) => {
 
 router.patch('/:id', uploadMiddleware, async (req, res, next) => {
     const { body } = req;
+    let __updatedFields = [];
+
 
     try {
         if (typeof body._user_email !== 'undefined') {
             req._user._user_email = body._user_email;
+            __updatedFields.push('Email');
         }
 
         if (typeof body._user_username !== 'undefined') {
             req._user._user_username = body._user_username;
+            __updatedFields.push('Nom d\'utilisateur');
         }
 
         if (!_.isEmpty(body._user_password) && !_.isUndefined(body._user_password)) {
@@ -361,6 +386,7 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
                     });
                 } else {
                     req._user._user_password = passwordHash.generate(body._user_passwordNew);
+                    __updatedFields.push('Mot de passe');
                 }
             }
         }
@@ -368,42 +394,49 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
         if (!_.isEmpty(body._user_fingerprint) && !_.isUndefined(body._user_fingerprint)) {
             if (typeof body._user_fingerprint !== 'undefined') {
                 req._user._user_fingerprint = body._user_fingerprint;
+                __updatedFields.push('fingerprint');
             }
         }
 
         if (!_.isEmpty(req.imageUrl) && !_.isUndefined(req.imageUrl)) {
             if (typeof req.imageUrl !== 'undefined') {
                 req._user._user_picture = req.imageUrl;
+                __updatedFields.push('Photo de profil');
             }
         }
 
         if (!_.isEmpty(body._user_firstname) && !_.isUndefined(body._user_firstname)) {
             if (typeof body._user_firstname !== 'undefined') {
                 req._user._user_firstname = body._user_firstname;
+                __updatedFields.push('Prénom');
             }
         }
 
         if (!_.isEmpty(body._user_lastname) && !_.isUndefined(body._user_lastname)) {
             if (typeof body._user_lastname !== 'undefined') {
                 req._user._user_lastname = body._user_lastname;
+                __updatedFields.push('Nom');
             }
         }
 
         if (!_.isEmpty(body._user_city) && !_.isUndefined(body._user_city)) {
             if (typeof body._user_city !== 'undefined') {
                 req._user._user_city = body._user_city;
+                __updatedFields.push('Ville');
             }
         }
 
         if (!_.isEmpty(body._user_country) && !_.isUndefined(body._user_country)) {
             if (typeof JSON.parse(body._user_country) !== 'undefined') {
                 req._user._user_country = JSON.parse(body._user_country);
+                __updatedFields.push('Pays');
             }
         }
 
         if (!_.isEmpty(body._user_phone) && !_.isUndefined(body._user_phone)) {
             if (typeof body._user_phone !== 'undefined') {
                 req._user._user_phone = body._user_phone;
+                __updatedFields.push('Numéro de téléphone');
             }
         }
 
@@ -428,11 +461,21 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
         if (!_.isEmpty(body.Role) && !_.isUndefined(body.Role)) {
             if (typeof body.Role !== 'undefined') {
                 req._user.Role = body.Role;
+                __updatedFields.push('Role');
             }
         }
 
         return await req._user.save()
-            .then(() => res.json({ _user: req._user.toJSON() }))
+            .then(async () => {
+                /* Notification */
+                let notification = new Notification({
+                    _notification_title: `L'utilisateur ${req._user._user_username} vient de modifier son ${__updatedFields.join(', ')}.`,
+                    _notification_user: req._user.toJSON()
+                });
+
+                await notification.save();
+                res.json({ _user: req._user.toJSON() })
+            })
             .catch(next);
     } catch (error) {
         console.log(error);
@@ -442,7 +485,16 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
 
 router.delete('/:id', (req, res, next) => {
     return User.findByIdAndDelete(req._user._id)
-        .then(() => res.json({ _user: req._user.toJSON() }))
+        .then(async () => {
+            /* Notification */
+            let notification = new Notification({
+                _notification_title: `Un utilisateur vient d'être supprimer.`,
+                _notification_user: req._user.toJSON()
+            });
+
+            await notification.save();
+            res.json({ _user: req._user.toJSON() })
+        })
         .catch(next);
 });
 

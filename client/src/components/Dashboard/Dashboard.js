@@ -10,6 +10,7 @@ import PConversations from './_pane/PConversations';
 import PAudit from './_pane/PAudit';
 import PSettings from './_pane/PSettings';
 
+import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Tab from 'react-bootstrap/Tab';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -28,6 +29,29 @@ const Dashboard = (props) => {
     const _user = _useStore.useUserStore(state => state._user);
     const setUser = _useStore.useUserStore(state => state['_user_SET_STATE']);
     const setUserIsAuthenticated = _useStore.useUserStore(state => state['_userIsAuthenticated_SET_STATE']);
+
+    /* For Notifications */
+    /* Dropdown State Variables */
+    const [_showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+
+
+    const _notifications = _useStore.useNotificationStore((state) => state._notifications);
+    const setNotifications = _useStore.useNotificationStore((state) => state["_notifications_SET_STATE"]);
+
+    const _getNotifications = useCallback(async () => {
+        try {
+            axios("/api/notification")
+                .then((response) => {
+                    setNotifications(response.data._notifications);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } catch (error) {
+            console.log(error);
+        }
+    }, [setNotifications]);
+    /* For Notifications */
 
     let location = useLocation();
     let navigate = useNavigate();
@@ -71,6 +95,8 @@ const Dashboard = (props) => {
     }, []);
 
     useEffect(() => {
+        _getNotifications();
+
         const checkUserAuthentication = async () => {
             const isAuthenticated = await checkAuthentication();
             if (!isAuthenticated) {
@@ -83,7 +109,7 @@ const Dashboard = (props) => {
             }
         };
         checkUserAuthentication();
-    }, [checkAuthentication, location, navigate, setUserIsAuthenticated, setUser]);
+    }, [checkAuthentication, location, navigate, setUserIsAuthenticated, setUser, _getNotifications]);
 
     return (
         <main className='_dashboard'>
@@ -151,11 +177,30 @@ const Dashboard = (props) => {
                                     <FontAwesomeIcon className='m-auto' icon={faGear} />
                                 </Nav.Link>
                             </Nav.Item>
-                            {/* JOY : Show Notifications of User Interaction With Chatbot per a limited period */}
                             <Nav.Item className='_motifications'>
-                                <Nav.Link className='d-flex align-items-start'>
-                                    <FontAwesomeIcon className='m-auto' icon={faBell} />
-                                </Nav.Link>
+                                <Dropdown
+                                    show={_showNotificationDropdown}
+                                    onMouseEnter={() => setShowNotificationDropdown(true)}
+                                    onMouseLeave={() => setShowNotificationDropdown(false)}
+                                >
+                                    <Dropdown.Toggle as='span'>
+                                        <span className='d-flex align-items-center justify-content-center'>
+                                            <FontAwesomeIcon className='m-auto' icon={faBell} />
+                                            <span className='hover_effect'></span>
+                                        </span>
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu className='border rounded-0'>
+                                    {
+                                        _.map(_notifications, (_notification, _index) => {
+                                            return (
+                                                <Dropdown.Item key={_index} className='d-flex align-items-center' as='span'>
+                                                    <p className='m-0'>{_notification._notification_title}</p>
+                                                </Dropdown.Item>
+                                            );
+                                        })
+                                    }
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </Nav.Item>
                         </Nav>
                         <Tab.Content>

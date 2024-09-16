@@ -330,7 +330,6 @@ const PUsers = (props) => {
             text: "Status",
             sort: true,
             headerAlign: "center",
-            align: "center",
             editor: {
                 type: Type.CHECKBOX,
                 value: "True:False",
@@ -1310,6 +1309,18 @@ const PUsers = (props) => {
                             _user_toDelete: false,
                             Role: [],
                         });
+
+                        return axios
+                            .post("/api/notification", {
+                                _notification_title: `${_user._user_username} vient de ajouter un Utilisateur ${_fingerprint}.`,
+                                _notification_user: formData
+                            })
+                            .then((res) => {
+                                console.log(res.data);
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
                     })
                     .catch((error) => {
                         setModalFormHeader("We're sorry !");

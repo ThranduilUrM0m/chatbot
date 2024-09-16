@@ -3,6 +3,7 @@
     import Model from './models/Model.js';
 */
 import Conversation from './models/Conversation.js';
+import Notification from './models/Notification.js';
 import Permission from './models/Permission.js';
 import Role from './models/Role.js';
 import Token from './models/Token.js';
@@ -209,6 +210,14 @@ const setUpExpress = () => {
                     // Acknowledge back to the client with the conversation ID and chat history
                     callback({ conversationId: conversation._id, chatHistory: updatedChatHistory });
 
+                    /* Notification */
+                    const notification = new Notification({
+                        _notification_title: 'Une nouvelle conversation a commencée',
+                        _notification_user: { _fingerprint: _conversation_user },
+                        _notification_data: conversation,
+                    });
+
+                    await notification.save();
                     // Emit the new conversation details to all clients
                     /* socket.emit('newConversation', {
                         user: _conversation_user,
@@ -263,6 +272,15 @@ const setUpExpress = () => {
 
                     await conversation.save();
 
+                    /* Notification */
+                    let notification = new Notification({
+                        _notification_title: `Un nouveau message a éte envoyé dans la conversation ${conversation._id}.`,
+                        _notification_user: { _fingerprint: _conversation_user },
+                        _notification_data: { role, content },
+                    });
+
+                    await notification.save();
+
                     // Emit the updated conversation to all clients
                     socket.emit('messageSent', { user, chatHistory: updatedChatHistory, role, content });
 
@@ -298,6 +316,15 @@ const setUpExpress = () => {
 
                     // Emit AI's response to all clients
                     socket.emit('messageSent', { user: 'assistant', chatHistory: finalChatHistory, role: 'assistant', content: aiMessage });
+
+                    /* Notification */
+                    notification = new Notification({
+                        _notification_title: `L'assitant vient de répondre dans la conversation ${conversation._id}.`,
+                        _notification_user: { _fingerprint: _conversation_user },
+                        _notification_data: { role: 'assistant', content: aiMessage },
+                    });
+
+                    await notification.save();
                 } else {
                     console.error('Conversation not found:', conversationId);
                     socket.emit('error', { message: 'Conversation not found' });

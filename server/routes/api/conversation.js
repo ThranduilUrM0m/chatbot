@@ -64,8 +64,28 @@ router.patch('/:id', (req, res, next) => {
         req._conversation.totalAssistantMessages = body.chatHistory.filter(msg => msg.role === 'assistant').length;
     }
 
+    if (typeof body.totalMessages !== 'undefined') {
+        req._conversation.totalMessages = body.totalMessages;
+    }
+
+    if (typeof body.totalAssistantMessages !== 'undefined') {
+        req._conversation.totalAssistantMessages = body.totalAssistantMessages;
+    }
+
+    if (typeof body.totalResponseTime !== 'undefined') {
+        req._conversation.totalResponseTime = body.totalResponseTime;
+    }
+
+    if (typeof body.avgResponseTime !== 'undefined') {
+        req._conversation.avgResponseTime = body.avgResponseTime;
+    }
+
     if (typeof body.totalInactivityTime !== 'undefined') {
         req._conversation.totalInactivityTime = body.totalInactivityTime;
+    }
+
+    if (typeof body.lastMessageTimestamp !== 'undefined') {
+        req._conversation.lastMessageTimestamp = body.lastMessageTimestamp;
     }
 
     return req._conversation.save()
