@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 const User = mongoose.model('User');
 const Token = mongoose.model('Token');
+const Notification = mongoose.model('Notification');
 const router = express.Router();
 
 const _sendMessage = async (_emailSender, _name, _phone, _newsletter, _subject, _message, _emailReceiver, _callback) => {
@@ -168,15 +169,15 @@ router.post('/_confirm', async (req, res, next) => {
 
     try {
         await _u.save()
-        .then(async () => {
-            /* Notification */
-            let notification = new Notification({
-                _notification_title: `L'utilisateur ${req._user._user_username} vient de confirmer son email .`,
-                _notification_user: req._user.toJSON()
-            });
+            .then(async (__u) => {
+                /* Notification */
+                let notification = new Notification({
+                    _notification_title: `L'utilisateur ${__u._user_username} vient de confirmer son email .`,
+                    _notification_user: __u.toJSON()
+                });
 
-            await notification.save();
-        });
+                await notification.save();
+            });
         await _t.save();
         return res.status(200).json({
             _user: _u,
@@ -284,25 +285,27 @@ router.post('/_login', async (req, res, next) => {
             { upsert: true }
         )
             .populate('Role')
-            .then(async () => {
+            .then(async (__u) => {
                 /* Notification */
-                let notification = new Notification({
-                    _notification_title: `L'utilisateur ${req._user._user_username} vient de se connecter .`,
-                    _notification_user: req._user.toJSON()
+                console.log('HNAAAAAAAAAAAAAAAAAAAAAAAAA : ', __u)
+                const notification = new Notification({
+                    _notification_title: `L'utilisateur ${__u._user_username} vient de se connecter .`,
+                    _notification_user: __u.toJSON()
                 });
 
                 await notification.save();
+
+                // Once the user is created or updated, generate a JWT token
+                const token = __u.getToken();
+        
+                return res.status(200).json({
+                    _user: __u,
+                    token: token,
+                    text: 'Authentication successful.',
+                });
             });
-
-        // Once the user is created or updated, generate a JWT token
-        const token = findUserUpdated.getToken();
-
-        return res.status(200).json({
-            _user: findUserUpdated,
-            token: token,
-            text: 'Authentication successful.',
-        });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error });
     }
 });
@@ -318,11 +321,11 @@ router.post('/_logout/:id', async (req, res, next) => {
         }
 
         return await req._user.save()
-            .then(async () => {
+            .then(async (__u) => {
                 /* Notification */
                 let notification = new Notification({
-                    _notification_title: `L'utilisateur ${req._user._user_username} vient de se déconnecter .`,
-                    _notification_user: req._user.toJSON()
+                    _notification_title: `L'utilisateur ${__u._user_username} vient de se déconnecter .`,
+                    _notification_user: __u.toJSON()
                 });
 
                 await notification.save();
@@ -466,11 +469,11 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
         }
 
         return await req._user.save()
-            .then(async () => {
+            .then(async (__u) => {
                 /* Notification */
                 let notification = new Notification({
-                    _notification_title: `L'utilisateur ${req._user._user_username} vient de modifier son ${__updatedFields.join(', ')}.`,
-                    _notification_user: req._user.toJSON()
+                    _notification_title: `L'utilisateur ${__u._user_username} vient de modifier son ${__updatedFields.join(', ')}.`,
+                    _notification_user: __u.toJSON()
                 });
 
                 await notification.save();
@@ -485,11 +488,11 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
 
 router.delete('/:id', (req, res, next) => {
     return User.findByIdAndDelete(req._user._id)
-        .then(async () => {
+        .then(async (__u) => {
             /* Notification */
             let notification = new Notification({
                 _notification_title: `Un utilisateur vient d'être supprimer.`,
-                _notification_user: req._user.toJSON()
+                _notification_user: __u.toJSON()
             });
 
             await notification.save();
