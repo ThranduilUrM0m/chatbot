@@ -50,7 +50,6 @@ router.get('/:id', (req, res, next) => {
     })
 });
 
-/* ALl Fields */
 router.patch('/:id', (req, res, next) => {
     const { body } = req;
 
@@ -93,10 +92,20 @@ router.patch('/:id', (req, res, next) => {
         .catch(next);
 });
 
-router.delete('/:id', (req, res, next) => {
-    return Conversation.findByIdAndDelete(req._conversation._id)
-        .then(() => res.sendStatus(200))
-        .catch(next);
+router.delete('/:id', async (req, res, next) => {
+    const { id } = req.params;
+
+    try {
+        const deletedConversation = await Conversation.findByIdAndDelete(id);
+
+        if (!deletedConversation) {
+            return res.status(404).json({ success: false, error: 'Conversation non trouvée' });
+        }
+
+        res.status(200).json({ success: true, message: 'Conversation supprimée avec succès' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Une erreur s\'est produite lors de la suppression de la conversation' });
+    }
 });
 
 export default router;

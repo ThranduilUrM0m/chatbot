@@ -24,7 +24,7 @@ section {
                             display: block;
                             position: absolute;
                             background: rgba($blue, .8);
-                            @include _transform($top: '', $left: '', $bottom: .5vh, $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+                            @include _transform($top: '', $left: 50%, $bottom: .5vh, $right: '', $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
                             @include _dimensions($width: 10vh, $height: 2vh);
                             @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
                         }

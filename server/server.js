@@ -174,7 +174,7 @@ const setUpExpress = () => {
         });
 
         socket.on('_newConversation', async (data, callback) => {
-            const { _conversation_user, chatHistory = [] } = data; // Default to an empty array if chatHistory is not provided
+            const { _conversation_user, chatHistory = [], newConversation } = data; // Default to an empty array if chatHistory is not provided
 
             if (!Array.isArray(chatHistory)) {
                 console.error('Invalid chatHistory format. Expected an array.');
@@ -186,7 +186,7 @@ const setUpExpress = () => {
                 // Find the conversation by ID
                 let conversation = await Conversation.findOne({ _conversation_user });
 
-                if (!conversation) {
+                if (!conversation || newConversation) {
                     const response = await openai.chat.completions.create({
                         model: "gpt-3.5-turbo",
                         messages: [

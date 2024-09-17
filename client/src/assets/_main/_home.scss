@@ -5,70 +5,118 @@ section {
 
     &._s1 {
         ._lines {
-            &:first-of-type {
-                div {
-                    img {
-                        margin: 1.25vh 0;
-                        @include _dimensions($width: '', $height: 14vh);
-                    }
+            div {
+                img {
+                    margin: 1.25vh 0;
+                    @include _dimensions($width: '', $height: 14vh);
+                }
 
-                    p {
-                        &:last-of-type {
-                            font-size: small;
-                            font-weight: 500;
-                        }
+                p {
+                    &:last-of-type {
+                        font-size: small;
+                        font-weight: 500;
                     }
                 }
             }
 
-            &:last-of-type {
-                form {
-                    position: relative;
+            form {
+                position: relative;
+
+                .btn {
+                    position: absolute;
+
+                    &:first-of-type {
+                        @include _dimensions($width: 10vh, $height: 5vh);
+                        @include _transform($top: 50%,
+                            $left: '',
+                            $bottom: '',
+                            $right: 1.25vh,
+                            $t_x: 0,
+                            $t_y: -50%,
+                            $r_deg: 0,
+                            $s_x: 1,
+                            $s_y: 1);
+                    }
+
+                    &:last-of-type {
+                        @include _dimensions($width: 7vh, $height: '');
+                        @include _transform($top: 50%,
+                            $left: '',
+                            $bottom: '',
+                            $right: 0,
+                            $t_x: calc(100% + 1.25vh),
+                            $t_y: -50%,
+                            $r_deg: 0,
+                            $s_x: 1,
+                            $s_y: 1);
+
+                        span {
+                            position: relative;
+                            @include _transform($top: unset,
+                                $left: unset,
+                                $bottom: '',
+                                $right: '',
+                                $t_x: unset,
+                                $t_y: unset,
+                                $r_deg: 0,
+                                $s_x: 1,
+                                $s_y: 1);
+
+                            svg {
+                                @include _dimensions($width: '', $height: 3.25vh);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .toast {
+            position: absolute;
+            @include _dimensions($width: 50vh, $height: 80%);
+            @include _transform($top: 12.5vh,
+                $left: 2.5vh,
+                $bottom: '',
+                $right: '',
+                $t_x: 0,
+                $t_y: 0,
+                $r_deg: 0,
+                $s_x: 1,
+                $s_y: 1);
+
+            .toast-header {
+                padding: 2.75vh 2vh;
+            }
+
+            .toast-body {
+                padding: 2.75vh 2vh;
+                @include _dimensions($width: '', $height: calc(100% - 10vh));
+
+                ._conversationItem {
+                    margin: 0 0 2.25vh 0;
+
+                    span {
+                        padding: 0 0 0 2vh;
+                        cursor: pointer;
+
+                        p {
+                            &:last-of-type {
+                                font-size: small;
+                                font-weight: 500;
+                            }
+                        }
+                    }
 
                     .btn {
-                        position: absolute;
+                        @include _dimensions($width: fit-content, $height: '');
+                        color: rgba($color: $red, $alpha: 0.5);
 
-                        &:first-of-type {
-                            @include _dimensions($width: 20vh, $height: 5vh);
-                            @include _transform($top: 50%,
-                                $left: '',
-                                $bottom: '',
-                                $right: 1.25vh,
-                                $t_x: 0,
-                                $t_y: -50%,
-                                $r_deg: 0,
-                                $s_x: 1,
-                                $s_y: 1);
+                        svg {
+                            @include _dimensions($width: '', $height: 3.5vh);
                         }
 
-                        &:last-of-type {
-                            @include _dimensions($width: 7vh, $height: '');
-                            @include _transform($top: 50%,
-                                $left: '',
-                                $bottom: '',
-                                $right: 0,
-                                $t_x: calc(100% + 1.25vh),
-                                $t_y: -50%,
-                                $r_deg: 0,
-                                $s_x: 1,
-                                $s_y: 1);
-
-                            span {
-                                position: relative;
-                                @include _transform($top: unset,
-                                    $left: unset,
-                                    $bottom: '',
-                                    $right: '',
-                                    $t_x: unset,
-                                    $t_y: unset,
-                                    $r_deg: 0,
-                                    $s_x: 1,
-                                    $s_y: 1);
-
-                                svg {
-                                    @include _dimensions($width: '', $height: 3.25vh);
-                                }
-                            }
+                        &:hover {
+                            color: $red;
                         }
                     }
                 }

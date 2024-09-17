@@ -1,15 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Toast from 'react-bootstrap/Toast';
+import _useStore from "../../store";
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import moment from 'moment';
 import _ from 'lodash';
+import axios from "axios";
 import { io } from 'socket.io-client';
-import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
+import { faClock, faPaperPlane, faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import SimpleBar from 'simplebar-react';
+
+import 'simplebar-react/dist/simplebar.min.css';
 
 const _socketURL = _.isEqual(process.env.NODE_ENV, 'production') ? window.location.hostname : 'localhost:5000';
 const _socket = io(_socketURL, { 'transports': ['websocket', 'polling'] });
@@ -44,9 +51,11 @@ const usePersistentFingerprint = (setIsFingerprintLoaded) => {
     return _fingerprint;
 };
 
+/* JOY : localStorage should always check with the database, cause sometimes it has what was deleted from the database manually */
 const Home = (props) => {
-    /* JOY : Show the history of conversations and be able to delete */
-    /* JOY : localStorage should always check with the database, cause sometimes it has what was deleted from the database manually */
+    const _conversations = _useStore.useConversationStore((state) => state._conversations);
+    const setConversations = _useStore.useConversationStore((state) => state["_conversations_SET_STATE"]);
+
     const _validationSchema = Yup
         .object()
         .shape({
@@ -80,11 +89,15 @@ const Home = (props) => {
     const [isFingerprintLoaded, setIsFingerprintLoaded] = useState(false);
     const _fingerprint = usePersistentFingerprint(setIsFingerprintLoaded);
 
-    const _startNewConversation = () => {
+    /* Handle Creating a new conversation */
+    const _startNewConversation = (newConversation = false) => {
         /* Illelagl to retrieve IP Adresse */
         if (isFingerprintLoaded) {
             setIsLoading(true);
-            _socket.emit('_newConversation', { _conversation_user: _fingerprint }, (response) => {
+            _socket.emit('_newConversation', {
+                _conversation_user: _fingerprint,
+                newConversation, // Pass the argument to the server
+            }, (response) => {
                 if (response.error) {
                     console.error('Error:', response.error);
                     return;
@@ -96,6 +109,7 @@ const Home = (props) => {
                     localStorage.setItem('_idConversation', conversationId);
                     localStorage.setItem('chatHistory', JSON.stringify(chatHistory)); // Save the chat history in local storage
                     setChatHistory(chatHistory); // Update local chat history
+                    _getConversations();
                 } else {
                     console.error('Conversation ID is null or undefined');
                 }
@@ -119,13 +133,57 @@ const Home = (props) => {
                 role: 'user',
                 content: messageContent,
             });
+            _getConversations();
 
             // Clear input
             reset();
         }
     };
 
+    /* Handle Deletion */
+    const _deleteConversation = (conversationId) => {
+        if (!conversationId) return;
+
+        axios.delete(`/api/conversation/${conversationId}`)
+            .then((response) => {
+                if (response.data.success) {
+                    if (_idConversation === conversationId) {
+                        setIdConversation(null);
+                        setChatHistory([]);
+                        localStorage.removeItem('_idConversation');
+                        localStorage.removeItem('chatHistory');
+
+                        /* Create new Conversation */
+                        _startNewConversation(true);
+                    }
+
+                    // Re-fetch conversations after deletion
+                    _getConversations();
+                } else {
+                    console.error('Failed to delete conversation:', response.data.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error deleting conversation:', error);
+            });
+    };
+
+    const _getConversations = useCallback(async () => {
+        axios("/api/conversation")
+            .then((response) => {
+                let __convos = _.filter(response.data._conversations, conversation => conversation._conversation_user === _fingerprint)
+                setConversations(__convos);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, [setConversations, _fingerprint]);
+
     useEffect(() => {
+        if (isFingerprintLoaded) {
+            _getConversations();
+        }
+
         const savedChatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
         const savedConversationId = localStorage.getItem('_idConversation');
 
@@ -136,7 +194,7 @@ const Home = (props) => {
         } else {
             // Start a new conversation only if fingerprint is loaded
             if (isFingerprintLoaded) {
-                _startNewConversation();
+                _startNewConversation(true);
             }
         }
 
@@ -164,7 +222,7 @@ const Home = (props) => {
             _socket.off('newConversation');
             _socket.off('messageSent');
         };
-    }, [isFingerprintLoaded]);
+    }, [isFingerprintLoaded, _getConversations]);
 
     return (
         <main className='_home'>
@@ -231,14 +289,14 @@ const Home = (props) => {
                                 <div className='borderLeft'></div>
                             </div>
                             <span>
-                                Send Message<b className='pink_dot'>.</b>
+                                <FontAwesomeIcon icon={faPaperPlane} />
                             </span>
                         </Button>
                         <Button
                             type='button'
                             className='border border-0 rounded-0 inverse'
                             variant='outline-light'
-                            onClick={() => _startNewConversation()}
+                            onClick={() => _startNewConversation(true)}
                         >
                             <div className='buttonBorders'>
                                 <div className='borderTop'></div>
@@ -252,6 +310,53 @@ const Home = (props) => {
                         </Button>
                     </Form>
                 </div>
+                <Toast>
+                    <Toast.Header closeButton={false}>
+                        <p className='h5 text-muted m-0 fw-semibold'>Vos conversations</p>
+                    </Toast.Header>
+                    <Toast.Body>
+                        <SimpleBar style={{ maxHeight: '100%' }} forceVisible='y' autoHide={false}>
+                            {_.isEmpty(_conversations) ? (
+                                <p className='h6 text-muted text-center m-0 fw-semibold'>Vous n'avez pas d'autres conversation pour le moment</p>
+                            ) : (
+                                _.map(_conversations, (conversation, index) => (
+                                    <div key={index} className='d-flex _conversationItem'>
+                                        <span
+                                            onClick={() => {
+                                                setIdConversation(conversation._id);
+                                                setChatHistory(conversation.chatHistory);
+                                                localStorage.setItem('_idConversation', conversation._id);
+                                                localStorage.setItem('chatHistory', JSON.stringify(conversation.chatHistory));
+                                            }}
+                                            className='flex-grow-1'
+                                        >
+                                            <p className='h6 m-0 fw-semibold'>
+                                                {
+                                                    conversation.chatHistory.find(message => message.role === 'user')
+                                                        ? conversation.chatHistory.find(message => message.role === 'user').content
+                                                        : conversation.chatHistory.length > 0
+                                                            ? conversation.chatHistory[0].content
+                                                            : 'No messages yet.'
+                                                }
+                                            </p>
+                                            <p className='m-0 text-muted'>
+                                                <FontAwesomeIcon icon={faClock} /> {moment(conversation.createdAt).fromNow()}
+                                            </p>
+                                        </span>
+                                        <Button
+                                            type='button'
+                                            className='border border-0 rounded-0 _red inverse'
+                                            variant='btn-outline-danger'
+                                            onClick={() => _deleteConversation(conversation._id)}
+                                        >
+                                            <FontAwesomeIcon icon={faTrashCan} />
+                                        </Button>
+                                    </div>
+                                ))
+                            )}
+                        </SimpleBar>
+                    </Toast.Body>
+                </Toast>
             </section>
         </main>
     );

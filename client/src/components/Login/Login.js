@@ -103,30 +103,22 @@ const Login = (props) => {
 	}, [checkAuthentication, watch, setUser, location, navigate, setUserIsAuthenticated]);
 
 	const onSubmit = async (values) => {
-		try {
-			return axios.post('/api/user/_login', values)
-				.then((response) => {
-					// Store the token in local storage
-					localStorage.setItem('jwtToken', response.data.token);
+		return axios.post('/api/user/_login', values)
+			.then((response) => {
+				// Store the token in local storage
+				localStorage.setItem('jwtToken', response.data.token);
 
-					setUser(response.data._user);
-					setUserIsAuthenticated(true);
-					_socket.emit('action', { type: '_userConnected', data: response.data._user });
-					navigate('/dashboard', { replace: true, state: { from: location } });
-				})
-				.catch((error) => {
-					setModalHeader('Nous sommes Désolé !');
-					setModalBody(error.response.data.text);
-					setModalIcon(<FontAwesomeIcon icon={faRectangleXmark} />);
-					setShowModal(true);
-				});
-		} catch (error) {
-			//Something shitty happens if incorrect password
-			setModalHeader('Nous sommes Désolé !');
-			setModalBody(JSON.stringify(error));
-			setModalIcon(<FontAwesomeIcon icon={faRectangleXmark} />);
-			setShowModal(true);
-		}
+				setUser(response.data._user);
+				setUserIsAuthenticated(true);
+				_socket.emit('action', { type: '_userConnected', data: response.data._user });
+				navigate('/dashboard', { replace: true, state: { from: location } });
+			})
+			.catch((error) => {
+				setModalHeader('Nous sommes Désolé !');
+				setModalBody(error.response.data.text);
+				setModalIcon(<FontAwesomeIcon icon={faRectangleXmark} />);
+				setShowModal(true);
+			});
 	}
 
 	const onError = (error) => {
@@ -143,7 +135,7 @@ const Login = (props) => {
 				<div className='g-col-6 d-flex justify-content-center align-items-center'>
 					<Card className='border border-0 rounded-0'>
 						<Card.Header className='rounded-0'>
-							<h3>Connexion<b className='pink_dot'>.</b></h3>
+							<h3 className='text-center'>Connexion</h3>
 						</Card.Header>
 						<Card.Body>
 							<Form onSubmit={handleSubmit(onSubmit, onError)} className='grid'>
