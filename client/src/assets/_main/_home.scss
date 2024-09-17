@@ -26,7 +26,7 @@ section {
                     position: absolute;
 
                     &:first-of-type {
-                        @include _dimensions($width: 10vh, $height: 5vh);
+                        @include _dimensions($width: 5vh, $height: 5vh);
                         @include _transform($top: 50%,
                             $left: '',
                             $bottom: '',
@@ -36,6 +36,23 @@ section {
                             $r_deg: 0,
                             $s_x: 1,
                             $s_y: 1);
+
+                        span {
+                            position: relative;
+                            @include _transform($top: unset,
+                                $left: unset,
+                                $bottom: '',
+                                $right: '',
+                                $t_x: unset,
+                                $t_y: unset,
+                                $r_deg: 0,
+                                $s_x: 1,
+                                $s_y: 1);
+
+                            svg {
+                                @include _dimensions($width: '', $height: 3.25vh);
+                            }
+                        }
                     }
 
                     &:last-of-type {

@@ -190,7 +190,7 @@ const setUpExpress = () => {
                     const response = await openai.chat.completions.create({
                         model: "gpt-3.5-turbo",
                         messages: [
-                            { role: "system", content: "You are an assistant." },
+                            { role: "system", content: "Bonjour !" }, // Specify the language in the system message
                             ...chatHistory,
                         ],
                     });
@@ -203,6 +203,7 @@ const setUpExpress = () => {
                         chatHistory: updatedChatHistory,
                         totalMessages: updatedChatHistory.length,
                         totalAssistantMessages: updatedChatHistory.filter(msg => msg.role === 'assistant').length,
+                        language: 'fr', // Specify French as the default language
                     });
 
                     await conversation.save();

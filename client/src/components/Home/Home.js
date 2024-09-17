@@ -97,6 +97,7 @@ const Home = (props) => {
             _socket.emit('_newConversation', {
                 _conversation_user: _fingerprint,
                 newConversation, // Pass the argument to the server
+                language: 'fr',
             }, (response) => {
                 if (response.error) {
                     console.error('Error:', response.error);
@@ -277,17 +278,10 @@ const Home = (props) => {
                         </Form.Group>
                         <Button
                             type='button'
-                            className='border border-0 rounded-0 inverse'
-                            variant='outline-light'
+                            className='border border-0 rounded-0 inverse p-0'
                             onClick={() => _handleSendMessage()}
-                            disabled={_.trim(watch('_message')) === '' || isLoading}
+                            disabled={_.isEmpty(_.trim(watch('_message'))) || isLoading}
                         >
-                            <div className='buttonBorders'>
-                                <div className='borderTop'></div>
-                                <div className='borderRight'></div>
-                                <div className='borderBottom'></div>
-                                <div className='borderLeft'></div>
-                            </div>
                             <span>
                                 <FontAwesomeIcon icon={faPaperPlane} />
                             </span>
