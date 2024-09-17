@@ -55,6 +55,7 @@
         "react-bootstrap-table2-editor": "*",
         "react-bootstrap-table2-paginator": "*",
         "react-chartjs-2": "^5.2.0",
+        "react-datepicker": "^7.3.0",
         "react-dom": "*",
         "react-hook-form": "*",
         "react-moment": "*",

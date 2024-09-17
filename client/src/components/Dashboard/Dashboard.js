@@ -1,20 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import _useStore from '../../store';
 import { io } from 'socket.io-client';
 import axios from 'axios';
 
 import PDashboard from './_pane/PDashboard';
+import PTracabilite from './_pane/PTracabilite';
 import PUsers from './_pane/PUsers';
 import PConversations from './_pane/PConversations';
-import PAudit from './_pane/PAudit';
 import PSettings from './_pane/PSettings';
 
-import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Tab from 'react-bootstrap/Tab';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGear, faRightFromBracket, faCube, faUserGroup, faHandsClapping, faClockRotateLeft, faChartSimple } from '@fortawesome/free-solid-svg-icons';
+import { faGear, faRightFromBracket, faCube, faUserGroup, faHandsClapping } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 
 import 'simplebar-react/dist/simplebar.min.css';
@@ -30,34 +29,8 @@ const Dashboard = (props) => {
     const setUser = _useStore.useUserStore(state => state['_user_SET_STATE']);
     const setUserIsAuthenticated = _useStore.useUserStore(state => state['_userIsAuthenticated_SET_STATE']);
 
-    /* For Notifications */
-    /* Dropdown State Variables */
-    const [_showNotificationDropdown, setShowNotificationDropdown] = useState(false);
-
-
-    const _notifications = _useStore.useNotificationStore((state) => state._notifications);
-    const setNotifications = _useStore.useNotificationStore((state) => state["_notifications_SET_STATE"]);
-
-    const _getNotifications = useCallback(async () => {
-        try {
-            axios("/api/notification")
-                .then((response) => {
-                    setNotifications(response.data._notifications);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        } catch (error) {
-            console.log(error);
-        }
-    }, [setNotifications]);
-    /* For Notifications */
-
     let location = useLocation();
     let navigate = useNavigate();
-
-    /* Notification Dropdown State Variables */
-    const [_showDropdown, setShowDropdown] = useState(false);
 
 
     const _handleLogout = async () => {
@@ -95,8 +68,6 @@ const Dashboard = (props) => {
     }, []);
 
     useEffect(() => {
-        _getNotifications();
-
         const checkUserAuthentication = async () => {
             const isAuthenticated = await checkAuthentication();
             if (!isAuthenticated) {
@@ -109,12 +80,12 @@ const Dashboard = (props) => {
             }
         };
         checkUserAuthentication();
-    }, [checkAuthentication, location, navigate, setUserIsAuthenticated, setUser, _getNotifications]);
+    }, [checkAuthentication, location, navigate, setUserIsAuthenticated, setUser]);
 
     return (
         <main className='_dashboard'>
             <section className='_s1 grid'>
-                <Tab.Container defaultActiveKey='_blog'>
+                <Tab.Container defaultActiveKey='_dashboard'>
                     <div className='g-col-2'>
                         <Nav variant='pills' className='flex-column'>
                             <Nav.Item>
@@ -131,7 +102,7 @@ const Dashboard = (props) => {
                             <Nav.Item>
                                 <Nav.Link className='d-flex align-items-start' eventKey='_users'>
                                     <FontAwesomeIcon icon={faUserGroup} />
-                                    <p>Utilisateurs<b className='pink_dot'>.</b></p>
+                                    <p>Administrateurs<b className='pink_dot'>.</b></p>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
@@ -141,9 +112,9 @@ const Dashboard = (props) => {
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link className='d-flex align-items-start' eventKey='_audit'>
-                                    <FontAwesomeIcon icon={faChartSimple} />
-                                    <p>Audit<b className='pink_dot'>.</b></p>
+                                <Nav.Link className='d-flex align-items-start' eventKey='_tracabilite'>
+                                    <FontAwesomeIcon icon={faBell} />
+                                    <p>Traçabilité<b className='pink_dot'>.</b></p>
                                 </Nav.Link>
                             </Nav.Item>
 
@@ -177,31 +148,6 @@ const Dashboard = (props) => {
                                     <FontAwesomeIcon className='m-auto' icon={faGear} />
                                 </Nav.Link>
                             </Nav.Item>
-                            <Nav.Item className='_motifications'>
-                                <Dropdown
-                                    show={_showNotificationDropdown}
-                                    onMouseEnter={() => setShowNotificationDropdown(true)}
-                                    onMouseLeave={() => setShowNotificationDropdown(false)}
-                                >
-                                    <Dropdown.Toggle as='span'>
-                                        <span className='d-flex align-items-center justify-content-center'>
-                                            <FontAwesomeIcon className='m-auto' icon={faBell} />
-                                            <span className='hover_effect'></span>
-                                        </span>
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu className='border rounded-0'>
-                                    {
-                                        _.map(_notifications, (_notification, _index) => {
-                                            return (
-                                                <Dropdown.Item key={_index} className='d-flex align-items-center' as='span'>
-                                                    <p className='m-0'>{_notification._notification_title}</p>
-                                                </Dropdown.Item>
-                                            );
-                                        })
-                                    }
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Nav.Item>
                         </Nav>
                         <Tab.Content>
                             <Tab.Pane eventKey='_dashboard'>
@@ -213,8 +159,8 @@ const Dashboard = (props) => {
                             <Tab.Pane eventKey='_conversations'>
                                 <PConversations />
                             </Tab.Pane>
-                            <Tab.Pane eventKey='_audit'>
-                                <PAudit />
+                            <Tab.Pane eventKey='_tracabilite'>
+                                <PTracabilite />
                             </Tab.Pane>
                             <Tab.Pane eventKey='_settings'>
                                 <PSettings />

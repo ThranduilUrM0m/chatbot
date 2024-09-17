@@ -78,7 +78,6 @@ const PUsers = (props) => {
     );
 
     const _user = _useStore.useUserStore((state) => state._user);
-    const addUser = _useStore.useUserStore((state) => state["_user_ADD_STATE"]);
 
     const _userToEdit = _useStore.useUserStore((state) => state._userToEdit);
     const setUserToEdit = _useStore.useUserStore(
@@ -243,7 +242,7 @@ const PUsers = (props) => {
     const _columns = [
         {
             dataField: "_user_username",
-            text: "Nom d'utilisateur",
+            text: "Nom d'Administrateur",
             sort: true,
             formatter: (cell, row) => {
                 return (
@@ -268,7 +267,7 @@ const PUsers = (props) => {
                         : row._user_firstname || row._user_lastname || ""; // Fallback if one of them is empty
                 return (
                     <span className="d-flex flex-column justify-content-center me-auto">
-                        <p>{__fullName}</p>
+                        <p className="m-0">{__fullName}</p>
                     </span>
                 );
             },
@@ -296,7 +295,7 @@ const PUsers = (props) => {
                     : row._user_country?._country || ""; // Fallback to country if city is empty
                 return (
                     <span className="d-flex flex-column justify-content-center me-auto">
-                        <p>{__location}</p>
+                        <p className="m-0">{__location}</p>
                     </span>
                 );
             },
@@ -399,7 +398,7 @@ const PUsers = (props) => {
                 width: "15vh",
             },
             formatter: (cell, row) => {
-                return _.some(_user.Role, { _role_title: "Founder" }) ||
+                return _.some(_user.Role, { _role_title: "Fondateur" }) ||
                     _.isEqual(_user._user_email, row._user_email) ? (
                     <Form>
                         <Button
@@ -431,7 +430,7 @@ const PUsers = (props) => {
                 width: "15vh",
             },
             formatter: (cell, row) => {
-                return _.some(_user.Role, { _role_title: "Founder" }) &&
+                return _.some(_user.Role, { _role_title: "Fondateur" }) &&
                     !_.isEqual(_user._user_email, row._user_email) ? (
                     <Form>
                         <Button
@@ -583,7 +582,7 @@ const PUsers = (props) => {
                 .default("")
                 .test(
                     "empty-or-valid-phone",
-                    "Phone number invalid.",
+                    "Veuillez fournir une adresse email valid !",
                     (__phone) =>
                         !__phone ||
                         /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/.test(
@@ -935,12 +934,11 @@ const PUsers = (props) => {
         getDropdownProps: getDropdownPropsRole,
         getSelectedItemProps,
     } = useMultipleSelection({
-        initialSelectedItems: _.map(watchUser('Role'), (role) => role),
+        initialSelectedItems: _.map(watchUser('Role'), value => ({ value })),
         onStateChange: ({ selectedItems }) => {
             setValueUser(
                 'Role',
-                selectedItems
-            );
+                _.map(selectedItems, (item) => item.value));
         },
     });
 
@@ -969,14 +967,18 @@ const PUsers = (props) => {
         setRoleError('');
     };
     const _handleChangeRole = (__inputValue) => {
+        console.log('Handle Change Role:', __inputValue);
         /* If it includes it, it could mean that the suggestion is 'world' and the typped value is only 'orl' */
         let firstSuggestions = _.orderBy(
             _.uniqBy(
                 _.filter(
-                    __roles,
-                    (item) =>
-                        !__inputValue ||
-                        _.includes(_.lowerCase(item._role_title), _.lowerCase(__inputValue))
+                    _.filter(
+                        __roles,
+                        (item) =>
+                            !__inputValue ||
+                            _.includes(_.lowerCase(item._role_title), _.lowerCase(__inputValue))
+                    ),
+                    (item) => !selectedItemsRoles.some((selected) => selected._role_title === item._role_title) // Exclude already selected roles
                 ),
                 '_role_title'
             ),
@@ -1059,40 +1061,32 @@ const PUsers = (props) => {
         items: __roleItems,
         selectedItem: null,
         onInputValueChange({ inputValue, isOpen }) {
-            // Only trigger input change logic when it's not due to a selection
+            // Ensure this function is invoked
+            console.log('onInputValueChange', inputValue, isOpen);
             if (!selectedItemRole && isOpen) {
                 _handleChangeRole(inputValue);
             }
+            setInputValueRole(inputValue || '');
         },
         onSelectedItemChange: ({ selectedItem: __selectedItem }) => {
             _handleSelectRole(__selectedItem);
+            setInputValueRole('');  // Clear input after selecting
+            setTypedCharactersRole('');  // Also clear the typed characters
         },
         itemToString: (item) => (item ? item._role_title : ''),
         stateReducer: (state, actionAndChanges) => {
             const { type, changes } = actionAndChanges;
             switch (type) {
                 case useCombobox.stateChangeTypes.InputChange:
-                    return {
-                        ...changes,
-                        inputValue: state.inputValue,
-                    };
+                    return { ...changes, inputValue: state.inputValue };
                 case useCombobox.stateChangeTypes.InputClick:
-                    // Keep the dropdown open on click
-                    return {
-                        ...changes,
-                        isOpen: true,
-                        highlightedIndex: 0,
-                    };
+                    return { ...changes, isOpen: true, highlightedIndex: 0 };
                 case useCombobox.stateChangeTypes.FunctionSelectItem:
-                    // Prevent dropdown from closing after a role is selected
-                    return {
-                        ...changes,
-                        isOpen: true,
-                    };
+                    return { ...changes, isOpen: true };
                 default:
                     return changes;
             }
-        },
+        }
     });
     getInputPropsRole({}, { suppressRefError: true });
     getMenuPropsRole({}, { suppressRefError: true });
@@ -1265,8 +1259,8 @@ const PUsers = (props) => {
         try {
             for (const [key, value] of Object.entries(values)) {
                 if (!_.isEmpty(value)) {
-                    if (key === "_user_country") {
-                        formData.append(key, JSON.stringify(value));
+                    if (key === "_user_country" || key === "Role") {  // Add "Role" or other array fields here
+                        formData.append(key, JSON.stringify(value));  // Serialize the array to JSON
                     } else {
                         formData.append(key, value);
                     }
@@ -1309,14 +1303,12 @@ const PUsers = (props) => {
                             _user_toDelete: false,
                             Role: [],
                         });
+                        _handleChangeRole("");
 
                         return axios
                             .post("/api/notification", {
-                                _notification_title: `${_user._user_username} vient de ajouter un Utilisateur ${_fingerprint}.`,
+                                _notification_title: `${_user._user_username} vient d'ajouter un Administrateur ${_fingerprint}.`,
                                 _notification_user: formData
-                            })
-                            .then((res) => {
-                                console.log(res.data);
                             })
                             .catch((error) => {
                                 console.log(error);
@@ -1362,6 +1354,7 @@ const PUsers = (props) => {
                             _user_toDelete: false,
                             Role: [],
                         });
+                        _handleChangeRole("");
 
                         clearUserToEdit();
                     })
@@ -1410,8 +1403,8 @@ const PUsers = (props) => {
 
     return (
         <div className="_pane _users d-flex flex-column">
-            <Card className="rounded-0">
-                <Card.Body className="border border-0 rounded-0 no-shadow">
+            <Card className="rounded-0 h-100">
+                <Card.Body className="h-100 border border-0 rounded-0 no-shadow">
                     <div className="_header d-flex align-items-center">
                         <Breadcrumb className="d-flex">
                             <Breadcrumb.Item href="/">
@@ -1426,12 +1419,12 @@ const PUsers = (props) => {
                                 <FontAwesomeIcon icon={faUserGroup} />
                                 <span className="w-100 g-col-11">
                                     <p>
-                                        Utilisateurs<b className="pink_dot">.</b>
+                                        Administrateurs<b className="pink_dot">.</b>
                                     </p>
                                 </span>
                             </Breadcrumb.Item>
                         </Breadcrumb>
-                        
+
                         <div className="_search  ms-auto">
                             <Form onClick={() => setFocus('_searchInput')}>
                                 <Controller
@@ -1533,7 +1526,7 @@ const PUsers = (props) => {
                             </Form>
                         </div>
 
-                        {_.some(_user.Role, { _role_title: "Founder" }) && (
+                        {_.some(_user.Role, { _role_title: "Fondateur" }) && (
                             <Form>
                                 <Button
                                     type="button"
@@ -1547,12 +1540,12 @@ const PUsers = (props) => {
                                         <div className="borderBottom"></div>
                                         <div className="borderLeft"></div>
                                     </div>
-                                    <span>Ajouter Utilisateur.</span>
+                                    <span>Ajouter Administrateur.</span>
                                 </Button>
                             </Form>
                         )}
                     </div>
-                    <div className="_body flex-grow-1">
+                    <div className="_body">
                         <SimpleBar
                             style={{ maxHeight: "100%" }}
                             forceVisible="y"
@@ -1580,9 +1573,9 @@ const PUsers = (props) => {
                                 hover
                                 condensed
                                 bordered={false}
-                                noDataIndication={() => "Pas d'utilisateurs"}
+                                noDataIndication={() => "Pas d'administrateurs"}
                                 rowClasses={(row, rowIndex) => {
-                                    // Check your condition here (example: highlight if role is "Founder")
+                                    // Check your condition here (example: highlight if role is "Fondateur")
                                     if (_.isEqual(_user._user_email, row._user_email)) {
                                         return "bg-light";
                                     }
@@ -1616,9 +1609,9 @@ const PUsers = (props) => {
                             <Col className="g-col-3">
                                 {_.isEmpty(_userToEdit) ? (
                                     <span>
-                                        Ajouter Utilisateur.
+                                        Ajouter Administrateur.
                                         <p className="text-muted">
-                                            Veuillez remplir les informations de votre nouvel utilisateur.
+                                            Veuillez remplir les informations de votre nouvel Administrateur.
                                         </p>
                                     </span>
                                 ) : (
@@ -1636,10 +1629,8 @@ const PUsers = (props) => {
                         <Row className="g-col-12 grid">
                             <Col className="g-col-3">
                                 <span>
-                                    Public information.
-                                    <p className="text-muted">
-                                        This will be displayed on your profile.
-                                    </p>
+                                    Informations publiques.
+                                    <p className='text-muted'>Cela sera affiché sur votre profil.</p>
                                 </span>
                             </Col>
                             <Col className="g-col-4">
@@ -1648,14 +1639,14 @@ const PUsers = (props) => {
                                     className={`_formGroup ${_userLastnameFocused ? "focused" : ""
                                         }`}
                                 >
-                                    <FloatingLabel label="Last Name." className="_formLabel">
+                                    <FloatingLabel label="Nom." className="_formLabel">
                                         <Form.Control
                                             {...registerUser("_user_lastname")}
                                             onBlur={() => {
                                                 setUserlastnameFocused(false);
                                             }}
                                             onFocus={() => setUserlastnameFocused(true)}
-                                            placeholder="Lastname."
+                                            placeholder="Nom."
                                             autoComplete="new-password"
                                             type="text"
                                             className={`_formControl border rounded-0
@@ -1696,14 +1687,14 @@ const PUsers = (props) => {
                                     className={`_formGroup ${_userFirstnameFocused ? "focused" : ""
                                         }`}
                                 >
-                                    <FloatingLabel label="First Name." className="_formLabel">
+                                    <FloatingLabel label="Prénom." className="_formLabel">
                                         <Form.Control
                                             {...registerUser("_user_firstname")}
                                             onBlur={() => {
                                                 setUserfirstnameFocused(false);
                                             }}
                                             onFocus={() => setUserfirstnameFocused(true)}
-                                            placeholder="Firstname."
+                                            placeholder="Prénom."
                                             autoComplete="new-password"
                                             type="text"
                                             className={`_formControl border rounded-0
@@ -1840,8 +1831,8 @@ const PUsers = (props) => {
                         <Row className="g-col-12 grid">
                             <Col className="g-col-3">
                                 <span>
-                                    Contact information.
-                                    <p className="text-muted">Update your profile photo.</p>
+                                    Coordonnées.
+                                    <p className='text-muted'>Mettez à jour vos informations d'adresse.</p>
                                 </span>
                             </Col>
                             <Col className="g-col-4">
@@ -1855,7 +1846,7 @@ const PUsers = (props) => {
                                                 }`}
                                         >
                                             <FloatingLabel
-                                                label="Country."
+                                                label="Pays."
                                                 className="_formLabel _autocomplete"
                                                 {...getLabelPropsCountry()}
                                             >
@@ -1865,7 +1856,7 @@ const PUsers = (props) => {
                                                         onFocus: _handleFocusCountry,
                                                         onBlur: _handleBlurCountry,
                                                     })}
-                                                    placeholder="Country."
+                                                    placeholder="Pays."
                                                     className={`_formControl border rounded-0 ${errorsUser._user_country ? "border-danger" : ""
                                                         } ${!_.isEmpty(_typedCharactersCountry) ? "_typing" : ""
                                                         }`}
@@ -2001,7 +1992,7 @@ const PUsers = (props) => {
                                                 }`}
                                         >
                                             <FloatingLabel
-                                                label="City."
+                                                label="Ville."
                                                 className="_formLabel _autocomplete"
                                                 {...getLabelPropsCity()}
                                             >
@@ -2011,7 +2002,7 @@ const PUsers = (props) => {
                                                         onFocus: _handleFocusCity,
                                                         onBlur: _handleBlurCity,
                                                     })}
-                                                    placeholder="City."
+                                                    placeholder="Ville."
                                                     className={`_formControl border rounded-0 ${errorsUser._user_city ? "border-danger" : ""
                                                         } ${!_.isEmpty(_typedCharactersCity) ? "_typing" : ""
                                                         }`}
@@ -2139,14 +2130,14 @@ const PUsers = (props) => {
                                     controlId="_user_phone"
                                     className={`_formGroup ${_userPhoneFocused ? "focused" : ""}`}
                                 >
-                                    <FloatingLabel label="Phone." className="_formLabel">
+                                    <FloatingLabel label="Téléphone." className="_formLabel">
                                         <Form.Control
                                             {...registerUser("_user_phone")}
                                             onBlur={() => {
                                                 setUserphoneFocused(false);
                                             }}
                                             onFocus={() => setUserphoneFocused(true)}
-                                            placeholder="Phone."
+                                            placeholder="Téléphone."
                                             autoComplete="new-password"
                                             type="text"
                                             className={`_formControl border rounded-0
@@ -2188,8 +2179,8 @@ const PUsers = (props) => {
                                 <Row className="g-col-12 grid">
                                     <Col className="g-col-3">
                                         <span>
-                                            Security.
-                                            <p className="text-muted">Update your password.</p>
+                                            Sécurité.
+                                            <p className='text-muted'>Mettez à jour votre mot de passe.</p>
                                         </span>
                                     </Col>
                                     <Col className="g-col-4">
@@ -2198,14 +2189,14 @@ const PUsers = (props) => {
                                             className={`_formGroup ${_userPasswordFocused ? "focused" : ""
                                                 }`}
                                         >
-                                            <FloatingLabel label="Password." className="_formLabel">
+                                            <FloatingLabel label="Mot de passe." className="_formLabel">
                                                 <Form.Control
                                                     {...registerUser("_user_password")}
                                                     onBlur={() => {
                                                         setUserpasswordFocused(false);
                                                     }}
                                                     onFocus={() => setUserpasswordFocused(true)}
-                                                    placeholder="Password."
+                                                    placeholder="Mot de passe."
                                                     autoComplete="new-password"
                                                     type="password"
                                                     className={`_formControl border rounded-0
@@ -2250,7 +2241,7 @@ const PUsers = (props) => {
                                                 }`}
                                         >
                                             <FloatingLabel
-                                                label="New Password."
+                                                label="Nouveau Mot de passe."
                                                 className="_formLabel"
                                             >
                                                 <Form.Control
@@ -2259,7 +2250,7 @@ const PUsers = (props) => {
                                                         setUserpasswordNewFocused(false);
                                                     }}
                                                     onFocus={() => setUserpasswordNewFocused(true)}
-                                                    placeholder="New Password."
+                                                    placeholder="Nouveau Mot de passe."
                                                     autoComplete="new-password"
                                                     type="password"
                                                     className={`_formControl border rounded-0
@@ -2301,7 +2292,7 @@ const PUsers = (props) => {
                                                 }`}
                                         >
                                             <FloatingLabel
-                                                label="Confirm Password."
+                                                label="Confirmer Mot de passe."
                                                 className="_formLabel"
                                             >
                                                 <Form.Control
@@ -2310,7 +2301,7 @@ const PUsers = (props) => {
                                                         setUserpasswordNewConfirmFocused(false);
                                                     }}
                                                     onFocus={() => setUserpasswordNewConfirmFocused(true)}
-                                                    placeholder="Confirm Password."
+                                                    placeholder="Confirmer Mot de passe."
                                                     autoComplete="new-password"
                                                     type="password"
                                                     className={`_formControl border rounded-0
@@ -2351,8 +2342,8 @@ const PUsers = (props) => {
                             <Row className="g-col-12 grid">
                                 <Col className="g-col-3">
                                     <span>
-                                        Security.
-                                        <p className="text-muted">Update your password.</p>
+                                        Sécurité.
+                                        <p className='text-muted'>Mettez à jour votre mot de passe.</p>
                                     </span>
                                 </Col>
                                 <Col className="g-col-4">
@@ -2361,14 +2352,14 @@ const PUsers = (props) => {
                                         className={`_formGroup ${_userPasswordNewFocused ? "focused" : ""
                                             }`}
                                     >
-                                        <FloatingLabel label="New Password." className="_formLabel">
+                                        <FloatingLabel label="Nouveau Mot de passe." className="_formLabel">
                                             <Form.Control
                                                 {...registerUser("_user_passwordNew")}
                                                 onBlur={() => {
                                                     setUserpasswordNewFocused(false);
                                                 }}
                                                 onFocus={() => setUserpasswordNewFocused(true)}
-                                                placeholder="New Password."
+                                                placeholder="Nouveau Mot de passe."
                                                 autoComplete="new-password"
                                                 type="password"
                                                 className={`_formControl border rounded-0
@@ -2410,7 +2401,7 @@ const PUsers = (props) => {
                                             }`}
                                     >
                                         <FloatingLabel
-                                            label="Confirm Password."
+                                            label="Confirm Mot de passe."
                                             className="_formLabel"
                                         >
                                             <Form.Control
@@ -2419,7 +2410,7 @@ const PUsers = (props) => {
                                                     setUserpasswordNewConfirmFocused(false);
                                                 }}
                                                 onFocus={() => setUserpasswordNewConfirmFocused(true)}
-                                                placeholder="Confirm Password."
+                                                placeholder="Confirm Mot de passe."
                                                 autoComplete="new-password"
                                                 type="password"
                                                 className={`_formControl border rounded-0
@@ -2458,7 +2449,8 @@ const PUsers = (props) => {
                         )}
 
                         {/* Role */}
-                        <Row className="g-col-12 grid _roles">
+                        {/* Works selecting but not typing, and also the removing role after selection, and also removing after submit */}
+                        {/* <Row className="g-col-12 grid _roles">
                             <Col className="g-col-3"></Col>
                             <Col className="g-col-4">
                                 <Form.Group
@@ -2603,7 +2595,7 @@ const PUsers = (props) => {
                                     </SimpleBar>
                                 </Form.Group>
                             </Col>
-                        </Row>
+                        </Row> */}
                     </Modal.Body>
                     <Modal.Footer>
                         <Row className="grid w-100">

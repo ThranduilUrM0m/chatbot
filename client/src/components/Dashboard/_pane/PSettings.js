@@ -72,35 +72,35 @@ const PSettings = (props) => {
                 .default('')
                 .test(
                     'empty-or-valid-email',
-                    'Email invalid.',
+                    'Veuillez fournir une adresse email valid !.',
                     __email => !__email || /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(__email)
                 ),
             _user_username: Yup.string()
                 .default('')
                 .test(
                     'empty-or-valid-username',
-                    'Must be 3 to 20 long.',
+                    'Doit contenir entre 3 et 20 caractère.',
                     __username => !__username || /^[a-zA-Z0-9_]{3,20}$/.test(__username)
                 ),
             _user_password: Yup.string()
                 .default('')
                 .test(
                     'empty-or-valid-password',
-                    'At least 1 upper and 1 lowercase letter, 1 number and 1 symbol.',
+                    'Majuscule, minuscule, chiffre et symbole requis.',
                     __password => !__password || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,}$/.test(__password)
                 ),
             _user_passwordNew: Yup.string()
                 .default('')
                 .test(
                     'empty-or-valid-passwordNew',
-                    'At least 1 upper and 1 lowercase letter, 1 number and 1 symbol.',
+                    'Majuscule, minuscule, chiffre et symbole requis.',
                     __passwordNew => !__passwordNew || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,}$/.test(__passwordNew)
                 ),
             _user_passwordNewConfirm: Yup.string()
                 .default('')
                 .test(
                     'empty-or-valid-passwordNewConfirm',
-                    'At least 1 upper and 1 lowercase letter, 1 number and 1 symbol.',
+                    'Majuscule, minuscule, chiffre et symbole requis.',
                     __passwordNewConfirm => !__passwordNewConfirm || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,}$/.test(__passwordNewConfirm)
                 ),
             _user_picture: Yup.string()
@@ -109,14 +109,14 @@ const PSettings = (props) => {
                 .default('')
                 .test(
                     'empty-or-valid-firstname',
-                    'No numbers or symbols.',
+                    'Pas de chiffres ni de symboles.',
                     __firstname => !__firstname || /^[a-zA-Z\s]{2,}$/i.test(__firstname)
                 ),
             _user_lastname: Yup.string()
                 .default('')
                 .test(
                     'empty-or-valid-lastname',
-                    'No numbers or symbols.',
+                    'Pas de chiffres ni de symboles.',
                     __lastname => !__lastname || /^[a-zA-Z\s]{2,}$/i.test(__lastname)
                 ),
             _user_city: Yup.string()
@@ -132,7 +132,7 @@ const PSettings = (props) => {
                 .default('')
                 .test(
                     'empty-or-valid-phone',
-                    'Phone number invalid.',
+                    'Veuillez fournir une adresse email valid !',
                     __phone => !__phone || /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/.test(__phone)
                 ),
             _user_toDelete: Yup.boolean()
@@ -646,7 +646,7 @@ const PSettings = (props) => {
                                 </Col>
                                 <Col className='g-col-3'></Col>
                                 <Col className='g-col-3'></Col>
-                                <Col className='g-col-3 ms-auto d-flex justify-content-end'>
+                                <Col className='g-col-3 d-flex justify-content-end'>
                                     {
                                         //Upon click it just disapears or appears too fast
                                         !_.isEmpty(_userToEdit) && (
@@ -656,13 +656,13 @@ const PSettings = (props) => {
                                                 variant='link'
                                                 onClick={() => _handleCancel('_first')}
                                             >
-                                                Cancel<b className='pink_dot'>.</b>
+                                                Annuler<b className='pink_dot'>.</b>
                                             </Button>
                                         )
                                     }
                                     <Button
                                         type={`${_.isEmpty(_userToEdit) ? 'button' : 'submit'}`}
-                                        className={`border border-0 rounded-0 inverse ${_.isEmpty(_userToEdit) ? '' : '_edit'}`}
+                                        className={`border border-0 rounded-0 w-50 inverse ${_.isEmpty(_userToEdit) ? '' : '_edit'}`}
                                         variant='outline-light'
                                         onClick={(ev) => {
                                             if (_.isEmpty(_userToEdit)) {
@@ -678,7 +678,7 @@ const PSettings = (props) => {
                                             <div className='borderLeft'></div>
                                         </div>
                                         <span>
-                                            {_.isEmpty(_userToEdit) ? 'Edit.' : 'Save Changes.'}
+                                            {_.isEmpty(_userToEdit) ? 'Modifier.' : 'Enregistrer.'}
                                             <FontAwesomeIcon icon={faPen} />
                                         </span>
                                     </Button>
@@ -689,8 +689,8 @@ const PSettings = (props) => {
                             <Row className='g-col-12 grid'>
                                 <Col className='g-col-3'>
                                     <span>
-                                        Public information.
-                                        <p className='text-muted'>This will be displayed on your profile.</p>
+                                        Informations publiques.
+                                        <p className='text-muted'>Cela sera affiché sur votre profil.</p>
                                     </span>
                                 </Col>
                                 <Col className='g-col-4'>
@@ -699,7 +699,7 @@ const PSettings = (props) => {
                                         className={`_formGroup ${_userLastnameFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
                                     >
                                         <FloatingLabel
-                                            label='Last Name.'
+                                            label='Nom.'
                                             className='_formLabel'
                                         >
                                             <Form.Control
@@ -709,7 +709,7 @@ const PSettings = (props) => {
                                                     triggerSettings('_user_lastname');
                                                 }}
                                                 onFocus={() => setUserlastnameFocused(true)}
-                                                placeholder='Lastname.'
+                                                placeholder='Nom.'
                                                 autoComplete='new-password'
                                                 type='text'
                                                 className={`_formControl border rounded-0 ${errorsSettings._user_lastname ? 'border-danger' : ''}`}
@@ -741,7 +741,7 @@ const PSettings = (props) => {
                                         className={`_formGroup ${_userFirstnameFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
                                     >
                                         <FloatingLabel
-                                            label='First Name.'
+                                            label='Prénom.'
                                             className='_formLabel'
                                         >
                                             <Form.Control
@@ -751,7 +751,7 @@ const PSettings = (props) => {
                                                     triggerSettings('_user_firstname');
                                                 }}
                                                 onFocus={() => setUserfirstnameFocused(true)}
-                                                placeholder='Firstname.'
+                                                placeholder='Prénom.'
                                                 autoComplete='new-password'
                                                 type='text'
                                                 className={`_formControl border rounded-0 ${errorsSettings._user_firstname ? 'border-danger' : ''}`}
@@ -828,7 +828,7 @@ const PSettings = (props) => {
                                         className={`_formGroup ${_userUsernameFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
                                     >
                                         <FloatingLabel
-                                            label='Username.'
+                                            label={`Nom d\'utilisateur.`}
                                             className='_formLabel'
                                         >
                                             <Form.Control
@@ -838,7 +838,7 @@ const PSettings = (props) => {
                                                     triggerSettings('_user_username');
                                                 }}
                                                 onFocus={() => setUserusernameFocused(true)}
-                                                placeholder='Username.'
+                                                placeholder={`Nom d\'utilisateur.`}
                                                 autoComplete='new-password'
                                                 type='text'
                                                 className={`_formControl border rounded-0 ${errorsSettings._user_username ? 'border-danger' : ''}`}
@@ -903,8 +903,8 @@ const PSettings = (props) => {
                             <Row className='g-col-12 grid'>
                                 <Col className='g-col-3'>
                                     <span>
-                                        Contact information.
-                                        <p className='text-muted'>Update your profile photo.</p>
+                                        Coordonnées.
+                                        <p className='text-muted'>Mettez à jour vos informations d'adresse.</p>
                                     </span>
                                 </Col>
                                 <Col className='g-col-4'>
@@ -917,7 +917,7 @@ const PSettings = (props) => {
                                                 className={`_formGroup ${_userCountryFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
                                             >
                                                 <FloatingLabel
-                                                    label='Country.'
+                                                    label='Pays.'
                                                     className='_formLabel _autocomplete'
                                                     {...getLabelPropsCountry()}
                                                 >
@@ -927,7 +927,7 @@ const PSettings = (props) => {
                                                             onFocus: _handleFocusCountry,
                                                             onBlur: _handleBlurCountry
                                                         })}
-                                                        placeholder='Country.'
+                                                        placeholder='Pays.'
                                                         className={`_formControl border rounded-0 ${errorsSettings._user_country ? 'border-danger' : ''} ${!_.isEmpty(_typedCharactersCountry) ? '_typing' : ''}`}
                                                         disabled={_.isEmpty(_userToEdit)}
                                                     />
@@ -1026,7 +1026,7 @@ const PSettings = (props) => {
                                                 className={`_formGroup ${_userCityFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
                                             >
                                                 <FloatingLabel
-                                                    label='City.'
+                                                    label='Ville.'
                                                     className='_formLabel _autocomplete'
                                                     {...getLabelPropsCity()}
                                                 >
@@ -1036,7 +1036,7 @@ const PSettings = (props) => {
                                                             onFocus: _handleFocusCity,
                                                             onBlur: _handleBlurCity
                                                         })}
-                                                        placeholder='City.'
+                                                        placeholder='Ville.'
                                                         className={`_formControl border rounded-0 ${errorsSettings._user_city ? 'border-danger' : ''} ${!_.isEmpty(_typedCharactersCity) ? '_typing' : ''}`}
                                                         disabled={_.isEmpty(_userToEdit) || _.isEmpty(watchSettings('_user_country._country'))}
                                                     />
@@ -1130,7 +1130,7 @@ const PSettings = (props) => {
                                         className={`_formGroup ${_userPhoneFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
                                     >
                                         <FloatingLabel
-                                            label='Phone.'
+                                            label='Téléphone.'
                                             className='_formLabel'
                                         >
                                             <Form.Control
@@ -1140,7 +1140,7 @@ const PSettings = (props) => {
                                                     triggerSettings('_user_phone');
                                                 }}
                                                 onFocus={() => setUserphoneFocused(true)}
-                                                placeholder='Phone.'
+                                                placeholder='Téléphone.'
                                                 autoComplete='new-password'
                                                 type='text'
                                                 className={`_formControl border rounded-0 ${errorsSettings._user_phone ? 'border-danger' : ''}`}
@@ -1173,8 +1173,8 @@ const PSettings = (props) => {
                             <Row className='g-col-12 grid'>
                                 <Col className='g-col-3'>
                                     <span>
-                                        Security.
-                                        <p className='text-muted'>Update your password.</p>
+                                        Sécurité.
+                                        <p className='text-muted'>Mettez à jour votre mot de passe.</p>
                                     </span>
                                 </Col>
                                 <Col className='g-col-4'>
@@ -1183,7 +1183,7 @@ const PSettings = (props) => {
                                         className={`_formGroup ${_userPasswordFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
                                     >
                                         <FloatingLabel
-                                            label='Password.'
+                                            label='Mot de passe.'
                                             className='_formLabel'
                                         >
                                             <Form.Control
@@ -1193,7 +1193,7 @@ const PSettings = (props) => {
                                                     triggerSettings('_user_password');
                                                 }}
                                                 onFocus={() => setUserpasswordFocused(true)}
-                                                placeholder='Password.'
+                                                placeholder='Mot de passe.'
                                                 autoComplete='new-password'
                                                 type='password'
                                                 className={`_formControl border rounded-0 ${errorsSettings._user_password ? 'border-danger' : ''}`}
@@ -1228,7 +1228,7 @@ const PSettings = (props) => {
                                         className={`_formGroup ${_userPasswordNewFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
                                     >
                                         <FloatingLabel
-                                            label='New Password.'
+                                            label='Nouveau Mot de passe.'
                                             className='_formLabel'
                                         >
                                             <Form.Control
@@ -1238,7 +1238,7 @@ const PSettings = (props) => {
                                                     triggerSettings('_user_passwordNew');
                                                 }}
                                                 onFocus={() => setUserpasswordNewFocused(true)}
-                                                placeholder='New Password.'
+                                                placeholder='Nouveau Mot de passe.'
                                                 autoComplete='new-password'
                                                 type='password'
                                                 className={`_formControl border rounded-0 ${errorsSettings._user_passwordNew ? 'border-danger' : ''}`}
@@ -1270,7 +1270,7 @@ const PSettings = (props) => {
                                         className={`_formGroup ${_userPasswordNewConfirmFocused ? 'focused' : ''} ${_.isEmpty(_userToEdit) ? '_disabled' : ''}`}
                                     >
                                         <FloatingLabel
-                                            label='Confirm Password.'
+                                            label='Confirmer Mot de passe.'
                                             className='_formLabel'
                                         >
                                             <Form.Control
@@ -1280,7 +1280,7 @@ const PSettings = (props) => {
                                                     triggerSettings('_user_passwordNewConfirm');
                                                 }}
                                                 onFocus={() => setUserpasswordNewConfirmFocused(true)}
-                                                placeholder='Confirm Password.'
+                                                placeholder='Confirmer Mot de passe.'
                                                 autoComplete='new-password'
                                                 type='password'
                                                 className={`_formControl border rounded-0 ${errorsSettings._user_passwordNewConfirm ? 'border-danger' : ''}`}
@@ -1313,7 +1313,7 @@ const PSettings = (props) => {
                                 <Col className='g-col-3'></Col>
                                 <Col className='g-col-3'></Col>
                                 <Col className='g-col-3'></Col>
-                                <Col className='g-col-3 ms-auto d-flex justify-content-end'>
+                                <Col className='g-col-3 d-flex justify-content-end'>
                                     {
                                         //Upon click it just disapears or appears too fast
                                         !_.isEmpty(_userToEdit) && (
@@ -1323,13 +1323,13 @@ const PSettings = (props) => {
                                                 variant='link'
                                                 onClick={() => _handleCancel('_first')}
                                             >
-                                                Cancel<b className='pink_dot'>.</b>
+                                                Annuler<b className='pink_dot'>.</b>
                                             </Button>
                                         )
                                     }
                                     <Button
                                         type={`${_.isEmpty(_userToEdit) ? 'button' : 'submit'}`}
-                                        className={`border border-0 rounded-0 inverse ${_.isEmpty(_userToEdit) ? '' : '_edit'}`}
+                                        className={`border border-0 rounded-0 w-50 inverse ${_.isEmpty(_userToEdit) ? '' : '_edit'}`}
                                         variant='outline-light'
                                         onClick={(ev) => {
                                             if (_.isEmpty(_userToEdit)) {
@@ -1345,7 +1345,7 @@ const PSettings = (props) => {
                                             <div className='borderLeft'></div>
                                         </div>
                                         <span>
-                                            {_.isEmpty(_userToEdit) ? 'Edit.' : 'Save Changes.'}
+                                            {_.isEmpty(_userToEdit) ? 'Modifier.' : 'Enregistrer.'}
                                             <FontAwesomeIcon icon={faPen} />
                                         </span>
                                     </Button>

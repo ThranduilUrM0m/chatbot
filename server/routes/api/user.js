@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 const User = mongoose.model('User');
 const Token = mongoose.model('Token');
+const Role = mongoose.model('Role');
 const Notification = mongoose.model('Notification');
 const router = express.Router();
 
@@ -100,24 +101,60 @@ router.post('/', uploadMiddleware, async (req, res, next) => {
         const _userByUsername = await User.findOne({ _user_username: body._user_username });
         if (_userByEmail) {
             return res.status(400).json({
-                text: 'This Email exists already can u, please submit another Email.'
+                text: 'Cet e-mail existe déjà, pouvez-vous, Veuillez soumettre un autre e-mail.'
             });
         }
         if (_userByUsername) {
             return res.status(400).json({
-                text: 'This Username exists already can u, please submit another Username.'
+                text: 'Ce nom d\'utilisateur existe déjà, pouvez-vous, Veuillez soumettre un autre nom d\'utilisateur.'
             });
         }
 
         // Sauvegarde de l'utilisateur en base
         const finalUser = new User({
-            _user_email: body._user_email,
-            _user_username: body._user_username,
             _user_password: body._user_password
                 ? passwordHash.generate(body._user_password)
                 : passwordHash.generate(body._user_passwordNew),
-            _user_fingerprint: body._user_fingerprint,
+            ...body // This will include the rest of the body properties, but _user_password won't be overwritten
         });
+
+        // Parse and process the Role field if provided
+        if (body.Role) {
+            try {
+                // Parse the Role JSON string correctly
+                const parsedRole = JSON.parse(body.Role);
+
+                // Ensure we are getting an array of roles
+                if (!Array.isArray(parsedRole)) {
+                    return res.status(400).json({ text: 'Invalid Role format.' });
+                }
+
+                // Extract the _id array from the parsed roles
+                const roleIds = parsedRole.map(role => role._id);
+
+                // Validate the role IDs
+                if (!roleIds || roleIds.length === 0) {
+                    return res.status(400).json({ text: 'No role IDs provided.' });
+                }
+
+                // Find the roles from the database based on the _id array
+                const roles = await Role.find({ _id: { $in: roleIds } });
+
+                if (!roles || roles.length === 0) {
+                    return res.status(400).json({ text: 'No valid roles found.' });
+                }
+
+                // Add found roles to user.Role array (ensure correct type)
+                finalUser.Role = roles.map(role => role._id); // Store ObjectId references
+
+            } catch (error) {
+                return res.status(400).json({
+                    text: 'Error parsing Role field or invalid Role format.',
+                    error
+                });
+            }
+        }
+
         await finalUser.save();
 
         // Create a verification token for this user
@@ -248,8 +285,8 @@ router.post('/_login', async (req, res, next) => {
         // On check si l'utilisateur existe en base
         const findUser = await User.findOne({
             $or: [
-                { _user_email: body._user_identification },
-                { _user_username: body._user_identification }
+                { _user_email: { $regex: new RegExp(body._user_identification, 'i') } },
+                { _user_username: { $regex: new RegExp(body._user_identification, 'i') } }
             ]
         })
             .populate('Role');
@@ -296,7 +333,7 @@ router.post('/_login', async (req, res, next) => {
 
                 // Once the user is created or updated, generate a JWT token
                 const token = __u.getToken();
-        
+
                 return res.status(200).json({
                     _user: __u,
                     token: token,

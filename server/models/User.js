@@ -80,7 +80,7 @@ User.pre('save', async function (next) {
         const RoleModel = mongoose.model('Role');
         
         // Find the role with _role_title equal to 'User'
-        const defaultRole = await RoleModel.findOne({ _role_title: 'User' });
+        const defaultRole = await RoleModel.findOne({ _role_title: 'Administrateur' });
         
         if (defaultRole) {
             this.Role = [defaultRole._id];  // Set the default role as "User"
