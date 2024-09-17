@@ -115,14 +115,14 @@ const Login = (props) => {
 					navigate('/dashboard', { replace: true, state: { from: location } });
 				})
 				.catch((error) => {
-					setModalHeader('We\'re sorry !');
+					setModalHeader('Nous sommes Désolé !');
 					setModalBody(error.response.data.text);
 					setModalIcon(<FontAwesomeIcon icon={faRectangleXmark} />);
 					setShowModal(true);
 				});
 		} catch (error) {
 			//Something shitty happens if incorrect password
-			setModalHeader('We\'re sorry !');
+			setModalHeader('Nous sommes Désolé !');
 			setModalBody(JSON.stringify(error));
 			setModalIcon(<FontAwesomeIcon icon={faRectangleXmark} />);
 			setShowModal(true);
@@ -130,7 +130,7 @@ const Login = (props) => {
 	}
 
 	const onError = (error) => {
-		setModalHeader('Sorry !');
+		setModalHeader('Nous sommes Désolé !');
 		setModalBody(_.join(_.map(error, err => err.message), '\n'));
 		setModalIcon(<FontAwesomeIcon icon={faRectangleXmark} />);
 		setShowModal(true);
@@ -139,10 +139,11 @@ const Login = (props) => {
 	return (
 		<main className='_login'>
 			<section className='grid'>
+				<div className='g-col-3'></div>
 				<div className='g-col-6 d-flex justify-content-center align-items-center'>
 					<Card className='border border-0 rounded-0'>
 						<Card.Header className='rounded-0'>
-							<h3>Login<b className='pink_dot'>.</b></h3>
+							<h3>Connexion<b className='pink_dot'>.</b></h3>
 						</Card.Header>
 						<Card.Body>
 							<Form onSubmit={handleSubmit(onSubmit, onError)} className='grid'>
@@ -237,19 +238,6 @@ const Login = (props) => {
 						</Card.Body>
 					</Card>
 				</div>
-				<div className='g-col-6 d-flex justify-content-center align-items-center'>
-					<Card className='border border-0 rounded-0'>
-						<Card.Header className='rounded-0 d-flex justify-content-start align-items-end'>
-							<h4>Dev<b className='pink_dot'>.</b></h4>
-						</Card.Header>
-						<Card.Body className='rounded-0'>
-							<Form className='d-flex flex-column justify-content-center align-items-start'>
-								<h6>Welcome to boutaleb.</h6>
-								<p>To speak louder.</p>
-							</Form>
-						</Card.Body>
-					</Card>
-				</div>
 			</section>
 
 			<Modal show={_showModal} onHide={() => setShowModal(false)} centered>
@@ -268,7 +256,7 @@ const Login = (props) => {
 								<div className='borderLeft'></div>
 							</div>
 							<span>
-								Close<b className='pink_dot'>.</b>
+								Fermer<b className='pink_dot'>.</b>
 							</span>
 						</Button>
 					</Modal.Footer>

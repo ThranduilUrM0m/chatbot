@@ -163,7 +163,7 @@ const Dashboard = (props) => {
                             <Nav.Item className='_welcome d-flex'>
                                 <div className='d-flex flex-column align-items-start justify-content-center'>
                                     <span className='d-flex'>
-                                        <p className='m-0 text-muted'>Hello, {_.isEmpty(_user._user_lastname) && _.isEmpty(_user._user_firstname) ? _.capitalize(_user._user_username) : (!_.isEmpty(_user._user_lastname) ? _user._user_lastname + ' ' + _user._user_firstname : _user._user_firstname)}</p>
+                                        <p className='m-0 text-muted'>Bonjour, {_.isEmpty(_user._user_lastname) && _.isEmpty(_user._user_firstname) ? _.capitalize(_user._user_username) : (!_.isEmpty(_user._user_lastname) ? _user._user_lastname + ' ' + _user._user_firstname : _user._user_firstname)}</p>
                                         <FontAwesomeIcon icon={faHandsClapping} />
                                     </span>
                                     <span className='d-flex flex-column'>

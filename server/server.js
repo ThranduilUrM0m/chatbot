@@ -275,7 +275,7 @@ const setUpExpress = () => {
                     /* Notification */
                     let notification = new Notification({
                         _notification_title: `Un nouveau message a éte envoyé dans la conversation ${conversation._id}.`,
-                        _notification_user: { _fingerprint: _conversation_user },
+                        _notification_user: { _fingerprint: conversation._conversation_user },
                         _notification_data: { role, content },
                     });
 
@@ -318,13 +318,13 @@ const setUpExpress = () => {
                     socket.emit('messageSent', { user: 'assistant', chatHistory: finalChatHistory, role: 'assistant', content: aiMessage });
 
                     /* Notification */
-                    notification = new Notification({
-                        _notification_title: `L'assitant vient de répondre dans la conversation ${conversation._id}.`,
-                        _notification_user: { _fingerprint: _conversation_user },
+                    let notificationAI = new Notification({
+                        _notification_title: `Un nouveau message a éte envoyé dans la conversation ${conversation._id}.`,
+                        _notification_user: { _fingerprint: conversation._conversation_user },
                         _notification_data: { role: 'assistant', content: aiMessage },
                     });
 
-                    await notification.save();
+                    await notificationAI.save();
                 } else {
                     console.error('Conversation not found:', conversationId);
                     socket.emit('error', { message: 'Conversation not found' });

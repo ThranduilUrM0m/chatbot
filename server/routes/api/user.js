@@ -241,7 +241,7 @@ router.post('/_login', async (req, res, next) => {
         if (!body._user_identification || !body._user_password) {
             // Le cas où l'email/username ou bien le password ne serait pas soumit ou nul
             return res.status(400).json({
-                text: 'Please fill out both identification and password.'
+                text: 'Veuillez remplir à la fois l\'identification et le mot de passe.'
             });
         }
 
@@ -287,7 +287,6 @@ router.post('/_login', async (req, res, next) => {
             .populate('Role')
             .then(async (__u) => {
                 /* Notification */
-                console.log('HNAAAAAAAAAAAAAAAAAAAAAAAAA : ', __u)
                 const notification = new Notification({
                     _notification_title: `L'utilisateur ${__u._user_username} vient de se connecter .`,
                     _notification_user: __u.toJSON()
@@ -301,12 +300,11 @@ router.post('/_login', async (req, res, next) => {
                 return res.status(200).json({
                     _user: __u,
                     token: token,
-                    text: 'Authentication successful.',
+                    text: 'Authentification réussie.',
                 });
             });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error });
+        return res.status(500).json({ text: 'Nous rencontrons des problèmes internes' });
     }
 });
 
