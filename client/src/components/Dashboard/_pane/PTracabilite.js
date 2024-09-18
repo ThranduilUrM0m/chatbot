@@ -13,6 +13,8 @@ import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
 const PTracabilite = (props) => {
+    moment.locale('fr');
+    
     /* For Notifications */
     const _notifications = _useStore.useNotificationStore((state) => state._notifications);
     const setNotifications = _useStore.useNotificationStore((state) => state["_notifications_SET_STATE"]);

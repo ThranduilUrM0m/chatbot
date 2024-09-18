@@ -53,6 +53,8 @@ const usePersistentFingerprint = (setIsFingerprintLoaded) => {
 
 /* JOY : localStorage should always check with the database, cause sometimes it has what was deleted from the database manually */
 const Home = (props) => {
+    moment.locale('fr');
+
     const _conversations = _useStore.useConversationStore((state) => state._conversations);
     const setConversations = _useStore.useConversationStore((state) => state["_conversations_SET_STATE"]);
 
@@ -225,6 +227,31 @@ const Home = (props) => {
         };
     }, [isFingerprintLoaded, _getConversations]);
 
+    const groupedConversations = _.groupBy(_conversations, (conversation) => {
+        const updatedAt = moment(conversation.updatedAt);
+        const now = moment();
+
+        if (updatedAt.isAfter(now.subtract(1, 'hour'))) {
+            return 'lastHour';
+        } else if (updatedAt.isSame(now, 'day')) {
+            return 'today';
+        } else if (updatedAt.isSame(now, 'month')) {
+            return 'lastMonth';
+        } else if (updatedAt.isSame(now, 'year')) {
+            return 'lastYear';
+        } else {
+            return 'beforeLastYear';
+        }
+    });
+
+    const groupNames = {
+        lastHour: 'Dernière heure',
+        today: 'Aujourd\'hui',
+        lastMonth: 'Le mois dernier',
+        lastYear: 'L\'année dernière',
+        beforeLastYear: 'Avant l\'année dernière',
+    };
+
     return (
         <main className='_home'>
             <section className='_s1 d-flex flex-column'>
@@ -313,40 +340,53 @@ const Home = (props) => {
                             {_.isEmpty(_conversations) ? (
                                 <p className='h6 text-muted text-center m-0 fw-semibold'>Vous n'avez pas d'autres conversation pour le moment</p>
                             ) : (
-                                _.map(_conversations, (conversation, index) => (
-                                    <div key={index} className={`d-flex _conversationItem ${conversation._id === _idConversation ? '__currentConversation' : ''}`}>
-                                        <span
-                                            onClick={() => {
-                                                setIdConversation(conversation._id);
-                                                setChatHistory(conversation.chatHistory);
-                                                localStorage.setItem('_idConversation', conversation._id);
-                                                localStorage.setItem('chatHistory', JSON.stringify(conversation.chatHistory));
-                                            }}
-                                            className='flex-grow-1'
-                                        >
-                                            <p className='h6 m-0 fw-semibold'>
-                                                {
-                                                    conversation.chatHistory.find(message => message.role === 'user')
-                                                        ? conversation.chatHistory.find(message => message.role === 'user').content
-                                                        : conversation.chatHistory.length > 0
-                                                            ? conversation.chatHistory[0].content
-                                                            : 'No messages yet.'
-                                                }
-                                            </p>
-                                            <p className='m-0 text-muted'>
-                                                <FontAwesomeIcon icon={faClock} /> {moment(conversation.createdAt).fromNow()}
-                                            </p>
-                                        </span>
-                                        <Button
-                                            type='button'
-                                            className='border border-0 rounded-0 _red inverse'
-                                            variant='btn-outline-danger'
-                                            onClick={() => _deleteConversation(conversation._id)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrashCan} />
-                                        </Button>
-                                    </div>
-                                ))
+                                // Define the desired order for the groups
+                                ['lastHour', 'today', 'lastMonth', 'lastYear', 'beforeLastYear'].map((key) => {
+                                    const conversations = groupedConversations[key];
+
+                                    if (!conversations) return null; // Skip if no conversations in this group
+
+                                    return (
+                                        <div className='conversationGroup' key={key}>
+                                            <p className='m-0 __groupName'>{groupNames[key]}</p>
+                                            {_.map(conversations, (conversation, index) => (
+                                                <div
+                                                    key={index}
+                                                    className={`d-flex conversationItem ${conversation._id === _idConversation ? '__currentConversation' : ''}`}
+                                                >
+                                                    <span
+                                                        onClick={() => {
+                                                            setIdConversation(conversation._id);
+                                                            setChatHistory(conversation.chatHistory);
+                                                            localStorage.setItem('_idConversation', conversation._id);
+                                                            localStorage.setItem('chatHistory', JSON.stringify(conversation.chatHistory));
+                                                        }}
+                                                        className='flex-grow-1'
+                                                    >
+                                                        <p className='m-0 __conversationName'>
+                                                            {conversation.chatHistory.find(message => message.role === 'user')
+                                                                ? conversation.chatHistory.find(message => message.role === 'user').content
+                                                                : conversation.chatHistory.length > 0
+                                                                    ? conversation.chatHistory[0].content
+                                                                    : 'No messages yet.'}
+                                                        </p>
+                                                        <p className='m-0 text-muted __timeStamp'>
+                                                            <FontAwesomeIcon icon={faClock} /> {moment(conversation.updatedAt).fromNow()}
+                                                        </p>
+                                                    </span>
+                                                    <Button
+                                                        type='button'
+                                                        className='border border-0 rounded-0 red inverse'
+                                                        variant='btn-outline-danger'
+                                                        onClick={() => _deleteConversation(conversation._id)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faTrashCan} />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    );
+                                })
                             )}
                         </SimpleBar>
                     </Toast.Body>

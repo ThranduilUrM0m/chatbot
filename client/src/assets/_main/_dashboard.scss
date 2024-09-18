@@ -587,6 +587,31 @@ section {
                                     form {
                                         position: relative;
 
+                                        ._dateGroup {
+                                            position: relative;
+
+                                            ._formLabel {
+                                                color: $black;
+
+                                                .react-datepicker-wrapper .react-datepicker__input-container input {
+                                                    border: .5vh solid $blackFaded;
+                                                    color: $black;
+                                                    margin: 0;
+                                                    font-size: 2vh;
+                                                }
+
+                                                .react-datepicker__tab-loop {
+                                                    z-index: 10;
+
+                                                    .react-datepicker-popper {
+                                                        .react-datepicker {
+                                                            border: .5vh solid $blackFaded;
+                                                            border-radius: 0;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                         ._searchGroup {
                                             position: relative;
                                             cursor: pointer;
@@ -604,6 +629,7 @@ section {
                                                     padding: 0 10vh 0 .75rem;
                                                     margin: 0;
                                                     transform-origin: right center;
+                                                    font-size: 2vh;
                                                     @include _transform($top: 50%, $left: 0, $bottom: '', $right: '', $t_x: 0, $t_y: -50%, $r_deg: 0, $s_x: 0, $s_y: 0);
 
                                                     &._typing {
@@ -772,9 +798,42 @@ section {
                                             }
                                         }
                                     }
+
+                                    .dropdown {
+                                        border-radius: .75vh;
+                                        
+                                        .dropdown-toggle {
+                                            padding: .75vh 3.75vh .75vh 1.15vh;
+                                            box-shadow: 1vh 0 1vh -1vh rgba($black, 0.5);
+                                            border-radius: .75vh;
+                                            background: $whiteFaded;
+                                            font-size: 2vh;
+                                            @include _dimensions($width: fit-content, $height: 100%);
+
+                                            span {
+                                                position: relative;
+                                                cursor: pointer;
+                                                @include _dimensions($width: fit-content, $height: fit-content);
+                                                @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                                            }
+
+                                            &::after {
+                                                position: absolute;
+                                                @include _transform($top: 50%, $left: '', $bottom: '', $right: 1.75vh, $t_x: 0, $t_y: -50%, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                            }
+                                        }
+
+                                        .dropdown-menu {
+                                            position: absolute;
+                                            box-shadow: 1.25vh 1.25vh 4.5vh -2.5vh rgba($black, .5);
+                                            margin: 0;
+                                            @include _transform($top: 10vh, $left: unset, $bottom: unset, $right: 0, $t_x: 0, $t_y: 0, $r_deg: 0, $s_x: 1, $s_y: 1);
+                                            @include _transitions($property: 'all', $duration: .25s, $timing: 'ease', $delay: '');
+                                        }
+                                    }
                                 }
 
-                                button {
+                                button:not(.react-datepicker__navigation) {
                                     @include _dimensions($width: 25vh, $height: '');
 
                                     span {
@@ -790,6 +849,22 @@ section {
 
                                 .react-bootstrap-table {
                                     table {
+                                        &.__conversation {
+                                            tr {
+
+                                                th,
+                                                td {
+                                                    &:first-of-type {
+                                                        border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+
+                                                        p {
+                                                            color: var(--bs-border-color);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
                                         thead {
                                             border-bottom: .25vh solid darken($color: $sectionBackground, $amount: 5);
 
@@ -997,11 +1072,6 @@ section {
                                             td {
                                                 background: none;
                                                 vertical-align: middle;
-
-                                                &:first-of-type,
-                                                &:last-of-type {
-                                                    padding: 0 2.5vh;
-                                                }
 
                                                 ._checkGroup {
                                                     .__checkBox {

@@ -285,22 +285,6 @@ const PUsers = (props) => {
             },
         },
         {
-            dataField: "_user_adresse",
-            text: "Adresse",
-            sort: true,
-            formatter: (cell, row) => {
-                // Combine city and country with fallback logic
-                const __location = !_.isEmpty(row._user_city)
-                    ? `${row._user_city}, ${row._user_country?._country}`
-                    : row._user_country?._country || ""; // Fallback to country if city is empty
-                return (
-                    <span className="d-flex flex-column justify-content-center me-auto">
-                        <p className="m-0">{__location}</p>
-                    </span>
-                );
-            },
-        },
-        {
             dataField: "Role",
             text: "Roles",
             sort: true,

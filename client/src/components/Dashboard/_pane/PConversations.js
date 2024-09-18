@@ -7,6 +7,7 @@ import Breadcrumb from "react-bootstrap/Breadcrumb";
 import Card from "react-bootstrap/Card";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import BootstrapTable from "react-bootstrap-table-next";
+import Dropdown from 'react-bootstrap/Dropdown';
 import {
     faHouse
 } from "@fortawesome/free-solid-svg-icons";
@@ -29,6 +30,8 @@ const _socketURL = _.isEqual(process.env.NODE_ENV, "production")
 const _socket = io(_socketURL, { transports: ["websocket", "polling"] });
 
 const PConversations = (props) => {
+    moment.locale('fr');
+    
     const _conversations = _useStore.useConversationStore((state) => state._conversations);
     const setConversations = _useStore.useConversationStore((state) => state["_conversations_SET_STATE"]);
 
@@ -53,8 +56,18 @@ const PConversations = (props) => {
         }
     });
 
-    /* Focus State Variables */
+    // Mapping _selectedTimespan to French labels
+    const timespanLabels = {
+        currentYear: "Année en cours",
+        currentMonth: "Mois en cours",
+        currentWeek: "Semaine en cours",
+        currentDay: "Aujourd'hui",
+        currentHour: "Heure actuelle"
+    };
+
+    // State for selected timespan
     const [_selectedDate, setSelectedDate] = useState(null);
+    const [_selectedTimespan, setSelectedTimespan] = useState('currentYear');
 
     const _getConversations = useCallback(async () => {
         try {
@@ -77,11 +90,35 @@ const PConversations = (props) => {
     const filteredConversations = _conversations.filter(conversation => {
         const matchesDate = _selectedDate
             ? _.some(conversation.chatHistory, (message) =>
-                moment(message.createdAt).isSame(_selectedDate, 'day')
+                moment(message.updatedAt).isSame(_selectedDate, 'day')
             )
             : true;
 
-        return matchesDate;
+        const updatedAt = moment(conversation.updatedAt);
+
+        // Apply timespan filtering
+        let matchesTimespan = true;
+        switch (_selectedTimespan) {
+            case 'currentYear':
+                matchesTimespan = updatedAt.isSame(moment(), 'year');
+                break;
+            case 'currentMonth':
+                matchesTimespan = updatedAt.isSame(moment(), 'month');
+                break;
+            case 'currentWeek':
+                matchesTimespan = updatedAt.isSame(moment(), 'week');
+                break;
+            case 'currentDay':
+                matchesTimespan = updatedAt.isSame(moment(), 'day');
+                break;
+            case 'currentHour':
+                matchesTimespan = updatedAt.isSame(moment(), 'hour');
+                break;
+            default:
+                matchesTimespan = true;
+        }
+
+        return matchesDate && matchesTimespan;
     });
 
     /* Bootstrap Table For Conversations */
@@ -89,29 +126,15 @@ const PConversations = (props) => {
         {
             dataField: 'rowNumber', // This is a placeholder field name
             text: '#', // Header text for the row number column
-            headerAlign: "left",
+            headerAlign: "center",
             formatter: (cell, row, rowIndex) => {
                 return (
-                    <p className="m-0 text-muted">
+                    <p className="m-0 text-center">
                         {rowIndex + 1} {/* Display the row number (starting from 1) */}
                     </p>
                 );
             },
             sort: false // Optional: Disable sorting for the row number column
-        },
-        {
-            dataField: "chatHistory",
-            text: "Total messages utilisateur",
-            sort: true,
-            headerAlign: "center",
-            formatter: (cell) => {
-                // Filter messages where the role is 'conversation' and count them
-                return (
-                    <p className="m-0 text-center">
-                        {_.size(_.filter(cell, (__m) => __m.role === 'user'))}
-                    </p>
-                );
-            },
         },
         {
             dataField: "chatHistory",
@@ -123,7 +146,7 @@ const PConversations = (props) => {
                     <p className="m-0 text-center">
                         {
                             _.minBy(cell, (item) => moment(item.createdAt).valueOf()) // Use moment().valueOf() to get the timestamp
-                                ? moment(_.minBy(cell, (item) => moment(item.createdAt).valueOf()).createdAt).format('DD/MM/YYYY')
+                                ? moment(_.minBy(cell, (item) => moment(item.createdAt).valueOf()).createdAt).format('MMMM Do YYYY')
                                 : 'N/A'
                         }
                     </p>
@@ -140,9 +163,24 @@ const PConversations = (props) => {
                     <p className="m-0 text-center">
                         {
                             _.maxBy(cell, (item) => moment(item.createdAt).valueOf()) // Use moment().valueOf() to get the timestamp
-                                ? moment(_.maxBy(cell, (item) => moment(item.createdAt).valueOf()).createdAt).format('DD/MM/YYYY')
+                                ? moment(_.maxBy(cell, (item) => moment(item.createdAt).valueOf()).createdAt).format('MMMM Do YYYY')
                                 : 'N/A'
                         }
+                    </p>
+                );
+            },
+        },
+        {
+            dataField: "chatHistory",
+            text: "Total messages utilisateur",
+            sort: true,
+            headerAlign: "center",
+            formatter: (cell) => {
+                // Filter messages where the role is 'conversation' and count them
+                return (
+                    <p className="m-0 text-center">
+                        {_.size(_.filter(cell, (__m) => __m.role === 'user'))}
+                        {_.size(_.filter(cell, (__m) => __m.role === 'user')) < 0 ? ' message' : ' messages'}.
                     </p>
                 );
             },
@@ -154,7 +192,10 @@ const PConversations = (props) => {
             headerAlign: "center",
             formatter: (cell) => {
                 return (
-                    <p className="m-0 text-center">{cell}.</p>
+                    <p className="m-0 text-center">
+                        {cell}
+                        {_.size(cell) < 0 ? ' reply' : ' replies'}.
+                    </p>
                 );
             },
         },
@@ -170,27 +211,6 @@ const PConversations = (props) => {
                                 ? `${moment().diff(moment(cell), 'days')} jours`
                                 : `${moment().diff(moment(cell), 'hours')} heures`
                         }
-                    </p>
-                );
-            },
-        },
-        {
-            dataField: "avgResponseTime",
-            text: "Temps réponse moyen",
-            sort: true,
-            headerAlign: "center",
-            formatter: (cell) => {
-                // Convert milliseconds to a duration object
-                const duration = moment.duration(cell);
-                const hours = Math.floor(duration.asHours());
-                const minutes = Math.floor(duration.asMinutes()) % 60;
-                const seconds = Math.floor(duration.asSeconds()) % 60;
-
-                return (
-                    <p className="m-0 text-center">
-                        {hours > 0 ? `${hours} heures ` : ''}
-                        {minutes > 0 ? `${minutes} minutes ` : ''}
-                        {seconds > 0 ? `${seconds} secondes` : '0 secondes'}
                     </p>
                 );
             },
@@ -222,11 +242,11 @@ const PConversations = (props) => {
                             </Breadcrumb.Item>
                         </Breadcrumb>
 
-                        <div className="_search  ms-auto">
+                        <div className="_search d-flex ms-auto">
                             <Form onClick={() => setFocus('_searchInput')}>
                                 <Form.Group
                                     controlId='_searchInput'
-                                    className='_formGroup'
+                                    className='_formGroup _dateGroup'
                                 >
                                     <FloatingLabel
                                         className='_formLabel _autocomplete'
@@ -243,7 +263,21 @@ const PConversations = (props) => {
                                     </FloatingLabel>
                                 </Form.Group>
                             </Form>
-                            {/* Show by current month, day, ... */}
+
+                            {/* Dropdown for Timespan Selection */}
+                            <Dropdown className="border border-1 ms-1">
+                                <Dropdown.Toggle className='border border-1'>
+                                    {timespanLabels[_selectedTimespan]} {/* Display the French label */}
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={() => setSelectedTimespan('currentYear')}>{timespanLabels['currentYear']}</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => setSelectedTimespan('currentMonth')}>{timespanLabels['currentMonth']}</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => setSelectedTimespan('currentWeek')}>{timespanLabels['currentWeek']}</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => setSelectedTimespan('currentDay')}>{timespanLabels['currentDay']}</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => setSelectedTimespan('currentHour')}>{timespanLabels['currentHour']}</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </div>
                     </div>
                     <div className="_body">
@@ -260,6 +294,7 @@ const PConversations = (props) => {
                                 hover
                                 condensed
                                 bordered={false}
+                                classes="__conversation"
                                 noDataIndication={() => "Pas de Conversations"}
                             />
                         </SimpleBar>
