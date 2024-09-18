@@ -404,7 +404,6 @@ router.patch('/:id', uploadMiddleware, async (req, res, next) => {
     const { body } = req;
     let __updatedFields = [];
 
-
     try {
         if (typeof body._user_email !== 'undefined') {
             req._user._user_email = body._user_email;

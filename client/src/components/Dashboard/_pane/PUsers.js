@@ -438,6 +438,7 @@ const PUsers = (props) => {
                             className="border border-0 rounded-0 _danger"
                             variant="outline-light"
                             onClick={() => {
+                                setIsDeleting(true);
                                 setUserToEdit(row);
                                 setModalFormHeader("Confirmer la suppression");
                                 setModalFormBody(
@@ -482,82 +483,61 @@ const PUsers = (props) => {
                     "Doit contenir entre 3 et 20 caractère.",
                     (__username) => !__username || /^[a-zA-Z0-9_]{3,20}$/.test(__username)
                 ),
-            _user_password: Yup.string()
-                .default("")
-                .when("$userToEdit", {
-                    is: (userToEdit) => !_.isNil(userToEdit) && !_.isEmpty(userToEdit), // Only validate when updating an existing user
-                    then: (schema) =>
-                        schema
-                            .notRequired()
-                            .test(
-                                "password-required-for-update",
-                                "Si vous souhaitez modifier le mot de passe, fournissez le mot de passe actuel.",
-                                function (value) {
-                                    const { _user_passwordNew, _user_passwordNewConfirm } =
-                                        this.parent;
-                                    // If user has filled any of the new password fields, the current password is required
-                                    return (
-                                        (!value &&
-                                            !_user_passwordNew &&
-                                            !_user_passwordNewConfirm) ||
-                                        (!!value &&
-                                            !!_user_passwordNew &&
-                                            !!_user_passwordNewConfirm)
-                                    );
+            _user_password: Yup.string().when('$userToEdit', {
+                is: (userToEdit) => !_.isNil(userToEdit) && !_.isEmpty(userToEdit),
+                then: (schema) => schema.test(
+                    'password-required-for-update',
+                    'Si vous souhaitez mettre à jour le mot de passe, veuillez fournir le mot de passe actuel.',
+                    function (value) {
+                        const { _user_passwordNew, _user_passwordNewConfirm } = this.parent;
+                        return (
+                            (!value && !_user_passwordNew && !_user_passwordNewConfirm) ||
+                            (value && _user_passwordNew && _user_passwordNewConfirm)
+                        );
+                    }
+                ),
+                otherwise: (schema) => schema.notRequired(),
+            }),
+            _user_passwordNew: Yup.string().when('$userToEdit', {
+                is: (userToEdit) => _.isEmpty(userToEdit),
+                then: (schema) =>
+                    schema
+                        .required('Le nouveau mot de passe est requis.')
+                        .matches(
+                            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,}$/,
+                            'Majuscule, minuscule, un chiffre et un caractère spécial requis.'
+                        ),
+                otherwise: (schema) =>
+                    schema.test(
+                        'password-new-validation',
+                        'Si vous souhaitez mettre à jour le mot de passe, veuillez fournir un nouveau mot de passe valide.',
+                        function (value) {
+                            const { _user_password, _user_passwordNewConfirm } = this.parent;
+                            if (_user_password) {
+                                return value && _user_passwordNewConfirm;
+                            }
+                            return !value || (value && _user_passwordNewConfirm);
+                        }
+                    )
+                        .test(
+                            'password-new-regex',
+                            'Uppercase, lowercase, number, and special character required.',
+                            function (value) {
+                                if (value) {
+                                    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,}$/.test(value);
                                 }
-                            ),
-                    otherwise: (schema) => schema.notRequired(), // Not required when adding a new user
-                }),
-            _user_passwordNew: Yup.string()
-                .when("$userToEdit", {
-                    is: (userToEdit) => _.isEmpty(userToEdit), // For adding a new user
-                    /* Modifier */
-                    then: (schema) =>
-                        schema
-                            // Ensure required validation happens before regex validation
-                            .required("Le nouveau mot de passe est requis.")
-                            .nullable() // Allows null or empty value before regex runs
-                            .matches(
-                                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,}$/,
-                                "Majuscule, minuscule, chiffre et symbole requis."
-                            ),
-                    /* Ajouter */
-                    otherwise: (schema) =>
-                        schema
-                            .test(
-                                "password-new-validation",
-                                "Si vous souhaitez modifier le mot de passe, fournissez un nouveau mot de passe valide.",
-                                function (value) {
-                                    const { _user_password, _user_passwordNewConfirm } = this.parent;
-
-                                    // If the current password is filled, the new password should be required
-                                    if (_user_password) {
-                                        return !!value && !!_user_passwordNewConfirm;
-                                    }
-
-                                    // Otherwise, allow it to be empty if no new password is provided
-                                    return !value || (!!value && !!_user_passwordNewConfirm);
-                                }
-                            )
-                            .matches(
-                                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,}$/,
-                                "Majuscule, minuscule, chiffre et symbole requis."
-                            )
-                            .notRequired(), // New password is not required unless the current one is filled
-                }),
-            _user_passwordNewConfirm: Yup.string()
-                .default("")
-                .when(["$userToEdit", "_user_passwordNew"], {
-                    is: (userToEdit, newPassword) => !_.isEmpty(newPassword) || _.isNil(userToEdit), // Validate confirm only when new password is provided
-                    then: (schema) =>
-                        schema
-                            .required("Veuillez confirmer le nouveau mot de passe.")
-                            .oneOf(
-                                [Yup.ref("_user_passwordNew")],
-                                "Les mots de passe doivent correspondre."
-                            ),
-                    otherwise: (schema) => schema.notRequired(),
-                }),
+                                return true;
+                            }
+                        ).notRequired(),
+            }),
+            _user_passwordNewConfirm: Yup.string().when(['$userToEdit', '_user_passwordNew'], {
+                is: (userToEdit, newPassword) => !_.isEmpty(newPassword) || _.isNil(userToEdit),
+                then: (schema) =>
+                    schema
+                        .required('Veuillez confirmer le nouveau mot de passe.')
+                        .oneOf([Yup.ref('_user_passwordNew')], 'Doit correspondre au nouveau mot de passe.'),
+                otherwise: (schema) => schema.notRequired(),
+            }),
             _user_picture: Yup.string().default(""),
             _user_firstname: Yup.string()
                 .default("")
@@ -592,7 +572,7 @@ const PUsers = (props) => {
             _user_toDelete: Yup.boolean().default(false),
             Role: Yup.array().default([]),
         })
-        .test(
+        /* .test(
             "passwords-match",
             "Les mots de passe doivent correspondre.",
             (values) => {
@@ -606,7 +586,7 @@ const PUsers = (props) => {
                 }
                 return true; // All checks passed
             }
-        )
+        ) */
         .required();
     const {
         register: registerUser,
@@ -1194,8 +1174,10 @@ const PUsers = (props) => {
         setUserToEdit(_u);
     };
 
+    const [_isDeleting, setIsDeleting] = useState(false);
     const _handleDelete = (_id) => {
         return axios.delete(`/api/user/${_id}`).then((res) => {
+            setIsDeleting(false);
             _getUsers();
             _socket.emit("action", { type: "_userDeleted", data: res.data._user });
         });
@@ -1259,8 +1241,10 @@ const PUsers = (props) => {
         try {
             for (const [key, value] of Object.entries(values)) {
                 if (!_.isEmpty(value)) {
-                    if (key === "_user_country" || key === "Role") {  // Add "Role" or other array fields here
+                    if (key === "_user_country") {  // Add "Role" or other array fields here
                         formData.append(key, JSON.stringify(value));  // Serialize the array to JSON
+                    } else if (key === "Role") {
+                        _.forEach(_.map(value, '_id'), id => formData.append(key, id));
                     } else {
                         formData.append(key, value);
                     }
@@ -2691,7 +2675,7 @@ const PUsers = (props) => {
                                         </>
                                     )}
                                 </Button>
-                                {!_.isEmpty(_userToEdit) && (
+                                {!_isDeleting && (
                                     <Button
                                         type="button"
                                         className="border border-0 rounded-0 inverse _red w-50 ms-1"
