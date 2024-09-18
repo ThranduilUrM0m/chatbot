@@ -907,6 +907,11 @@ const PUsers = (props) => {
     const [_roleSuggestion, setRoleSuggestion] = useState('');
     const [__roleItems, setItemsRole] = useState([]);
 
+
+    // Using react-hook-form's watch to get selected roles
+    const selectedRoles = watchUser('Role') || [];
+
+    // UseMultipleSelection for handling selected items
     const {
         selectedItems: selectedItemsRoles,
         addSelectedItem: addSelectedItemRole,
@@ -916,15 +921,15 @@ const PUsers = (props) => {
     } = useMultipleSelection({
         initialSelectedItems: _.map(watchUser('Role'), value => ({ value })),
         onStateChange: ({ selectedItems }) => {
-            setValueUser(
-                'Role',
-                _.map(selectedItems, (item) => item.value));
+            // Update the form's 'Role' field with selected items' values
+            setValueUser('Role', selectedItems.map(item => item._role_title || item)); 
         },
     });
 
+    // Handle Role selection
     const _handleSelectRole = (__selectedItem) => {
-        if (selectedItemsRoles.length >= 10) {
-            setRoleError('Limit reached, maximum of 10 roles allowed');
+        if (selectedItemsRoles.length >= 4) {
+            setRoleError('Limite atteinte, maximum de 4 rôles autorisés');
             return; // Block further selection if the limit is reached
         }
 
@@ -934,22 +939,33 @@ const PUsers = (props) => {
         ) {
             addSelectedItemRole(__selectedItem);
             setRoleError('');
+            // Remove the selected item from the suggestions
+            setItemsRole((prevItems) => prevItems.filter(item => item._role_title !== __selectedItem._role_title));
         } else {
-            setRoleError('This role has already been selected');
+            setRoleError('Ce rôle a déjà été sélectionné');
         }
     };
+
+    // Handle Role removal
     const _handleRemoveRole = (__index) => {
         const __selectedItem = selectedItemsRoles[__index];
         if (__selectedItem) {
             removeSelectedItemRole(__selectedItem);
-            setItemsRole((prevItems) => [...prevItems, __selectedItem]);
+            // Add the removed item back to the list only if it isn't already there
+            setItemsRole((prevItems) => {
+                if (!prevItems.some(item => item._role_title === __selectedItem._role_title)) {
+                    return [...prevItems, __selectedItem];
+                }
+                return prevItems; // No duplicate items
+            });
         }
         setRoleError('');
     };
+
+    // Handle input changes for Role suggestions
     const _handleChangeRole = (__inputValue) => {
-        console.log('Handle Change Role:', __inputValue);
         /* If it includes it, it could mean that the suggestion is 'world' and the typped value is only 'orl' */
-        let firstSuggestions = _.orderBy(
+        let filteredSuggestions = _.orderBy(
             _.uniqBy(
                 _.filter(
                     _.filter(
@@ -958,7 +974,10 @@ const PUsers = (props) => {
                             !__inputValue ||
                             _.includes(_.lowerCase(item._role_title), _.lowerCase(__inputValue))
                     ),
-                    (item) => !selectedItemsRoles.some((selected) => selected._role_title === item._role_title) // Exclude already selected roles
+                    (item) =>
+                        !selectedItemsRoles.some(
+                            (selected) => selected._role_title === item._role_title
+                        ) // Exclude already selected roles
                 ),
                 '_role_title'
             ),
@@ -971,61 +990,55 @@ const PUsers = (props) => {
             _.intersection(
                 _.split(
                     _.toLower(
-                        !_.isEmpty(__inputValue) && firstSuggestions[0]
-                            ? firstSuggestions[0].value
+                        !_.isEmpty(__inputValue) && filteredSuggestions[0]
+                            ? filteredSuggestions[0]._role_title
                             : ''
                     ),
                     ''
                 ),
                 _.split(_.toLower(_.trim(__inputValue)), '')
-            ).length /
-            _.max([
-                _.size(
-                    !_.isEmpty(__inputValue) && firstSuggestions[0]
-                        ? firstSuggestions[0].value
-                        : ''
-                ),
+            ).length / _.max([
+                _.size(filteredSuggestions[0] ? filteredSuggestions[0]._role_title : ''),
                 _.size(_.toLower(_.trim(__inputValue))),
             ]);
 
-        if (!__similarity && !_.isEmpty(__inputValue)) {
+        // If no similarity, check if input is valid using an API call, else update suggestions
+    if (!__similarity && !_.isEmpty(__inputValue)) {
             axios(
-                `https://api.dictionaryapi.dev/api/v2/entries/en/${_.toLower(
-                    _.trim(__inputValue)
-                )}`
+                `https://api.dictionaryapi.dev/api/v2/entries/fr/${_.toLower(_.trim(__inputValue))}`
             )
                 .then((response) => {
                     if (response.status === 200) {
-                        setItemsRole([
-                            ...firstSuggestions,
-                            { value: _.toLower(__inputValue) },
-                        ]);
+                        setItemsRole([...filteredSuggestions, { _role_title: _.toLower(__inputValue) }]);
                         setRoleError('');
                     }
                 })
                 .catch((error) => {
-                    setRoleError('Please enter a valid role.');
+                    setRoleError('Veuillez saisir un rôle valide.');
                 });
         } else {
-            setItemsRole(firstSuggestions);
+            setItemsRole(filteredSuggestions);
             setRoleError('');
         }
 
         setInputValueRole(__inputValue);
         setTypedCharactersRole(__inputValue);
-        setRoleSuggestion(
-            !_.isEmpty(__inputValue) && firstSuggestions[0]
-                ? firstSuggestions[0]._role_title // Use _role_title for suggestions
-                : ''
-        );
-        /* If the role is already selected then throw error and block selection for the suggestion */
+        setRoleSuggestion(filteredSuggestions[0] ? filteredSuggestions[0]._role_title : '');
+        // If the role is already selected, throw an error and block selection for the suggestion
+        if (_.some(selectedItemsRoles, { _role_title: __inputValue })) {
+            setRoleError('Ce rôle a déjà été sélectionné.');
+            return;
+        }
     };
+
+    /* Controlling the focus */
     const _handleBlurRole = async () => {
         setRoleFocused(!_.isEmpty(watchUser('Role')));
     };
     const _handleFocusRole = () => {
         setRoleFocused(true);
     };
+    
     /* The isOpen should stay true after selecting, but it does not */
     const {
         inputValue: inputValueRole,
@@ -1042,8 +1055,7 @@ const PUsers = (props) => {
         selectedItem: null,
         onInputValueChange({ inputValue, isOpen }) {
             // Ensure this function is invoked
-            console.log('onInputValueChange', inputValue, isOpen);
-            if (!selectedItemRole && isOpen) {
+            if (isOpen) {
                 _handleChangeRole(inputValue);
             }
             setInputValueRole(inputValue || '');
@@ -2434,7 +2446,7 @@ const PUsers = (props) => {
 
                         {/* Role */}
                         {/* Works selecting but not typing, and also the removing role after selection, and also removing after submit */}
-                        {/* <Row className="g-col-12 grid _roles">
+                        <Row className="g-col-12 grid _roles">
                             <Col className="g-col-3"></Col>
                             <Col className="g-col-4">
                                 <Form.Group
@@ -2456,7 +2468,8 @@ const PUsers = (props) => {
                                                     suppressRefError: true,
                                                 }
                                             )}
-                                            value={inputValueRole}
+                                            value={inputValueRole} // Use controlled value
+                                            onChange={(e) => setInputValueRole(e.target.value)} // Ensure changes are captured
                                             placeholder="Roles."
                                             className={`_formControl border border-top-0 rounded-0 ${errorsUser.Role ? "border-danger" : ""
                                                 } ${!_.isEmpty(_typedCharactersRole) ? "_typing" : ""}`}
@@ -2520,18 +2533,16 @@ const PUsers = (props) => {
                                                 autoHide={true} // Hide scrollbar when not hovered
                                             >
                                                 <ul className="text-muted roles d-flex flex-row justify-content-start align-items-center">
-                                                    {_.map(watchUser("Role"), (item, index) => {
+                                                    {_.map(selectedRoles, (item, index) => {
                                                         return (
                                                             <li
                                                                 key={`${item}${index}`}
                                                                 className={`role_item rounded-0 d-flex align-items-center`}
-                                                                {...getSelectedItemProps({
-                                                                    selectedItem: item,
-                                                                    index,
-                                                                })}
+                                                                {...getSelectedItemProps({ selectedItem: item, index })}
                                                                 data-order={`${index}`}
                                                             >
-                                                                <p>{_.upperFirst(item._role_title)}.</p>
+                                                                {/* Ensure item._role_title exists */}
+                                                                <p>{_.upperFirst(item._role_title || item)}.</p>
                                                                 <div
                                                                     className="__close"
                                                                     onClick={() => {
@@ -2579,7 +2590,7 @@ const PUsers = (props) => {
                                     </SimpleBar>
                                 </Form.Group>
                             </Col>
-                        </Row> */}
+                        </Row>
                     </Modal.Body>
                     <Modal.Footer>
                         <Row className="grid w-100">

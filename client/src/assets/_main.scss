@@ -19,8 +19,8 @@ main {
     }
 
     &._login {
-        background-color: #FF3CAC;
-        background-image: linear-gradient(225deg, #FF3CAC 0, #784BA0 50%, #2B86C5 100%);
+        background-color: #bcb1bc;
+        background-image: linear-gradient(160deg, #bcb1bc 0%, #b098b0 50%, #ffffff 100%);
         @import './_main/login';
     }
 

@@ -114,6 +114,7 @@ const Login = (props) => {
 				navigate('/dashboard', { replace: true, state: { from: location } });
 			})
 			.catch((error) => {
+				console.log(error);
 				setModalHeader('Nous sommes Désolé !');
 				setModalBody(error.response.data.text);
 				setModalIcon(<FontAwesomeIcon icon={faRectangleXmark} />);
@@ -122,6 +123,7 @@ const Login = (props) => {
 	}
 
 	const onError = (error) => {
+		console.log(error);
 		setModalHeader('Nous sommes Désolé !');
 		setModalBody(_.join(_.map(error, err => err.message), '\n'));
 		setModalIcon(<FontAwesomeIcon icon={faRectangleXmark} />);

@@ -314,7 +314,7 @@ const Home = (props) => {
                                 <p className='h6 text-muted text-center m-0 fw-semibold'>Vous n'avez pas d'autres conversation pour le moment</p>
                             ) : (
                                 _.map(_conversations, (conversation, index) => (
-                                    <div key={index} className='d-flex _conversationItem'>
+                                    <div key={index} className={`d-flex _conversationItem ${conversation._id === _idConversation ? '__currentConversation' : ''}`}>
                                         <span
                                             onClick={() => {
                                                 setIdConversation(conversation._id);
