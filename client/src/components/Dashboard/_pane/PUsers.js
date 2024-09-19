@@ -242,7 +242,7 @@ const PUsers = (props) => {
     const _columns = [
         {
             dataField: "_user_username",
-            text: "Nom d'Administrateur",
+            text: "Nom d'Utilisateur",
             sort: true,
             formatter: (cell, row) => {
                 return (
@@ -2670,7 +2670,7 @@ const PUsers = (props) => {
                                         </>
                                     )}
                                 </Button>
-                                {!_isDeleting && (
+                                {_isDeleting && (
                                     <Button
                                         type="button"
                                         className="border border-0 rounded-0 inverse _red w-50 ms-1"
