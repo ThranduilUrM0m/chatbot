@@ -235,6 +235,10 @@ const Home = (props) => {
             return 'lastHour';
         } else if (updatedAt.isSame(now, 'day')) {
             return 'today';
+        } else if (updatedAt.isSame(now.subtract(1, 'day'), 'day')) {
+            return 'yesterday';
+        } else if (updatedAt.isSame(now, 'week')) {
+            return 'lastWeek';
         } else if (updatedAt.isSame(now, 'month')) {
             return 'lastMonth';
         } else if (updatedAt.isSame(now, 'year')) {
@@ -247,6 +251,8 @@ const Home = (props) => {
     const groupNames = {
         lastHour: 'Dernière heure',
         today: 'Aujourd\'hui',
+        yesterday: 'Hier',
+        lastWeek: 'La semaine dernière',
         lastMonth: 'Le mois dernier',
         lastYear: 'L\'année dernière',
         beforeLastYear: 'Avant l\'année dernière',
@@ -341,7 +347,7 @@ const Home = (props) => {
                                 <p className='h6 text-muted text-center m-0 fw-semibold'>Vous n'avez pas d'autres conversation pour le moment</p>
                             ) : (
                                 // Define the desired order for the groups
-                                ['lastHour', 'today', 'lastMonth', 'lastYear', 'beforeLastYear'].map((key) => {
+                                ['lastHour', 'today', 'yesterday', 'lastWeek', 'lastMonth', 'lastYear', 'beforeLastYear'].map((key) => {
                                     const conversations = groupedConversations[key];
 
                                     if (!conversations) return null; // Skip if no conversations in this group

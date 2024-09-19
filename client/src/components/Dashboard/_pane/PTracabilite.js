@@ -90,7 +90,7 @@ const PTracabilite = (props) => {
                                 <FontAwesomeIcon icon={faUserGroup} />
                                 <span className="w-100 g-col-11">
                                     <p>
-                                        Administrateurs<b className="pink_dot">.</b>
+                                        Traçabilité<b className="pink_dot">.</b>
                                     </p>
                                 </span>
                             </Breadcrumb.Item>

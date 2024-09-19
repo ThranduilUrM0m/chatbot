@@ -19,10 +19,14 @@ import moment from 'moment';
 import _useStore from "../../../store";
 import SimpleBar from "simplebar-react";
 import DatePicker from 'react-datepicker';
+import { registerLocale } from 'react-datepicker';
+import fr from 'date-fns/locale/fr';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import "simplebar-react/dist/simplebar.min.css";
 import { io } from "socket.io-client";
+
+registerLocale('fr', fr);
 
 const _socketURL = _.isEqual(process.env.NODE_ENV, "production")
     ? window.location.hostname
@@ -259,6 +263,11 @@ const PConversations = (props) => {
                                             }}
                                             className='form-control rounded-0'
                                             placeholderText='Sélectionnez une date'
+                                            locale='fr'
+                                            dayClassName={date => {
+                                                const currentMonth = new Date().getMonth();
+                                                return date.getMonth() !== currentMonth ? 'text-muted outside-month' : '';
+                                            }}
                                         />
                                     </FloatingLabel>
                                 </Form.Group>
