@@ -1,0 +1,29 @@
+{
+  "extends": ["config:base"],
+  "packageRules": [
+    {
+      "updateTypes": ["major"],
+      "groupName": "all major updates",
+      "schedule": ["at any time"],
+      "automerge": false,
+      "prBodyNotes": [
+        "This PR includes a major update. Please review the changes carefully."
+      ]
+    },
+    {
+      "updateTypes": ["minor", "patch"],
+      "groupName": "all minor and patch updates",
+      "automerge": true
+    }
+  ],
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 10,
+  "packageFiles": [
+    {
+      "packageFile": "server/package.json"
+    },
+    {
+      "packageFile": "client/package.json"
+    }
+  ]
+}
